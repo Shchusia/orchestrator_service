@@ -1,8 +1,8 @@
 """
 Test msg library
 """
-# pylint: disable=too-few-public-methods,no-name-in-module,invalid-name
-from typing import Dict, Type, Union
+# pylint: disable=too-few-public-methods,no-name-in-module,invalid-name,abstract-method
+from typing import Dict, Optional, Type, Union
 
 import pytest
 from pydantic import BaseModel, ValidationError
@@ -152,3 +152,52 @@ def test_generic():
     tst_full(MyType, is_optional_header=True)
     MyTypeWithoutHeader = BaseOrchServMsg[BodyModel, BodyModel]
     tst_body(MyTypeWithoutHeader)
+
+
+def test_msg_source():
+    """
+    test set|get source to msg
+    :return:
+    """
+    test_source = "test_source"
+
+    class MyTypeInvalid(BaseOrchServMsg):
+        """
+        Test class
+        """
+
+        body: BodyModel
+        header: HeaderModel
+
+    val = MyTypeInvalid(header=header_data(), body=body_data())
+    with pytest.raises(NotImplementedError):
+        val.get_source()
+    with pytest.raises(NotImplementedError):
+        val.set_source(test_source)
+
+    class HeaderModelWithSource(BaseModel):
+        """
+        test class
+        """
+
+        source: Optional[str]
+
+    class CorrectMsg(BaseOrchServMsg):
+        """
+        test class
+        """
+
+        body: BodyModel
+        header: HeaderModelWithSource
+
+        def set_source(self, source: str) -> None:
+            self.header.source = source
+
+        def get_source(self) -> str:
+            return self.header.source
+
+    val = CorrectMsg(
+        body=body_data(),
+    )
+    val.set_source(source=test_source)
+    assert val.get_source() == test_source
