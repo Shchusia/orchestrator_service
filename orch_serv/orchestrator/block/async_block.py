@@ -1,34 +1,34 @@
 """
-Sync Block
+module with base block class for user async blocks
 """
-# pylint: disable=not-callable
+# pylint: disable=not-callable, inconsistent-mro
 import types
 from abc import ABC
-from typing import Callable, Optional
+from typing import Awaitable, Callable, Optional
 
 from orch_serv.exc import FlowException
 from orch_serv.msg import BaseOrchServMsg
 
-from .base_block import SyncBaseBlock
+from .base_block import AsyncBaseBlock
 
 
-class Block(SyncBaseBlock, ABC):
+class AsyncBlock(AsyncBaseBlock, ABC):
     """
-    The main class for inheriting the blocks that make up the flow of tasks execution
+    Base block for async mode
     """
 
-    _next_handler: SyncBaseBlock = None
+    _next_handler: AsyncBaseBlock = None
     _pre_handler_function: Optional[
-        Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]
+        Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
     ] = None
     _post_handler_function: Optional[
-        Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]
+        Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
     ] = None
 
     @property
     def pre_handler_function(
         self,
-    ) -> Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]:
+    ) -> Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]:
         """
         function which call before send to handler
         :return:
@@ -38,17 +38,19 @@ class Block(SyncBaseBlock, ABC):
     @property
     def post_handler_function(
         self,
-    ) -> Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]:
+    ) -> Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]:
         """
         function which call after received from source
         :return:
         """
         return self._post_handler_function
 
-    @pre_handler_function.setter  # type: ignore
+    @pre_handler_function.setter  # type:ignore
     def pre_handler_function(
         self,
-        func: Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]] = None,
+        func: Optional[
+            Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
+        ] = None,
     ):
         """
         Method check pre_handler_function is func
@@ -59,7 +61,9 @@ class Block(SyncBaseBlock, ABC):
         """
         if not func:
             pass
-        elif isinstance(func, (types.FunctionType, types.MethodType)):
+        elif isinstance(
+            func, (types.FunctionType, types.MethodType, types.CoroutineType)
+        ):
             self._pre_handler_function = func
         else:
             raise TypeError(
@@ -67,10 +71,12 @@ class Block(SyncBaseBlock, ABC):
                 " the attribute must be a function or None"
             )
 
-    @post_handler_function.setter  # type: ignore # noqa
+    @post_handler_function.setter  # type:ignore
     def post_handler_function(
         self,
-        func: Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]] = None,
+        func: Optional[
+            Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
+        ] = None,
     ):
         """
         Method check post_handler_function is func
@@ -81,7 +87,9 @@ class Block(SyncBaseBlock, ABC):
         """
         if not func:
             pass
-        elif isinstance(func, (types.FunctionType, types.MethodType)):
+        elif isinstance(
+            func, (types.FunctionType, types.MethodType, types.CoroutineType)
+        ):
             self._post_handler_function = func
         else:
             raise TypeError(
@@ -92,10 +100,10 @@ class Block(SyncBaseBlock, ABC):
     def __init__(
         self,
         pre_handler_function: Optional[
-            Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]
+            Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
         ] = None,
         post_handler_function: Optional[
-            Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]
+            Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
         ] = None,
     ):
         """
@@ -111,7 +119,7 @@ class Block(SyncBaseBlock, ABC):
         self.pre_handler_function = pre_handler_function  # type: ignore # noqa
         self.post_handler_function = post_handler_function  # type: ignore # noqa
 
-    def set_next(self, handler: SyncBaseBlock) -> SyncBaseBlock:
+    def set_next(self, handler: AsyncBaseBlock) -> AsyncBaseBlock:
         """
         Save Next handler after this handler
         :param handler:
@@ -120,45 +128,31 @@ class Block(SyncBaseBlock, ABC):
         self._next_handler = handler
         return handler
 
-    def get_list_flow(self) -> str:
-        """
-        Method return str flow
-        :return: str
-        """
-        if self._next_handler:
-            next_blocks = self._next_handler.get_list_flow()
-        else:
-            next_blocks = "end"
-        return f"{self.name_block} -> {next_blocks}"
+    async def process(self, message: BaseOrchServMsg):
+        raise NotImplementedError
 
-    def handle(self, message: BaseOrchServMsg) -> None:
-        """
-        Method handle process msg
-        :param BaseOrchServMsg message: msg to process
-        :raise FlowException: if not found handle for source from message
-        :return: nothing
-        """
+    async def handle(self, message: BaseOrchServMsg) -> None:
         if not message.get_source():
             # if message don't have `source`
             # we start from first chain flow
             message.set_source(self.name_block)
-            self.process(message)
+            await self.process(message)
         elif message.get_source() == self.name_block:
             if self.post_handler_function:
-                message = self.post_handler_function(message)
+                message = await self.post_handler_function(message)
             if not message or not self._next_handler:
                 # if after post handling don't return msg
                 # or not next handler
                 return
             if self._next_handler.pre_handler_function:
-                message = self._next_handler.pre_handler_function(message)
+                message = await self._next_handler.pre_handler_function(message)
 
             if not message:
                 # if don't return message after processing
                 return
             message.set_source(self._next_handler.name_block)
-            self._next_handler.process(message)
+            await self._next_handler.process(message)
         elif self._next_handler:
-            self._next_handler.handle(message)
+            await self._next_handler.handle(message)
         else:
             raise FlowException(f"Not found block for source: {message}")
