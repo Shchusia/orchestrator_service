@@ -1,16 +1,15 @@
 PROJECT:
   # Project name
-  title: ""
+  title: "orch_serv"
   # Project description
   description: ""
   # Repository URL
-  repository: ""
+  repository: "https://github.com/Shchusia/orchestrator_service"
   # Project version
-  release: "0.0.1"
+  release: "0.1.0"
 AUTHOR:
   # Author full info
-    author: "Denis Shchutskyi"
-
+  author: "Denis Shchutskyi"
   # How to contact the author
   # List of str:
   # Author_contacts:
