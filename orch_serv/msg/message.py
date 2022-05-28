@@ -55,8 +55,9 @@ class BaseOrchServMsg(
         description="Optional message header " "with the structure you need"
     )
 
-    def get_source(self) -> str:
+    def get_source(self) -> Optional[str]:
         """
+        ### For orchestrator ###
         Add to the message the source where
           the message was processed (will be processed)
 
@@ -77,6 +78,7 @@ class BaseOrchServMsg(
 
     def set_source(self, source: str) -> None:
         """
+        ### For orchestrator ###
         Method set source to message to identify previous step on flow
         Method is required to be implemented
         for more information see method get_source
@@ -85,5 +87,27 @@ class BaseOrchServMsg(
         :type source: str
         :raise NotImplementedError: if not override method
         :return: nothing
+        """
+        raise NotImplementedError
+
+    def get_flow(self) -> Optional[str]:
+        """
+        ### For orchestrator ###
+        Method returns the name of the flow to which the given message belongs
+        !!! the message must contain a field that determines whether
+         the message belongs to some flow
+        :return: title flow
+        :rtype: str
+        """
+        raise NotImplementedError
+
+    def get_target(self) -> Optional[str]:
+        """
+        ### For orchestrator ###
+        Method returns the name of the command that should execute the given message
+        necessary if you don’t need a flow but want to execute only one
+         block for a message
+        :return: title block to execution
+        :rtype: str
         """
         raise NotImplementedError
