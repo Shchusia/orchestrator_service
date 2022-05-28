@@ -156,3 +156,14 @@ class AsyncBlock(AsyncBaseBlock, ABC):
             await self._next_handler.handle(message)
         else:
             raise FlowException(f"Not found block for source: {message}")
+
+    def get_list_flow(self) -> str:
+        """
+        Method return str flow
+        :return: str
+        """
+        if self._next_handler:
+            next_blocks = self._next_handler.get_list_flow()
+        else:
+            next_blocks = "end"
+        return f"{self.name_block} -> {next_blocks}"
