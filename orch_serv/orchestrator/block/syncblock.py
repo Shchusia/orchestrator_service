@@ -12,7 +12,7 @@ from orch_serv.msg import BaseOrchServMsg
 from .base_block import SyncBaseBlock
 
 
-class Block(SyncBaseBlock, ABC):
+class SyncBlock(SyncBaseBlock, ABC):
     """
     The main class for inheriting the blocks that make up the flow of tasks execution
     """

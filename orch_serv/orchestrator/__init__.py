@@ -1,4 +1,4 @@
 """
 import `orchestrator` module content
 """
-from .block import AsyncBlock, Block
+from .block import AsyncBlock, SyncBlock
