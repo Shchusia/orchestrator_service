@@ -132,3 +132,66 @@ class NotFoundDefaultError(OrchestratorException):
             f"Allowed values: {allowed_values}"
         )
         Exception.__init__(self, self.message)
+
+
+class ServiceException(OrchServError):
+    """
+    Main exception class exceptions with Service
+    """
+
+
+class ServiceBlockException(ServiceException):
+    """
+    Class for exceptions in ServiceBlock
+    """
+
+
+class DoublePostProcessFunctionDeclaredError(ServiceException):
+    """
+    Exception if many default postprocess handlers
+    """
+
+    def __init__(self):
+        self.message = "Several postprocessors specified"
+        Exception.__init__(self, self.message)
+
+
+class EmptyCommandsException(ServiceException):
+    """
+    Empty list of commands for service operation
+    """
+
+    def __init__(
+        self,
+    ):
+        self.message = "Empty list of commands for service operation"
+        Exception.__init__(self, self.message)
+
+
+class NotUniqueCommandError(ServiceException):
+    """
+    Class error if user add the same commands
+    """
+
+    pass
+
+
+class ServiceBuilderException(ServiceException):
+    """
+    Class for exceptions in BuilderService
+    """
+
+    pass
+
+
+class IncorrectDefaultCommand(ServiceException):
+    """
+    among the available commands, there is no default command
+    """
+
+    def __init__(self, command: str, list_command: List[str]):
+        self.message = (
+            f"The `{command}` command which is the default "
+            f"command is not among the valid commands : {str(list_command)}"
+        )
+        Exception.__init__(self, self.message)
