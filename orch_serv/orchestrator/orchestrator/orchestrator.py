@@ -4,9 +4,15 @@ Module with sync orchestrator
 import inspect
 from logging import Logger
 from types import ModuleType
-from typing import Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
-from orch_serv.exc import NoDateException, UniqueNameException, WrongTypeException
+from orch_serv.exc import (
+    NoDateException,
+    NotFoundDefaultError,
+    UniqueNameException,
+    WorkTypeMismatchException,
+    WrongTypeException,
+)
 from orch_serv.msg import BaseOrchServMsg
 from orch_serv.orchestrator.block import AsyncBlock, SyncBlock
 from orch_serv.orchestrator.flow import AsyncFlow, SyncFlow
@@ -17,6 +23,11 @@ class Orchestrator:
     """
     Orchestrator class for build service
     """
+
+    _base_class_for_flow = SyncFlow
+    _base_class_for_target = SyncBlock
+    _default_flow: str = None
+    _default_block: str = None
 
     _flows: Dict[
         str, Union[Type[Union[SyncFlow, AsyncFlow]], Union[SyncFlow, AsyncFlow]]
@@ -30,8 +41,10 @@ class Orchestrator:
         flows: Optional[Union[ModuleType, List]] = None,
         blocks: Optional[Union[ModuleType, List]] = None,
         logger: Optional[Logger] = None,
-        flows_to_ignore: List[str] = None,
-        blocks_to_ignore: List[str] = None,
+        flows_to_ignore: List[str] = list(),
+        blocks_to_ignore: List[str] = list(),
+        default_flow: Optional[str] = None,
+        default_block: Optional[str] = None,
     ):
         self.logger = logger or Logger(__name__)
 
@@ -56,6 +69,57 @@ class Orchestrator:
                 "orchestrator",
                 "There is no data for the orchestrator to work correctly",
             )
+        self._validate_data()
+        if default_flow:
+            if not self._flows.get(default_flow):
+                raise NotFoundDefaultError(
+                    default_flow, list(self._flows.keys()), is_target=False
+                )
+            else:
+                self._default_flow = default_flow
+        if default_block:
+            if not self._targets.get(default_block):
+                raise NotFoundDefaultError(
+                    default_block, list(self._targets.keys()), is_target=True
+                )
+            else:
+                self._default_block = default_block
+
+    def _validate_data(self):
+        """
+        Checks the types of objects in the flow and goals so that
+        the synchronous orchestrator does not redistribute a
+        synchronous flows or blocks and vice versa
+        :raise WorkTypeMismatchException: if incorrect type
+        """
+
+        def get_name(obj) -> str:
+            if isinstance(obj, type):
+                return obj.__name__
+            return obj.__class__.__name__
+
+        def check_type_dict_obj(
+            dict_objects: Dict[str, Any], type_to_check: Type, is_target: bool
+        ):
+            for obj in dict_objects.values():
+                if isinstance(obj, type):
+                    if not issubclass(obj, type_to_check):
+                        raise WorkTypeMismatchException(
+                            base_class=self.__class__.__name__,
+                            obj_class=get_name(obj),
+                            is_target=is_target,
+                        )
+                elif not isinstance(obj, type_to_check):
+                    raise WorkTypeMismatchException(
+                        base_class=self.__class__.__name__,
+                        obj_class=get_name(obj),
+                        is_target=is_target,
+                    )
+                else:
+                    continue
+
+        check_type_dict_obj(self._targets, self._base_class_for_target, is_target=True)
+        check_type_dict_obj(self._flows, self._base_class_for_flow, is_target=False)
 
     @staticmethod
     def _generate_data(
@@ -156,7 +220,7 @@ class Orchestrator:
             if message.get_target():
                 name_target = message.get_target()
                 target = self._targets.get(name_target)
-                if not target:
+                if not target and not self._default_block:
                     is_return_message = True
                     self.logger.warning(
                         "Orchestrator. No suitable target was found to process "
@@ -166,15 +230,17 @@ class Orchestrator:
                         list(self._targets.keys()),
                     )
                 else:
+                    if not target:
+                        target = self._targets.get(self._default_block)
                     if isinstance(target, type):
                         target = target(logger=self.logger)
                         self._targets[name_target] = target
                     try:
-                        target.process(message=message)
+                        target.process(message)
                     except Exception as exc:
                         is_return_message = True
                         self.logger.warning(
-                            "Orchestrator. Error processing msg %s in target %s."
+                            "Orchestrator. Error processing msg `%s` in target `%s`."
                             " Error: %s",
                             str(message),
                             name_target,
@@ -184,7 +250,7 @@ class Orchestrator:
             else:
                 name_flow = message.get_flow()
                 flow = self._flows.get(name_flow)
-                if not flow:
+                if not flow and not self._default_flow:
                     is_return_message = True
                     self.logger.warning(
                         "Orchestrator. No suitable flow was found to process "
@@ -194,11 +260,13 @@ class Orchestrator:
                         list(self._flows.keys()),
                     )
                 else:
+                    if not flow:
+                        flow = self._flows.get(self._default_flow)
                     if isinstance(flow, type):
                         flow = flow(logger=self.logger)
                         self._flows[name_flow] = flow
                     try:
-                        flow.to_go_with_the_flow(message=message)
+                        flow.to_go_with_the_flow(message)
                     except Exception as exc:
                         is_return_message = True
                         self.logger.warning(

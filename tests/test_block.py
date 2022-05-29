@@ -65,6 +65,9 @@ def test_block():
     block_f.handle(deepcopy(MSG_TO_PROCESS_IN_SECOND_BLOCK))
     assert CONST_LIST_SYNC == [1, 2, -1, 1, -1, -1, 2, -1, -2, -2]
 
+    assert block_f.get_next() == block_s
+    assert block_s.get_next() is None
+
 
 @pytest.mark.asyncio
 async def test_async_block():
@@ -108,3 +111,6 @@ async def test_async_block():
     assert CONST_LIST_ASYNC == [1, 2, -1, 1, -1, -1, 2, -1, -2]
     await block_f.handle(deepcopy(MSG_TO_PROCESS_IN_SECOND_ASYNC_BLOCK))
     assert CONST_LIST_ASYNC == [1, 2, -1, 1, -1, -1, 2, -1, -2, -2]
+
+    assert block_f.get_next() == block_s
+    assert block_s.get_next() is None

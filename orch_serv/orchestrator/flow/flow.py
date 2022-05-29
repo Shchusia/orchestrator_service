@@ -15,6 +15,7 @@ class SyncFlow(Flow, ABC):
     SyncFlow for execution SyncBlock
     """
 
+    _base_class_for_blocks = SyncBlock
     flow_chain: Union[SyncBlock] = None
 
     def to_go_with_the_flow(self, message: BaseOrchServMsg) -> None:

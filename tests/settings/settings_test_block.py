@@ -11,6 +11,8 @@ class BodyModel(BaseModel):
 
 class HeaderModel(BaseModel):
     source: Optional[str]
+    flow: Optional[str]
+    target: Optional[str]
 
 
 class MyTestModel(BaseOrchServMsg):
@@ -22,6 +24,12 @@ class MyTestModel(BaseOrchServMsg):
 
     def set_source(self, source: str):
         self.header.source = source
+
+    def get_target(self):
+        return self.header.target
+
+    def get_flow(self):
+        return self.header.flow
 
 
 CONST_LIST_SYNC = []

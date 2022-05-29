@@ -3,7 +3,11 @@ from copy import deepcopy
 import pytest
 
 from orch_serv import FlowBlock, FlowBuilder, SyncFlow
-from orch_serv.exc import FlowBlockException, FlowBuilderException
+from orch_serv.exc import (
+    FlowBlockException,
+    FlowBuilderException,
+    WorkTypeMismatchException,
+)
 from tests.settings.settings_test_block import (
     CONST_LIST_ASYNC,
     CONST_LIST_SYNC,
@@ -12,6 +16,8 @@ from tests.settings.settings_test_block import (
     MSG_TO_PROCESS_IN_SECOND_BLOCK,
 )
 from tests.settings.settings_test_flow import (
+    IncorrectTestAsyncFlowUseSyncBlock,
+    IncorrectTestFlowUseAsyncBlock,
     IncorrectTestFlowWithIncorrectTypeSteps,
     IncorrectTestFlowWithoutNameFlow,
     IncorrectTestFlowWithoutStepsFlow,
@@ -43,6 +49,11 @@ def test_build_flow():
             steps_flow = FlowBuilder(
                 FlowBlock(Test),
             )
+
+    with pytest.raises(WorkTypeMismatchException):
+        IncorrectTestFlowUseAsyncBlock()
+    with pytest.raises(WorkTypeMismatchException):
+        IncorrectTestAsyncFlowUseSyncBlock()
 
 
 def test_flow_handling():

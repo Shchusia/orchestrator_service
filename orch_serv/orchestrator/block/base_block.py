@@ -50,6 +50,14 @@ class SyncBaseBlock(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def get_next(self) -> SyncBaseBlock:
+        """
+        method for get next handler if exist
+        :return: BlockHandler
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def get_list_flow(self) -> str:
         """
         Method return str steps flow
@@ -115,6 +123,14 @@ class AsyncBaseBlock(ABC):
         method for adding a new handler
         :param BaseBlock handler: object next handler in chain flow
         :return: BlockHandler
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_next(self) -> Optional[AsyncBaseBlock]:
+        """
+        method for get next handler if exist
+        :return: next block
         """
         raise NotImplementedError
 

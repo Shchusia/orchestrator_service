@@ -15,6 +15,7 @@ class AsyncFlow(Flow, ABC):
     AsyncFlow for execution async blocks
     """
 
+    _base_class_for_blocks = AsyncBlock
     flow_chain: Union[AsyncBlock] = None
 
     async def to_go_with_the_flow(self, message: BaseOrchServMsg) -> None:

@@ -3,7 +3,7 @@ Module consolidate all exceptions lib
 """
 
 # pylint: disable=non-parent-init-called, super-init-not-called
-from typing import Optional
+from typing import List, Optional
 
 
 class OrchServError(Exception):
@@ -99,3 +99,36 @@ class WrongTypeException(OrchestratorException):
             f"Invalid variable type `{variable}`."
             f" There {variable} should be a list and not `{type_variable}`"
         )
+        Exception.__init__(self, self.message)
+
+
+class WorkTypeMismatchException(OrchestratorException):
+    """
+    if an asynchronous class is used for
+     a synchronous orchestra, or vice versa
+    """
+
+    def __init__(self, base_class: str, obj_class: str, is_target: bool = False):
+        self.message = (
+            f"In {'targets' if is_target else 'flows'} use incorrect mode class."
+            f"For {base_class} use {obj_class}."
+            f" Different types of work (sync and async or vice versa)"
+        )
+
+        Exception.__init__(self, self.message)
+
+
+class NotFoundDefaultError(OrchestratorException):
+    """
+    If provided default value but default value not exist in processed data
+    """
+
+    def __init__(
+        self, default_value: str, allowed_values: List[str], is_target: bool = False
+    ):
+        self.message = (
+            f"Not exist default value {default_value}"
+            f" for {'targets' if is_target else 'flows'}."
+            f"Allowed values: {allowed_values}"
+        )
+        Exception.__init__(self, self.message)

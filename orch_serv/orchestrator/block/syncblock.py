@@ -128,6 +128,9 @@ class SyncBlock(SyncBaseBlock, ABC):
         self._next_handler = handler
         return handler
 
+    def get_next(self) -> Optional[SyncBaseBlock]:
+        return self._next_handler
+
     def get_list_flow(self) -> str:
         """
         Method return str flow

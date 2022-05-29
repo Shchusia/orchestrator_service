@@ -4,6 +4,8 @@ Module with async orchestrator
 from typing import Optional
 
 from orch_serv.msg import BaseOrchServMsg
+from orch_serv.orchestrator.block import AsyncBlock
+from orch_serv.orchestrator.flow import AsyncFlow
 
 from .orchestrator import Orchestrator
 
@@ -14,6 +16,9 @@ class AsyncOrchestrator(Orchestrator):
     override handle function for async mode
     """
 
+    _base_class_for_flow = AsyncFlow
+    _base_class_for_target = AsyncBlock
+
     async def handle(  # type: ignore
         self, message: BaseOrchServMsg, is_force_return: bool = False
     ) -> Optional[BaseOrchServMsg]:
@@ -21,7 +26,7 @@ class AsyncOrchestrator(Orchestrator):
         Message processing method
 
         !!! the presence of a `target` in the message is more priority
-          than the presence of a `flow`
+         than the presence of a `flow`
         :param message: message to process
         :type message: BaseOrchServMsg
         :param is_force_return: always return a message
@@ -38,7 +43,7 @@ class AsyncOrchestrator(Orchestrator):
             if message.get_target():
                 name_target = message.get_target()
                 target = self._targets.get(name_target)
-                if not target:
+                if not target and not self._default_block:
                     is_return_message = True
                     self.logger.warning(
                         "Orchestrator. No suitable target was found to process "
@@ -48,15 +53,17 @@ class AsyncOrchestrator(Orchestrator):
                         list(self._targets.keys()),
                     )
                 else:
+                    if not target:
+                        target = self._targets.get(self._default_block)
                     if isinstance(target, type):
                         target = target(logger=self.logger)
                         self._targets[name_target] = target
                     try:
-                        await target.process(message=message)
+                        await target.process(message)
                     except Exception as exc:
                         is_return_message = True
                         self.logger.warning(
-                            "Orchestrator. Error processing msg %s in target %s."
+                            "Orchestrator. Error processing msg `%s` in target `%s`."
                             " Error: %s",
                             str(message),
                             name_target,
@@ -66,7 +73,7 @@ class AsyncOrchestrator(Orchestrator):
             else:
                 name_flow = message.get_flow()
                 flow = self._flows.get(name_flow)
-                if not flow:
+                if not flow and not self._default_flow:
                     is_return_message = True
                     self.logger.warning(
                         "Orchestrator. No suitable flow was found to process "
@@ -76,16 +83,18 @@ class AsyncOrchestrator(Orchestrator):
                         list(self._flows.keys()),
                     )
                 else:
+                    if not flow:
+                        flow = self._flows.get(self._default_flow)
                     if isinstance(flow, type):
                         flow = flow(logger=self.logger)
                         self._flows[name_flow] = flow
                     try:
-                        await flow.to_go_with_the_flow(message=message)
+                        await flow.to_go_with_the_flow(message)
                     except Exception as exc:
                         is_return_message = True
                         self.logger.warning(
-                            "Orchestrator. Error processing msg %s in flow %s. "
-                            "Error: %s",
+                            "Orchestrator. Error processing msg %s in flow %s."
+                            " Error: %s",
                             str(message),
                             name_flow,
                             str(exc),

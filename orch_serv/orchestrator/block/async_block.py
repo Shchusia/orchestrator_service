@@ -134,6 +134,9 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         self._next_handler = handler
         return handler
 
+    def get_next(self) -> Optional[AsyncBaseBlock]:
+        return self._next_handler
+
     async def process(self, message: BaseOrchServMsg):
         raise NotImplementedError
 

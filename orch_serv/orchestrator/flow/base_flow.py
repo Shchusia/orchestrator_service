@@ -6,9 +6,13 @@ from __future__ import annotations
 
 import types
 from logging import Logger
-from typing import Callable, Optional, Union
+from typing import Callable, Optional, Type, Union
 
-from orch_serv.exc import FlowBlockException, FlowBuilderException
+from orch_serv.exc import (
+    FlowBlockException,
+    FlowBuilderException,
+    WorkTypeMismatchException,
+)
 from orch_serv.orchestrator.block import AsyncBlock, SyncBlock
 
 
@@ -155,6 +159,10 @@ class Flow:
         raise NotImplementedError
 
     @property
+    def _base_class_for_blocks(self) -> Type:
+        raise NotImplementedError
+
+    @property
     def steps_flow(self):
         """
         Steps current flow
@@ -189,6 +197,18 @@ class Flow:
                 f"Incorrect type 'steps_flow' - it must be 'FlowBuilder',"
                 f" and not {type(self.steps_flow)}"
             )
+        self._validate_data()
+
+    def _validate_data(self):
+        current = self.flow_chain
+        while current:
+            if not isinstance(current, self._base_class_for_blocks):
+                raise WorkTypeMismatchException(
+                    base_class=self.__class__.__name__,
+                    obj_class=current.__class__.__name__,
+                    is_target=False,
+                )
+            current = current.get_next()
 
     def get_steps(self) -> str:
         """
