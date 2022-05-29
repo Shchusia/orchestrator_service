@@ -214,6 +214,12 @@ class Orchestrator:
         :rtype: Optional[BaseOrchServMsg]
         """
         is_return_message = is_force_return
+        if not isinstance(message, BaseOrchServMsg):
+            raise TypeError(
+                "Incorrect type `message`."
+                " The `message` the message must be "
+                f"of type `BaseOrchServMsg` and not {type(message)}"
+            )
         self.logger.debug("Orchestrator. Started processing msg: %s", str(message))
 
         if message.get_flow() or message.get_target():

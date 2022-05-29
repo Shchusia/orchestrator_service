@@ -241,6 +241,9 @@ def test_orchestrator_handler():
     assert CONST_LIST_SYNC == [-1, 2, -3, 1]
     assert res is None
 
+    with pytest.raises(TypeError):
+        orchestrator.handle(CONST_LIST_SYNC)
+
 
 @pytest.mark.asyncio
 async def test_async_orchestrator_handler():
@@ -310,3 +313,6 @@ async def test_async_orchestrator_handler():
     res = await orchestrator.handle(ASYNC_INCORRECT_MSG_TO_BLOCK)
     assert CONST_LIST_ASYNC == [-1, 2, -3, 1]
     assert res is None
+
+    with pytest.raises(TypeError):
+        await orchestrator.handle(CONST_LIST_ASYNC)

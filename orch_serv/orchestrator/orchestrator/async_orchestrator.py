@@ -16,8 +16,8 @@ class AsyncOrchestrator(Orchestrator):
     override handle function for async mode
     """
 
-    _base_class_for_flow = AsyncFlow
-    _base_class_for_target = AsyncBlock
+    _base_class_for_flow = AsyncFlow  # type: ignore
+    _base_class_for_target = AsyncBlock  # type: ignore
 
     async def handle(  # type: ignore
         self, message: BaseOrchServMsg, is_force_return: bool = False
@@ -38,7 +38,12 @@ class AsyncOrchestrator(Orchestrator):
         """
         is_return_message = is_force_return
         self.logger.debug("Orchestrator. Started processing msg: %s", str(message))
-
+        if not isinstance(message, BaseOrchServMsg):
+            raise TypeError(
+                "Incorrect type `message`."
+                " The `message` the message must be "
+                f"of type `BaseOrchServMsg` and not {type(message)}"
+            )
         if message.get_flow() or message.get_target():
             if message.get_target():
                 name_target = message.get_target()
