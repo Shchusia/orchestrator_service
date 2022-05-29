@@ -84,6 +84,25 @@ class Orchestrator:
                 )
             else:
                 self._default_block = default_block
+        self.logger.info(
+            "Allowed flows to work: %s \n" "Allowed blocks to work: %s",
+            self.get_list_flows(),
+            self.get_list_blocks(),
+        )
+
+    def get_list_flows(self) -> List[str]:
+        """
+        return list allowed flows
+        :return:
+        """
+        return list(self._flows.keys())
+
+    def get_list_blocks(self) -> List[str]:
+        """
+        return list allowed blocks
+        :return:
+        """
+        return list(self._targets.keys())
 
     def _validate_data(self):
         """
