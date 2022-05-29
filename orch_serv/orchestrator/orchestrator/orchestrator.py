@@ -16,7 +16,7 @@ from orch_serv.exc import (
 from orch_serv.msg import BaseOrchServMsg
 from orch_serv.orchestrator.block import AsyncBlock, SyncBlock
 from orch_serv.orchestrator.flow import AsyncFlow, SyncFlow
-from orch_serv.settings import *  # noqa
+from orch_serv.settings import DEFAULT_LOGGER
 
 
 class Orchestrator:
@@ -46,7 +46,7 @@ class Orchestrator:
         default_flow: Optional[str] = None,
         default_block: Optional[str] = None,
     ):
-        self.logger = logger or Logger(__name__)
+        self.logger = logger or DEFAULT_LOGGER
 
         if flows:
             self._flows = self._generate_data(  # type: ignore
