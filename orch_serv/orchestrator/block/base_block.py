@@ -67,12 +67,13 @@ class SyncBaseBlock(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def process(self, message: BaseOrchServMsg) -> None:
+    def process(self, message: BaseOrchServMsg) -> Optional[BaseOrchServMsg]:
         """
         Method for executing the logic of a given block
         in it, only send messages to other services
         :param message: message to process
-        :return: nothing
+        :return: message
+        :rtype: Optional[BaseOrchServMsg]
         """
         raise NotImplementedError("Not Implemented method for processing messages")
 
@@ -135,11 +136,12 @@ class AsyncBaseBlock(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def process(self, message: BaseOrchServMsg) -> None:
+    async def process(self, message: BaseOrchServMsg) -> Optional[BaseOrchServMsg]:
         """
         Method for executing the logic of a given block
         in it, only send messages to other services
         :param message: message to process
-        :return: nothing
+        :return: message
+        :rtype: Optional[BaseOrchServMsg]
         """
         raise NotImplementedError("Not Implemented method for processing messages")

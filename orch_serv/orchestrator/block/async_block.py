@@ -4,6 +4,7 @@ module with base block class for user async blocks
 # pylint: disable=not-callable, inconsistent-mro
 import types
 from abc import ABC
+from copy import deepcopy
 from logging import Logger
 from typing import Awaitable, Callable, Optional
 
@@ -128,33 +129,34 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         :param handler:
         :return: Optional[BlockHandler, None]
         """
+        if not isinstance(handler, AsyncBaseBlock):
+            raise TypeError("Incorrect type for next handler")
         self._next_handler = handler
         return handler
 
     async def process(self, message: BaseOrchServMsg):
         raise NotImplementedError
 
+    @staticmethod
+    async def _process_logic(block: AsyncBaseBlock, message: BaseOrchServMsg):
+        if block.pre_handler_function:
+            message = await block.pre_handler_function(message)
+        if not message:
+            return
+        message.set_source(block.name_block)
+        copy_msg = deepcopy(message)
+        new_msg = await block.process(message)
+        if block.post_handler_function:
+            if new_msg:
+                await block.post_handler_function(new_msg)
+            else:
+                await block.post_handler_function(copy_msg)
+
     async def handle(self, message: BaseOrchServMsg) -> None:
         if not message.get_source():
-            # if message don't have `source`
-            # we start from first chain flow
-            message.set_source(self.name_block)
-            await self.process(message)
+            await self._process_logic(block=self, message=message)
         elif message.get_source() == self.name_block:
-            if self.post_handler_function:
-                message = await self.post_handler_function(message)
-            if not message or not self._next_handler:
-                # if after post handling don't return msg
-                # or not next handler
-                return
-            if self._next_handler.pre_handler_function:
-                message = await self._next_handler.pre_handler_function(message)
-
-            if not message:
-                # if don't return message after processing
-                return
-            message.set_source(self._next_handler.name_block)
-            await self._next_handler.process(message)
+            await self._process_logic(block=self._next_handler, message=message)
         elif self._next_handler:
             await self._next_handler.handle(message)
         else:

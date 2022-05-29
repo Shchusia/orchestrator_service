@@ -196,8 +196,6 @@ def test_msg_source():
         def get_source(self) -> str:
             return self.header.source
 
-    val = CorrectMsg(
-        body=body_data(),
-    )
+    val = CorrectMsg(body=body_data(), header=dict())
     val.set_source(source=test_source)
     assert val.get_source() == test_source
