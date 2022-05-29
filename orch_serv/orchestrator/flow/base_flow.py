@@ -4,8 +4,9 @@ Module with classes for build flow
 # pylint: disable=no-else-return,too-few-public-methods
 from __future__ import annotations
 
+import types
 from logging import Logger
-from typing import Optional, Union
+from typing import Callable, Optional, Union
 
 from orch_serv.exc import FlowBlockException, FlowBuilderException
 from orch_serv.orchestrator.block import AsyncBlock, SyncBlock
@@ -21,8 +22,12 @@ class FlowBlock:
     def __init__(
         self,
         obj_block: Union[SyncBlock, AsyncBlock, type],
-        pre_handler_function: str = None,
-        post_handler_function: str = None,
+        pre_handler_function: Union[
+            str, types.FunctionType, types.MethodType, Callable
+        ] = None,
+        post_handler_function: Union[
+            str, types.FunctionType, types.MethodType, Callable
+        ] = None,
     ):
         """
         Init FlowBlock
@@ -35,21 +40,21 @@ class FlowBlock:
                 if getattr(obj_block, "__base__"):
                     if obj_block.__base__.__name__ in ["Block", "AsyncBlock"]:
                         self.obj_block = obj_block
-                        self.pre_handler_function = str(pre_handler_function)
-                        self.post_handler_function = str(post_handler_function)
+                        self.pre_handler_function = pre_handler_function
+                        self.post_handler_function = post_handler_function
                         return
                     elif issubclass(obj_block.__base__, (SyncBlock, AsyncBlock)):
 
                         self.obj_block = obj_block
-                        self.pre_handler_function = str(pre_handler_function)
-                        self.post_handler_function = str(post_handler_function)
+                        self.pre_handler_function = pre_handler_function
+                        self.post_handler_function = post_handler_function
                         return
 
             elif issubclass(type(obj_block), (SyncBlock, AsyncBlock)):
                 self.obj_block = obj_block
 
-                self.pre_handler_function = str(pre_handler_function)
-                self.post_handler_function = str(post_handler_function)
+                self.pre_handler_function = pre_handler_function
+                self.post_handler_function = post_handler_function
                 return
 
             raise FlowBlockException(str(type(obj_block)))
@@ -57,6 +62,16 @@ class FlowBlock:
             raise exc
         except Exception:  # noqa
             raise TypeError("Incorrect type `obj_block`") from Exception
+
+    @staticmethod
+    def _get_function(
+        instance_main: Flow,
+        function_to_get: Union[str, types.FunctionType, types.MethodType, Callable],
+    ) -> Optional[Union[types.FunctionType, types.MethodType, Callable]]:
+        if isinstance(function_to_get, str):
+            return getattr(instance_main, function_to_get, None)
+        else:
+            return function_to_get
 
     def init_block(self, instance_main: Flow) -> Union[SyncBlock, AsyncBlock]:
         """
@@ -68,22 +83,23 @@ class FlowBlock:
             raise TypeError("Value `instance_main` must be a Flow")
         result: Union[AsyncBlock, SyncBlock]
         if isinstance(self.obj_block, type):
+
             result = self.obj_block(
-                pre_handler_function=getattr(
-                    instance_main, self.pre_handler_function, None
+                pre_handler_function=self._get_function(
+                    instance_main, self.pre_handler_function
                 ),
-                post_handler_function=getattr(
-                    instance_main, self.post_handler_function, None
+                post_handler_function=self._get_function(
+                    instance_main, self.post_handler_function
                 ),
                 logger=instance_main.logger,
             )
             self.obj_block = result
         else:
-            self.obj_block.pre_handler_function = getattr(  # type: ignore
-                instance_main, self.pre_handler_function, None
+            self.obj_block.pre_handler_function = self._get_function(  # type: ignore
+                instance_main, self.pre_handler_function
             )
-            self.obj_block.post_handler_function = getattr(  # type: ignore
-                instance_main, self.post_handler_function, None
+            self.obj_block.post_handler_function = self._get_function(  # type: ignore
+                instance_main, self.post_handler_function
             )
             self.obj_block.logger = instance_main.logger
             result = self.obj_block
@@ -114,6 +130,7 @@ class FlowBuilder:
         :param instance_main:
         :return:
         """
+
         flow = self.steps[0].init_block(instance_main)
         cur_step = flow
         for step in self.steps[1:]:
@@ -163,6 +180,8 @@ class Flow:
         :param logger: orchestrator logger
         """
         self.logger = logger or Logger(__name__)
+        self.logger.info("Init block %s", self.name_flow)
+
         if isinstance(self.steps_flow, FlowBuilder):
             self.flow_chain = self.steps_flow.build_flow(self)
         else:

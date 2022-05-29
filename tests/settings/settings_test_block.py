@@ -65,12 +65,12 @@ MSG_TO_PROCESS_IN_SECOND_ASYNC_BLOCK = MyTestModel(
 )
 
 
-def tst_method_with_correct_processing(msg: BaseOrchServMsg):
+def tst_method_with_correct_processing(msg: BaseOrchServMsg) -> BaseOrchServMsg:
     CONST_LIST_SYNC.append(-1)
     return msg
 
 
-def tst_method_with_incorrect_processing(msg: BaseOrchServMsg):
+def tst_method_with_incorrect_processing(msg: BaseOrchServMsg) -> None:
     CONST_LIST_SYNC.append(-2)
     return None
 

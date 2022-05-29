@@ -7,6 +7,8 @@ from .orchestrator import (
     AsyncBlock,
     AsyncFlow,
     AsyncOrchestrator,
+    FlowBlock,
+    FlowBuilder,
     Orchestrator,
     SyncBlock,
     SyncFlow,
@@ -22,4 +24,6 @@ __all__ = [
     "AsyncFlow",
     "AsyncOrchestrator",
     "Orchestrator",
+    "FlowBlock",
+    "FlowBuilder",
 ]
