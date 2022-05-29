@@ -4,6 +4,7 @@ Sync Block
 # pylint: disable=not-callable
 import types
 from abc import ABC
+from logging import Logger
 from typing import Callable, Optional
 
 from orch_serv.exc import FlowException
@@ -97,6 +98,7 @@ class SyncBlock(SyncBaseBlock, ABC):
         post_handler_function: Optional[
             Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]
         ] = None,
+        logger: Optional[Logger] = None,
     ):
         """
         Init Block
@@ -106,8 +108,9 @@ class SyncBlock(SyncBaseBlock, ABC):
         :param post_handler_function: function should accept
          and return objects of type Message
         which be run after got msg from source
-
+        :param logger: orchestrator logger
         """
+        self.logger = logger or Logger(__name__)
         self.pre_handler_function = pre_handler_function  # type: ignore # noqa
         self.post_handler_function = post_handler_function  # type: ignore # noqa
 

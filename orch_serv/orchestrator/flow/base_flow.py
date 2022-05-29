@@ -4,7 +4,8 @@ Module with classes for build flow
 # pylint: disable=no-else-return,too-few-public-methods
 from __future__ import annotations
 
-from typing import Union
+from logging import Logger
+from typing import Optional, Union
 
 from orch_serv.exc import FlowBlockException, FlowBuilderException
 from orch_serv.orchestrator.block import AsyncBlock, SyncBlock
@@ -74,6 +75,7 @@ class FlowBlock:
                 post_handler_function=getattr(
                     instance_main, self.post_handler_function, None
                 ),
+                logger=instance_main.logger,
             )
             self.obj_block = result
         else:
@@ -83,6 +85,7 @@ class FlowBlock:
             self.obj_block.post_handler_function = getattr(  # type: ignore
                 instance_main, self.post_handler_function, None
             )
+            self.obj_block.logger = instance_main.logger
             result = self.obj_block
         return result
 
@@ -126,9 +129,10 @@ class Flow:
     flow_chain: Union[SyncBlock, AsyncBlock] = None
 
     @property
-    def name_flow(self):
+    def name_flow(self) -> str:
         """
-        Name current flow
+        Unique name to identify flow
+        for override in subclass   name_flow
         :return: name flow
         """
         raise NotImplementedError
@@ -153,11 +157,12 @@ class Flow:
         else:
             raise TypeError("incorrect type flow builder")
 
-    def __init__(self):
+    def __init__(self, logger: Optional[Logger] = None):
         """
         Init Flow
+        :param logger: orchestrator logger
         """
-
+        self.logger = logger or Logger(__name__)
         if isinstance(self.steps_flow, FlowBuilder):
             self.flow_chain = self.steps_flow.build_flow(self)
         else:

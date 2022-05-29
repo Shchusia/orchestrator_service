@@ -4,6 +4,7 @@ module with base block class for user async blocks
 # pylint: disable=not-callable, inconsistent-mro
 import types
 from abc import ABC
+from logging import Logger
 from typing import Awaitable, Callable, Optional
 
 from orch_serv.exc import FlowException
@@ -105,6 +106,7 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         post_handler_function: Optional[
             Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
         ] = None,
+        logger: Optional[Logger] = None,
     ):
         """
         Init Block
@@ -114,8 +116,9 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         :param post_handler_function: function should accept
          and return objects of type Message
         which be run after got msg from source
-
+        :param logger: orchestrator logger
         """
+        self.logger = logger or Logger(__name__)
         self.pre_handler_function = pre_handler_function  # type: ignore # noqa
         self.post_handler_function = post_handler_function  # type: ignore # noqa
 
