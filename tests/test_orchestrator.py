@@ -183,6 +183,7 @@ def test_init_async_orchestrator():
 
 
 def test_orchestrator_handler():
+    CONST_LIST_SYNC.clear()
     orchestrator = Orchestrator(
         flows=settings_correct_orchestrator_flows,
         blocks=settings_correct_orchestrator_blocks,
@@ -247,6 +248,7 @@ def test_orchestrator_handler():
 
 @pytest.mark.asyncio
 async def test_async_orchestrator_handler():
+    CONST_LIST_ASYNC.clear()
     orchestrator = AsyncOrchestrator(
         blocks=settings_correct_orchestrator_async_blocks,
         flows=settings_correct_orchestrator_async_flows,

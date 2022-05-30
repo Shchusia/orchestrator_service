@@ -38,13 +38,20 @@ class CommandHandler(ABC):
         """
         return self._logger
 
-    @logger.setter
-    def logger(self, val: Any) -> None:
-        """
-        setter logger
-        :param val:
-        :return:
-        """
+    # @logger.setter
+    # def logger(self, val: Any) -> None:
+    #     """
+    #     setter logger
+    #     :param val:
+    #     :return:
+    #     """
+    #     if not val:
+    #         return
+    #     if isinstance(val, Logger):
+    #         self._logger = val
+    #     else:
+    #         raise TypeError(f"Type must be logger but not {val}")
+    def set_logger(self, val: Any) -> None:
         if not val:
             return
         if isinstance(val, Logger):
@@ -223,12 +230,17 @@ class ServiceCommand(BaseModel):
         CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy
     ]
 
+    class Config:
+        arbitrary_types_allowed = True
+
 
 class ServiceBlock:
-    _processor: Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy]
-    _post_processor: Union[
-        CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy
-    ]
+    _processor: Union[
+        CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy
+    ] = None
+    _post_processor: Optional[
+        Union[CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy]
+    ] = None
 
     @property
     def processor(
@@ -284,11 +296,13 @@ class ServiceBlock:
     @post_processor.setter  # type: ignore # noqa
     def post_processor(  # noqa
         self,
-        post_processor: Union[
-            CommandHandlerPostProcessStrategy,
-            AsyncCommandHandlerPostProcessStrategy,
-            Type[CommandHandlerPostProcessStrategy],
-            Type[AsyncCommandHandlerPostProcessStrategy],
+        post_processor: Optional[
+            Union[
+                CommandHandlerPostProcessStrategy,
+                AsyncCommandHandlerPostProcessStrategy,
+                Type[CommandHandlerPostProcessStrategy],
+                Type[AsyncCommandHandlerPostProcessStrategy],
+            ]
         ],
     ) -> None:
         """
@@ -297,6 +311,8 @@ class ServiceBlock:
         :raise ServiceBlockException:
         :return:
         """
+        if post_processor is None:
+            return
         exc = ServiceBlockException(
             f"`post_processor` object must be of type "
             f"`CommandHandlerPostProcessStrategy` "
@@ -349,7 +365,7 @@ class ServiceBlock:
 class ServiceBuilder:
     _default_post_processor: Union[
         CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy
-    ]
+    ] = None
 
     @property
     def default_post_processor(
@@ -454,15 +470,15 @@ class ServiceBuilder:
         dict_commands = dict()  # type: Dict[str, ServiceCommand]
 
         if self.default_post_processor:
-            self.default_post_processor.logger = logger
+            self.default_post_processor.set_logger(logger)
             self.default_post_processor.set_service_instance(service_instance)
         for block in self._list_blocks:
             processor = block.processor
             post_processor = block.post_processor
-            processor.logger = logger  # noqa
+            processor.set_logger(logger)  # noqa
             processor.set_service_instance(service_instance)
             if post_processor:
-                post_processor.logger(logger)  # type: ignore # noqa
+                post_processor.set_logger(logger)  # noqa
                 post_processor.set_service_instance(service_instance)
 
             else:
@@ -486,26 +502,11 @@ class Service(ABC):
     Class Service for handle msg-s
     """
 
-    _service_commands: ServiceBuilder
-    _dict_handlers: Dict[str, ServiceCommand]
-    _default_command: str
+    _service_commands: ServiceBuilder = None
+    _dict_handlers: Dict[str, ServiceCommand] = dict()
+    _default_command: str = None
     _base_processor_class = CommandHandlerProcessStrategy
     _base_post_processor_class = CommandHandlerPostProcessStrategy
-
-    @property
-    def service_commands(self) -> ServiceBuilder:
-        if not self._service_commands:
-            raise NotImplementedError
-        return self._service_commands
-
-    @service_commands.setter
-    def service_commands(self, service_builder: ServiceBuilder) -> None:
-        if not isinstance(service_builder, ServiceBuilder):
-            raise ServiceBuilderException(
-                f"Variable `service_builder` must be a"
-                f" ServiceBuilder and not {type(service_builder)}"
-            )
-        self._service_commands = service_builder
 
     def __init__(
         self,
@@ -519,17 +520,37 @@ class Service(ABC):
         if not service_commands:
             # for validate if use property setup
             service_commands = self.service_commands
-        self.service_commands = service_commands
+
+        self.validate_service_builder(service_commands)
         self._dict_handlers = self.service_commands.build(
             service_instance=self, logger=logger
         )
-        if not self._dict_handlers.get(default_command):
-            raise IncorrectDefaultCommand(
-                self._default_command, list(self._dict_handlers.keys())
-            )
-        else:
-            self._default_command = default_command
+        if default_command:
+            if not self._dict_handlers.get(default_command):
+                raise IncorrectDefaultCommand(
+                    self._default_command, list(self._dict_handlers.keys())
+                )
+            else:
+                self._default_command = default_command
         self._validate_data()
+
+    def validate_service_builder(self, service_builder):
+        if not isinstance(service_builder, ServiceBuilder):
+            raise ServiceBuilderException(
+                f"Variable `service_builder` must be a"
+                f" ServiceBuilder and not {type(service_builder)}"
+            )
+        self._service_commands = service_builder
+
+    @property
+    def service_commands(self) -> ServiceBuilder:
+        if not self._service_commands:
+            raise NotImplementedError
+        return self._service_commands
+
+    @service_commands.setter
+    def service_commands(self, service_builder: ServiceBuilder) -> None:
+        self.validate_service_builder(service_builder)
 
     def _validate_data(self):
         if not issubclass(self._base_processor_class, CommandHandler):
