@@ -13,6 +13,16 @@ from .orchestrator import (
     SyncBlock,
     SyncFlow,
 )
+from .service import (
+    AsyncCommandHandlerPostProcessStrategy,
+    AsyncCommandHandlerProcessStrategy,
+    AsyncService,
+    CommandHandlerPostProcessStrategy,
+    CommandHandlerProcessStrategy,
+    Service,
+    ServiceBlock,
+    ServiceBuilder,
+)
 
 __version__ = "0.1.0"
 __all__ = [
@@ -26,4 +36,12 @@ __all__ = [
     "Orchestrator",
     "FlowBlock",
     "FlowBuilder",
+    "AsyncCommandHandlerPostProcessStrategy",
+    "AsyncCommandHandlerProcessStrategy",
+    "AsyncService",
+    "CommandHandlerPostProcessStrategy",
+    "CommandHandlerProcessStrategy",
+    "Service",
+    "ServiceBlock",
+    "ServiceBuilder",
 ]
