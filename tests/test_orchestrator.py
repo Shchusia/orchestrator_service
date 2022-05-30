@@ -4,13 +4,26 @@ Test Orchestrator
 from copy import deepcopy
 
 import pytest
-from settings.settings_orchestrator import (
+
+from orch_serv import AsyncOrchestrator, Orchestrator
+from orch_serv.exc import (
+    NoDateException,
+    NotFoundDefaultError,
+    UniqueNameException,
+    WorkTypeMismatchException,
+)
+from tests.settings.settings_orchestrator import (
     settings_correct_orchestrator_async_blocks,
     settings_correct_orchestrator_async_flows,
     settings_correct_orchestrator_blocks,
     settings_correct_orchestrator_flows,
+    settings_incorrect_async_blocks_not_unique_names,
+    settings_incorrect_async_flows_not_unique_names,
+    settings_incorrect_blocks_not_unique_names,
+    settings_incorrect_flows_not_unique_names,
+    settings_incorrect_flows_not_unique_names_option_2,
 )
-from settings.settings_orchestrator.settings_orchestrator_msgs import (
+from tests.settings.settings_orchestrator.settings_orchestrator_msgs import (
     ASYNC_CORRECT_MSG_FIRST_FLOW_FIRST_BLOCK,
     ASYNC_CORRECT_MSG_FIRST_FLOW_SECOND_BLOCK,
     ASYNC_CORRECT_MSG_SECOND_FLOW_FIRST_BLOCK,
@@ -30,22 +43,7 @@ from settings.settings_orchestrator.settings_orchestrator_msgs import (
     INCORRECT_MSG_SECOND_FLOW_SECOND_BLOCK2,
     INCORRECT_MSG_TO_BLOCK,
 )
-from settings.settings_test_block import CONST_LIST_ASYNC, CONST_LIST_SYNC
-
-from orch_serv import AsyncOrchestrator, Orchestrator
-from orch_serv.exc import (
-    NoDateException,
-    NotFoundDefaultError,
-    UniqueNameException,
-    WorkTypeMismatchException,
-)
-from tests.settings.settings_orchestrator import (
-    settings_incorrect_async_blocks_not_unique_names,
-    settings_incorrect_async_flows_not_unique_names,
-    settings_incorrect_blocks_not_unique_names,
-    settings_incorrect_flows_not_unique_names,
-    settings_incorrect_flows_not_unique_names_option_2,
-)
+from tests.settings.settings_test_block import CONST_LIST_ASYNC, CONST_LIST_SYNC
 
 
 def test_init_orchestrator():
