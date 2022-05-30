@@ -61,6 +61,7 @@ def test_flow_handling():
     test is correct handling flow messages
     :return:
     """
+    CONST_LIST_SYNC.clear()
     flow = TestFlow()
     flow.to_go_with_the_flow(deepcopy(MSG_TO_PROCESS_IN_FIRST_BLOCK))
 
@@ -75,6 +76,7 @@ async def test_async_flow_handling():
     test is correct handling async flow messages
     :return:
     """
+    CONST_LIST_ASYNC.clear()
     flow = TestAsyncFlow()
     await flow.to_go_with_the_flow(deepcopy(MSG_TO_PROCESS_IN_FIRST_BLOCK))
 

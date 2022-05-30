@@ -111,4 +111,17 @@ Base message class for processing and to use the library
  > title block to execution
  > ```
  > 
+ > #### Declared returns: `Optional[str]`
+ > ## Function  `get_command`
+ > ```text
+ > ### For service ###
+ > Method returns the name of the processor name
+ > that should execute the given message
+ > ```
+ > 
+ > ### Return
+ > ```text
+ > title processor to execution
+ > ```
+ > 
  > #### Declared returns: `Optional[str]`

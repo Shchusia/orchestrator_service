@@ -111,3 +111,13 @@ class BaseOrchServMsg(
         :rtype: str
         """
         raise NotImplementedError
+
+    def get_command(self) -> Optional[str]:
+        """
+        ### For service ###
+        Method returns the name of the processor name
+        that should execute the given message
+        :return: title processor to execution
+        :rtype: str
+        """
+        raise NotImplementedError
