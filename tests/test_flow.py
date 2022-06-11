@@ -6,6 +6,7 @@ from orch_serv import FlowBlock, FlowBuilder, SyncFlow
 from orch_serv.exc import (
     FlowBlockException,
     FlowBuilderException,
+    NotUniqueBlockInFlowError,
     WorkTypeMismatchException,
 )
 from tests.settings.settings_test_block import (
@@ -19,6 +20,7 @@ from tests.settings.settings_test_flow import (
     CorrectTestFlowWithDublicatBlocks,
     IncorrectTestAsyncFlowUseSyncBlock,
     IncorrectTestFlowUseAsyncBlock,
+    IncorrectTestFlowWithDublicatBlocks,
     IncorrectTestFlowWithIncorrectTypeSteps,
     IncorrectTestFlowWithoutNameFlow,
     IncorrectTestFlowWithoutStepsFlow,
@@ -55,9 +57,10 @@ def test_build_flow():
         IncorrectTestFlowUseAsyncBlock()
     with pytest.raises(WorkTypeMismatchException):
         IncorrectTestAsyncFlowUseSyncBlock()
+    with pytest.raises(NotUniqueBlockInFlowError):
+        IncorrectTestFlowWithDublicatBlocks()
 
-    ctf = CorrectTestFlowWithDublicatBlocks()
-    print(ctf.get_steps())
+    ctf = CorrectTestFlowWithDublicatBlocks()  # noqa
 
 
 def test_flow_handling():
