@@ -1,5 +1,15 @@
 import pytest
-from settings.settings_test_service import (
+
+from orch_serv.exc import (
+    DoublePostProcessFunctionDeclaredError,
+    EmptyCommandsException,
+    IncorrectDefaultCommand,
+    NotUniqueCommandError,
+    ServiceBlockException,
+    ServiceBuilderException,
+)
+from orch_serv.service import AsyncService, Service, ServiceBlock, ServiceBuilder
+from tests.settings.settings_test_service import (
     CONST_LIST_ASYNC,
     CONST_LIST_SYNC,
     FirstAsyncPostProcessHandler,
@@ -23,16 +33,6 @@ from settings.settings_test_service import (
     msg_to_third_handler,
     msg_to_third_handler_with_error,
 )
-
-from orch_serv.exc import (
-    DoublePostProcessFunctionDeclaredError,
-    EmptyCommandsException,
-    IncorrectDefaultCommand,
-    NotUniqueCommandError,
-    ServiceBlockException,
-    ServiceBuilderException,
-)
-from orch_serv.service import AsyncService, Service, ServiceBlock, ServiceBuilder
 
 
 def test_setup_service():
