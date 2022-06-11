@@ -1,5 +1,5 @@
 # orch_serv
-
+[![Coverage Status](https://coveralls.io/repos/github/Shchusia/orchestrator_service/badge.svg)](https://coveralls.io/github/Shchusia/orchestrator_service)
 > A library for quickly creating services and orchestration services between many services in a microservice architecture
 
 
@@ -33,9 +33,9 @@ What you need in the orchestrator service
 - create accessible flows from these blocks (for different tasks there can be your own flow - the main thing is to contain unique flow names)
 - define a message for the interaction of services so that they have a single standard and override key methods
 - initialize the orchestrator and use
-- [detailed](./orch_serv/orchestrator/README.md)
+- [More details](./orch_serv/orchestrator/README.md)
 
 What you need to use the service:
 - define a message for the interaction of services so that they have a single standard and override key methods
 - define the commands in the service which it will execute and what to do after the main task is completed (divided to separate the logic)
-- [detailed](./orch_serv/service/README.md)
+- [More details](./orch_serv/service/README.md)
