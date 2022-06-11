@@ -124,6 +124,18 @@ If provided default value but default value not exist in processed data
  > + `default_value`: str - empty doc string
  > + `allowed_values`: List[str] - empty doc string
  > + `is_target`: bool - empty doc string
+## Class `NotUniqueBlockInFlowError`
+```text
+If provided default value but default value not exist in processed data
+```
+
+### Basses(s)
++ OrchestratorException
+### SubElement(s)
+ > ## Function  `__init__`
+ > ### Argument(s)
+ > + `block_name`: str - empty doc string
+ > + `flow_name`: str - empty doc string
 ## Class `ServiceException`
 ```text
 Main exception class exceptions with Service

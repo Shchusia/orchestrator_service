@@ -19,7 +19,9 @@ class SyncBaseBlock(ABC):
         self,
     ) -> Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]:
         """
-        property for override in subclass
+        The function that will be executed before the main handler
+         must return a message if the message is not returned,
+         then the message will not get into the handler
         """
         raise NotImplementedError
 
@@ -28,7 +30,7 @@ class SyncBaseBlock(ABC):
         self,
     ) -> Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]:
         """
-        property for override in subclass
+        function to be executed after the main handler
         """
         raise NotImplementedError
 
@@ -96,7 +98,9 @@ class AsyncBaseBlock(ABC):
         self,
     ) -> Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]:
         """
-        property for override in subclass
+        The function that will be executed before the main handler
+         must return a message if the message is not returned,
+         then the message will not get into the handler
         """
         raise NotImplementedError
 
@@ -105,7 +109,7 @@ class AsyncBaseBlock(ABC):
         self,
     ) -> Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]:
         """
-        property for override in subclass
+        function to be executed after the main handler
         """
         raise NotImplementedError
 

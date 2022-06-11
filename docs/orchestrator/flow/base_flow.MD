@@ -34,6 +34,7 @@ Block for FlowBuilder
  > 
  > ### Argument(s)
  > + `instance_main`: Flow - empty doc string
+ > + `step_number`: int - empty doc string
  > ### Return
  > ```text
  > object subclass MainBlock
@@ -70,6 +71,7 @@ Class for inheritance for a specific flow
 
 ### SubElement(s)
  > `flow_chain`: Union[SyncBlock, AsyncBlock] = None
+ > `is_contains_duplicat_blocks`: bool = False
  > ## Function  `name_flow`
  > ```text
  > Unique name to identify flow
@@ -87,7 +89,7 @@ Class for inheritance for a specific flow
  > ## Function  `_base_class_for_blocks`
  > ### Decorator(s)
  > + property
- > #### Declared returns: `Type`
+ > #### Declared returns: `Type[Union[AsyncBlock, SyncBlock]]`
  > ## Function  `steps_flow`
  > ```text
  > Steps current flow
