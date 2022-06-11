@@ -12,6 +12,7 @@ from orch_serv.service import AsyncService, Service, ServiceBlock, ServiceBuilde
 from tests.settings.settings_test_service import (
     CONST_LIST_ASYNC,
     CONST_LIST_SYNC,
+    AsyncSwapService,
     FirstAsyncPostProcessHandler,
     FirstAsyncProcessHandler,
     FirstPostProcessHandler,
@@ -22,15 +23,22 @@ from tests.settings.settings_test_service import (
     SecondAsyncProcessHandler,
     SecondPostProcessHandler,
     SecondProcessHandler,
+    SwapService,
     msg_to_async_first_handler,
     msg_to_async_forth_handler,
     msg_to_async_second_handler,
     msg_to_async_third_handler,
     msg_to_async_third_handler_with_error,
     msg_to_first_handler,
+    msg_to_first_handler_swap,
+    msg_to_first_handler_swap_async,
     msg_to_forth_handler,
     msg_to_second_handler,
+    msg_to_second_handler_swap,
+    msg_to_second_handler_swap_async,
     msg_to_third_handler,
+    msg_to_third_handler_swap,
+    msg_to_third_handler_swap_async,
     msg_to_third_handler_with_error,
 )
 
@@ -383,3 +391,32 @@ async def test_async_service_handler():
     with pytest.raises(ValueError):
         res = await service.handle(msg_to_async_third_handler_with_error)
     assert CONST_LIST_ASYNC == [1, 4, 2, 5, 3, 3, 1, 4, 3]
+
+
+def test_sync_swap():
+    service = SwapService()
+    CONST_LIST_SYNC.clear()
+    service.handle(msg_to_first_handler_swap)
+    # service.handle(msg_to_first_handler_swap)
+    assert CONST_LIST_SYNC == [1]
+    service.handle(msg_to_second_handler_swap)
+    assert CONST_LIST_SYNC == [1, 2, -1, -2, -3]
+    service.handle(msg_to_third_handler_swap)
+    assert CONST_LIST_SYNC == [1, 2, -1, -2, -3, 3]
+    service.handle(msg_to_second_handler_swap)
+    assert CONST_LIST_SYNC == [1, 2, -1, -2, -3, 3, 2]
+
+
+@pytest.mark.asyncio
+async def test_async_swap():
+    service = AsyncSwapService()
+    CONST_LIST_ASYNC.clear()
+    await service.handle(msg_to_first_handler_swap_async)
+    # service.handle(msg_to_first_handler_swap)
+    assert CONST_LIST_ASYNC == [1]
+    await service.handle(msg_to_second_handler_swap_async)
+    assert CONST_LIST_ASYNC == [1, 2, -1, -2, -3]
+    await service.handle(msg_to_third_handler_swap_async)
+    assert CONST_LIST_ASYNC == [1, 2, -1, -2, -3, 3]
+    await service.handle(msg_to_second_handler_swap_async)
+    assert CONST_LIST_ASYNC == [1, 2, -1, -2, -3, 3, 2]
