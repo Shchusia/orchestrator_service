@@ -4,10 +4,13 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "orch_serv"
-
 authors = [{name = "Denis Shchutkiy", email = "denisshchutskyi@gmail.com"}]
 readme = "README.md"
+requires-python = ">=3.7"
 dynamic = ["version", "description"]
 
 [project.urls]
 Home = "https://github.com/Shchusia/orchestrator_service/"
+
+[dependencies]
+pydantic = "1.9.0"
