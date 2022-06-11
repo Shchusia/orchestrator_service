@@ -16,8 +16,8 @@ class AsyncOrchestrator(Orchestrator):
     override handle function for async mode
     """
 
-    _base_class_for_flow = AsyncFlow  # type: ignore # noqa
-    _base_class_for_target = AsyncBlock  # type: ignore  # noqa
+    _base_class_for_flow = AsyncFlow  # noqa
+    _base_class_for_target = AsyncBlock  # noqa
 
     async def handle(  # type: ignore
         self, message: BaseOrchServMsg, is_force_return: bool = False

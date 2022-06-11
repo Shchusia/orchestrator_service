@@ -90,4 +90,4 @@ class ExampleProcessStrategy(CommandHandlerProcessStrategy):
         return msg
 ```
 
-### [MoreExamples](../../example/example_service/README.md)
+[### [MoreExamples](../../example/example_service/README.md)](README.md)
