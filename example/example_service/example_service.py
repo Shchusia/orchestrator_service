@@ -1,15 +1,10 @@
-from post_processors import (
+from post_processes import (
     FirstAsyncPostProcessHandler,
     FirstPostProcessHandler,
     SecondAsyncPostProcessHandler,
     SecondPostProcessHandler,
 )
-from processors import (
-    FirstAsyncHandler,
-    FirstHandler,
-    SecondAsyncHandler,
-    SecondHandler,
-)
+from processes import FirstAsyncHandler, FirstHandler, SecondAsyncHandler, SecondHandler
 
 from orch_serv import AsyncService, Service, ServiceBlock, ServiceBuilder
 

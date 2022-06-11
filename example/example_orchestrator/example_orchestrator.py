@@ -61,8 +61,17 @@ orchestrator2 = Orchestrator(
     flows_to_ignore=[SecondFlow.__name__],
     blocks_to_ignore=[SecondBlock.__name__],
 )
+
+
+class ExampleOrchestrator(Orchestrator):
+    flows = [FirstFlow, SecondFlow]
+    blocks = [FirstBlock, SecondBlock]
+
+
+orchestrator3 = ExampleOrchestrator()
 print("Flows orchestrator2", orchestrator2.get_list_flows())
 print("Blocks orchestrator2", orchestrator2.get_list_blocks())
+print("Blocks orchestrator3", orchestrator3.get_list_blocks())
 # and mixed
 
 async_orchestrator1 = AsyncOrchestrator(

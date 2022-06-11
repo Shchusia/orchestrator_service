@@ -11,6 +11,7 @@ from typing import Callable, Optional, Type, Union
 from orch_serv.exc import (
     FlowBlockException,
     FlowBuilderException,
+    NotUniqueBlockInFlowError,
     WorkTypeMismatchException,
 )
 from orch_serv.orchestrator.block import AsyncBlock, SyncBlock
@@ -165,7 +166,7 @@ class Flow:
         raise NotImplementedError
 
     @property
-    def _base_class_for_blocks(self) -> Type:
+    def _base_class_for_blocks(self) -> Type[Union[AsyncBlock, SyncBlock]]:
         raise NotImplementedError
 
     @property
@@ -207,6 +208,7 @@ class Flow:
 
     def _validate_data(self):
         current = self.flow_chain
+        list_exists_blocks = list()
         while current:
             if not isinstance(current, self._base_class_for_blocks):
                 raise WorkTypeMismatchException(
@@ -214,6 +216,11 @@ class Flow:
                     obj_class=current.__class__.__name__,
                     is_target=False,
                 )
+            if current.name_block in list_exists_blocks:
+                raise NotUniqueBlockInFlowError(
+                    block_name=current.name_block, flow_name=self.name_flow
+                )
+            list_exists_blocks.append(current.name_block)
             current = current.get_next()
 
     def get_steps(self) -> str:

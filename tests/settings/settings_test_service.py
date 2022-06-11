@@ -200,3 +200,113 @@ msg_to_async_third_handler_with_error = ServiceTestMessage(
     body=dict(with_error=True),
     header=dict(command=ThirdAsyncProcessHandler.target_command),
 )
+
+
+class SwapFirstProcessHandler(CommandHandlerProcessStrategy):
+    target_command = "SwapFirstProcessHandler"
+
+    def process(self, message: BaseOrchServMsg):
+        CONST_LIST_SYNC.append(1)
+        self.set_to_swap_scope("MAIN_KEY", [-1, -2, -3])
+        return message
+
+
+class SwapSecondProcessHandler(CommandHandlerProcessStrategy):
+    target_command = "SwapSecondProcessHandler"
+
+    def process(self, message: BaseOrchServMsg):
+        CONST_LIST_SYNC.append(2)
+        data = self.get_from_swap_scope("MAIN_KEY")
+        if data:
+            CONST_LIST_SYNC.extend(data)
+
+        return message
+
+
+class SwapThirdProcessHandler(CommandHandlerProcessStrategy):
+    target_command = "SwapThirdProcessHandler"
+
+    def process(self, message: BaseOrchServMsg):
+        CONST_LIST_SYNC.append(3)
+        self.del_from_swap_scope("MAIN_KEY")
+        return message
+
+
+msg_to_first_handler_swap = ServiceTestMessage(
+    body=dict(), header=dict(command=SwapFirstProcessHandler.target_command)
+)
+msg_to_second_handler_swap = ServiceTestMessage(
+    body=dict(), header=dict(command=SwapSecondProcessHandler.target_command)
+)
+msg_to_third_handler_swap = ServiceTestMessage(
+    body=dict(), header=dict(command=SwapThirdProcessHandler.target_command)
+)
+
+
+class SwapService(Service):
+    service_commands = ServiceBuilder(
+        ServiceBlock(
+            processor=SwapFirstProcessHandler,
+        ),
+        ServiceBlock(
+            processor=SwapSecondProcessHandler,
+        ),
+        ServiceBlock(
+            processor=SwapThirdProcessHandler,
+        ),
+    )
+
+
+class AsyncSwapFirstProcessHandler(AsyncCommandHandlerProcessStrategy):
+    target_command = "SwapFirstProcessHandler"
+
+    async def process(self, message: BaseOrchServMsg):
+        CONST_LIST_ASYNC.append(1)
+        self.set_to_swap_scope("MAIN_KEY", [-1, -2, -3])
+        return message
+
+
+class AsyncSwapSecondProcessHandler(AsyncCommandHandlerProcessStrategy):
+    target_command = "SwapSecondProcessHandler"
+
+    async def process(self, message: BaseOrchServMsg):
+        CONST_LIST_ASYNC.append(2)
+        data = self.get_from_swap_scope("MAIN_KEY")
+        if data:
+            CONST_LIST_ASYNC.extend(data)
+
+        return message
+
+
+class AsyncSwapThirdProcessHandler(AsyncCommandHandlerProcessStrategy):
+    target_command = "SwapThirdProcessHandler"
+
+    async def process(self, message: BaseOrchServMsg):
+        CONST_LIST_ASYNC.append(3)
+        self.del_from_swap_scope("MAIN_KEY")
+        return message
+
+
+msg_to_first_handler_swap_async = ServiceTestMessage(
+    body=dict(), header=dict(command=AsyncSwapFirstProcessHandler.target_command)
+)
+msg_to_second_handler_swap_async = ServiceTestMessage(
+    body=dict(), header=dict(command=AsyncSwapSecondProcessHandler.target_command)
+)
+msg_to_third_handler_swap_async = ServiceTestMessage(
+    body=dict(), header=dict(command=AsyncSwapThirdProcessHandler.target_command)
+)
+
+
+class AsyncSwapService(AsyncService):
+    service_commands = ServiceBuilder(
+        ServiceBlock(
+            processor=AsyncSwapFirstProcessHandler,
+        ),
+        ServiceBlock(
+            processor=AsyncSwapSecondProcessHandler,
+        ),
+        ServiceBlock(
+            processor=AsyncSwapThirdProcessHandler,
+        ),
+    )

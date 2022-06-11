@@ -134,6 +134,21 @@ class NotFoundDefaultError(OrchestratorException):
         Exception.__init__(self, self.message)
 
 
+class NotUniqueBlockInFlowError(OrchestratorException):
+    """
+    If provided default value but default value not exist in processed data
+    """
+
+    def __init__(self, block_name: str, flow_name: str):
+        self.message = (
+            f"Not unique block {block_name}"
+            f" in flow {flow_name}."
+            f"Check your flow or set flow "
+            f"`variable is_contains_duplicat_blocks` as True"
+        )
+        Exception.__init__(self, self.message)
+
+
 class ServiceException(OrchServError):
     """
     Main exception class exceptions with Service

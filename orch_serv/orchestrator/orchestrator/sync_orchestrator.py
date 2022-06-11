@@ -24,8 +24,8 @@ class Orchestrator:
     Orchestrator class for build service
     """
 
-    _base_class_for_flow = SyncFlow
-    _base_class_for_target = SyncBlock
+    _base_class_for_flow: Type[Union[SyncFlow, AsyncFlow]] = SyncFlow
+    _base_class_for_target: Type[Union[SyncBlock, AsyncBlock]] = SyncBlock
     _default_flow: str = None
     _default_block: str = None
 
@@ -35,6 +35,14 @@ class Orchestrator:
     _targets: Dict[
         str, Union[Type[Union[SyncBlock, AsyncBlock]], Union[SyncBlock, AsyncBlock]]
     ] = dict()
+
+    @property
+    def flows(self) -> Optional[Union[ModuleType, List]]:
+        return None
+
+    @property
+    def blocks(self) -> Optional[Union[ModuleType, List]]:
+        return None
 
     def __init__(
         self,
@@ -56,9 +64,25 @@ class Orchestrator:
                 names_to_ignore=flows_to_ignore,
                 type_data="flow",
             )
+        elif self.flows:
+            self._flows = self._generate_data(  # type: ignore
+                data_to_process=self.flows,
+                type_to_compare=(SyncFlow, AsyncFlow),
+                attribute_to_get="name_flow",
+                names_to_ignore=flows_to_ignore,
+                type_data="flow",
+            )
         if blocks:
             self._targets = self._generate_data(  # type: ignore
                 data_to_process=blocks,
+                type_to_compare=(SyncBlock, AsyncBlock),
+                attribute_to_get="name_block",
+                names_to_ignore=blocks_to_ignore,
+                type_data="block",
+            )
+        elif self.blocks:
+            self._targets = self._generate_data(  # type: ignore
+                data_to_process=self.blocks,
                 type_to_compare=(SyncBlock, AsyncBlock),
                 attribute_to_get="name_block",
                 names_to_ignore=blocks_to_ignore,

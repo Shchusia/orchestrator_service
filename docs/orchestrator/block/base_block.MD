@@ -14,7 +14,9 @@ Base class for handling sync blocks
 ### SubElement(s)
  > ## Function  `pre_handler_function`
  > ```text
- > property for override in subclass
+ > The function that will be executed before the main handler
+ > must return a message if the message is not returned,
+ > then the message will not get into the handler
  > ```
  > 
  > ### Decorator(s)
@@ -22,7 +24,7 @@ Base class for handling sync blocks
  > #### Declared returns: `Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]`
  > ## Function  `post_handler_function`
  > ```text
- > property for override in subclass
+ > function to be executed after the main handler
  > ```
  > 
  > ### Decorator(s)
@@ -117,7 +119,9 @@ Base class for handling async blocks
 ### SubElement(s)
  > ## Function  `pre_handler_function`
  > ```text
- > property for override in subclass
+ > The function that will be executed before the main handler
+ > must return a message if the message is not returned,
+ > then the message will not get into the handler
  > ```
  > 
  > ### Decorator(s)
@@ -125,7 +129,7 @@ Base class for handling async blocks
  > #### Declared returns: `Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]`
  > ## Function  `post_handler_function`
  > ```text
- > property for override in subclass
+ > function to be executed after the main handler
  > ```
  > 
  > ### Decorator(s)

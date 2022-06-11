@@ -224,6 +224,18 @@ class AsyncCommandHandlerPostProcessStrategy(CommandHandler, ABC):
         raise NotImplementedError
 
 
+class DefaultPostProcessStrategy(CommandHandlerPostProcessStrategy):
+    def post_process(self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None):
+        pass
+
+
+class AsyncDefaultPostProcessStrategy(AsyncCommandHandlerPostProcessStrategy):
+    async def post_process(
+        self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None
+    ):
+        pass
+
+
 class ServiceCommand(BaseModel):
     processor: Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy]
     post_processor: Union[
@@ -469,9 +481,15 @@ class ServiceBuilder:
         logger = logger or DEFAULT_LOGGER
         dict_commands = dict()  # type: Dict[str, ServiceCommand]
 
-        if self.default_post_processor:
-            self.default_post_processor.set_logger(logger)
-            self.default_post_processor.set_service_instance(service_instance)
+        if not self.default_post_processor:
+            if service_instance._base_process_class == CommandHandlerProcessStrategy:
+                self.default_post_processor = DefaultPostProcessStrategy()
+            else:
+                self.default_post_processor = AsyncDefaultPostProcessStrategy()
+
+        self.default_post_processor.set_logger(logger)
+        self.default_post_processor.set_service_instance(service_instance)
+
         for block in self._list_blocks:
             processor = block.processor
             post_processor = block.post_processor
@@ -505,8 +523,8 @@ class Service(ABC):
     _service_commands: ServiceBuilder = None
     _dict_handlers: Dict[str, ServiceCommand] = dict()
     _default_command: str = None
-    _base_processor_class = CommandHandlerProcessStrategy
-    _base_post_processor_class = CommandHandlerPostProcessStrategy
+    _base_process_class = CommandHandlerProcessStrategy
+    _base_post_process_class = CommandHandlerPostProcessStrategy
 
     def __init__(
         self,
@@ -553,32 +571,32 @@ class Service(ABC):
         self.validate_service_builder(service_builder)
 
     def _validate_data(self):
-        if not issubclass(self._base_processor_class, CommandHandler):
+        if not issubclass(self._base_process_class, CommandHandler):
             raise TypeError(
                 f"Incorrect type `_base_processor_class`. "
                 f"Parent of variable `_base_processor_class` must be `CommandHandler`"
-                f" and not {self._base_processor_class.__base__}. "
+                f" and not {self._base_process_class.__base__}. "
                 f"Please don`t override protected variable."
             )
-        if not issubclass(self._base_post_processor_class, CommandHandler):
+        if not issubclass(self._base_post_process_class, CommandHandler):
             raise TypeError(
                 f"Incorrect type `_base_post_processor_class`."
                 f" Parent of variable `_base_post_processor_class` "
                 f"must be `CommandHandler`"
-                f" and not {self._base_post_processor_class.__base__}. "
+                f" and not {self._base_post_process_class.__base__}. "
                 f"Please don`t override protected variable."
             )
         for command_name, command in self._dict_handlers.items():
-            if not isinstance(command.processor, self._base_processor_class):
+            if not isinstance(command.processor, self._base_process_class):
                 raise TypeError(
                     f"Incorrect type `processor` of command `{command_name}`."
-                    f" Must be a `{self._base_processor_class.__name__}` "
+                    f" Must be a `{self._base_process_class.__name__}` "
                     f"and not `{command.processor.__class__.__base__.__name__}`"
                 )
-            if not isinstance(command.post_processor, self._base_post_processor_class):
+            if not isinstance(command.post_processor, self._base_post_process_class):
                 raise TypeError(
                     f"Incorrect type `post_processor` of command `{command_name}`. "
-                    f"Must be a `{self._base_post_processor_class.__name__}` "
+                    f"Must be a `{self._base_post_process_class.__name__}` "
                     f"and not `{command.post_processor.__class__.__base__.__name__}`"
                 )
 
@@ -643,8 +661,8 @@ class Service(ABC):
 class AsyncService(Service, ABC):
     """ """
 
-    _base_processor_class = AsyncCommandHandlerProcessStrategy  # type: ignore # noqa
-    _base_post_processor_class = AsyncCommandHandlerPostProcessStrategy  # type: ignore # noqa
+    _base_process_class = AsyncCommandHandlerProcessStrategy  # type: ignore # noqa
+    _base_post_process_class = AsyncCommandHandlerPostProcessStrategy  # type: ignore # noqa
 
     async def handle(  # type: ignore # noqa
         self, message: BaseOrchServMsg, is_force_return: bool = False

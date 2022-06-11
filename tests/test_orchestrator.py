@@ -109,6 +109,13 @@ def test_init_orchestrator():
     with pytest.raises(NotFoundDefaultError):
         Orchestrator(flows=settings_correct_orchestrator_flows, default_block="test")
 
+    class TestOrchestrator(Orchestrator):
+        flows = settings_correct_orchestrator_flows
+
+    TestOrchestrator()
+    with pytest.raises(NotFoundDefaultError):
+        TestOrchestrator(default_block="test")
+
 
 def test_init_async_orchestrator():
     """
