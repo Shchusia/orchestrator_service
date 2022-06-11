@@ -199,3 +199,115 @@ def test_msg_source():
     val = CorrectMsg(body=body_data(), header=dict())
     val.set_source(source=test_source)
     assert val.get_source() == test_source
+
+
+def test_get_flow() -> None:
+    class MyTypeInvalid(BaseOrchServMsg):
+        """
+        Test class
+        """
+
+        body: BodyModel
+        header: HeaderModel
+
+    val = MyTypeInvalid(header=header_data(), body=body_data())
+    with pytest.raises(NotImplementedError):
+        val.get_flow()
+
+    class HeaderModelWithSource(BaseModel):
+        """
+        test class
+        """
+
+        source: Optional[str]
+        flow: Optional[str]
+
+    class CorrectMsg(BaseOrchServMsg):
+        """
+        test class
+        """
+
+        body: BodyModel
+        header: HeaderModelWithSource
+
+        def get_flow(self) -> str:
+            return self.header.flow
+
+    test_flow = "test_flow"
+    val = CorrectMsg(body=body_data(), header=dict(flow=test_flow))
+
+    assert val.get_flow() == test_flow
+
+
+def test_get_target() -> None:
+    class MyTypeInvalid(BaseOrchServMsg):
+        """
+        Test class
+        """
+
+        body: BodyModel
+        header: HeaderModel
+
+    val = MyTypeInvalid(header=header_data(), body=body_data())
+    with pytest.raises(NotImplementedError):
+        val.get_target()
+
+    class HeaderModelWithSource(BaseModel):
+        """
+        test class
+        """
+
+        target: Optional[str]
+
+    class CorrectMsg(BaseOrchServMsg):
+        """
+        test class
+        """
+
+        body: BodyModel
+        header: HeaderModelWithSource
+
+        def get_target(self) -> str:
+            return self.header.target
+
+    test_target = "test_target"
+    val = CorrectMsg(body=body_data(), header=dict(target=test_target))
+
+    assert val.get_target() == test_target
+
+
+def test_get_command() -> None:
+    class MyTypeInvalid(BaseOrchServMsg):
+        """
+        Test class
+        """
+
+        body: BodyModel
+        header: HeaderModel
+
+    val = MyTypeInvalid(header=header_data(), body=body_data())
+    with pytest.raises(NotImplementedError):
+        val.get_command()
+
+    class HeaderModelWithSource(BaseModel):
+        """
+        test class
+        """
+
+        command: Optional[str]
+
+    class CorrectMsg(BaseOrchServMsg):
+        """
+        test class
+        """
+
+        body: BodyModel
+        header: HeaderModelWithSource
+
+        def get_command(self) -> str:
+            return self.header.command
+
+    test_command = "test_command"
+    val = CorrectMsg(body=body_data(), header=dict(command=test_command))
+
+    assert val.get_command() == test_command
