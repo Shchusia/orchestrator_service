@@ -7,7 +7,7 @@ from orch_serv.msg import BaseOrchServMsg
 from orch_serv.orchestrator.block import AsyncBlock
 from orch_serv.orchestrator.flow import AsyncFlow
 
-from .orchestrator import Orchestrator
+from .sync_orchestrator import Orchestrator
 
 
 class AsyncOrchestrator(Orchestrator):
