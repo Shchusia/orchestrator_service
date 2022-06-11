@@ -49,7 +49,7 @@ setup(
     version=get_version(),
     description="Library for quick build service and interaction management",
     author="Denis Shchutkiy",
-    long_description=open("README.md").read(),
+    long_description=open("README_PYPI.md").read(),
     long_description_content_type="text/markdown",
     author_email="denisshchutskyi@gmail.com",
     url="https://github.com/Shchusia/orchestrator_service/",
