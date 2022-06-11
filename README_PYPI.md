@@ -26,16 +26,13 @@ Task | Service execution sequence
 
 For centralized management of the interaction of services, we offer you an orchestrator - the service contains valid block connections.
 
-![file not found](./materials/solution_application_diagram.png "solution_application_diagram")
 
 What you need in the orchestrator service
 - create blocks that know how to interact with the services they belong to
 - create accessible flows from these blocks (for different tasks there can be your own flow - the main thing is to contain unique flow names)
 - define a message for the interaction of services so that they have a single standard and override key methods
 - initialize the orchestrator and use
-- [detailed](./orch_serv/orchestrator/README.md)
 
 What you need to use the service:
 - define a message for the interaction of services so that they have a single standard and override key methods
 - define the commands in the service which it will execute and what to do after the main task is completed (divided to separate the logic)
-- [detailed](./orch_serv/service/README.md)

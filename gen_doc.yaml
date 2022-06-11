@@ -1,0 +1,43 @@
+PROJECT:
+  # Project name
+  title: "orch_serv"
+  # Project description
+  description: ""
+  # Repository URL
+  repository: "https://github.com/Shchusia/orchestrator_service"
+  # Project version
+  release: "0.1.0"
+AUTHOR:
+  # Author full info
+  author: "Denis Shchutskyi"
+  # How to contact the author
+  # List of str:
+  # Author_contacts:
+  #   - "email: email@example.com"
+  #   - "telegram: @TelegramNick"
+  #   - "etc"
+  author_contacts:
+    - "email: denisshchutskyi@gmail.com"
+    - "telegram: [DenisShchutskyi](https://t.me/DenisShchutskyi)"
+OPTIONS:
+  # Available languages [py]
+  language: "py"
+  # If not specified, the documentation will be saved where the command was called from
+  path_to_root_folder: "./orch_serv"
+  extract_with_same_hierarchy: True
+  overwrite_if_file_exists: True
+  # If not specified, the documentation will be saved where the command was called from
+  path_to_save: "./docs"
+  # File name to save the documentation
+  # Used if argument: `extract_with_same_hierarchy: False`
+  file_to_save: ""
+  # Allowed mods [md]
+  save_mode: "md"
+  # Folder names which will be ignored during the documentation generation
+  # Attention! Each file with the given name will be ignored
+  additional_files_to_ignore: []
+  # Folder names to ignore during documentation generation
+  # Attention! Each folder with the given name will be ignored
+  # In case there are folders with the same names but something shouldn't be documented,
+  # you better indicate the full path from the root project
+  additional_folders_to_ignore: []
