@@ -72,13 +72,21 @@ service.handle(msg)
 
 Example:
 ```python
+
+
 class ExampleProcessStrategy(CommandHandlerProcessStrategy):
     target_command = "first_command"
 
     def process(
         self, msg: BaseOrchServMsg
     ) -> Union[Tuple[BaseOrchServMsg, Any], BaseOrchServMsg]:
-        # do something
+        test_value = "ANY OBJECT"
+        self.set_to_swap_scope("DEFINING_NAME", "ANY OBJECT")
+        value_from_swap = self.get_from_swap_scope("DEFINING_NAME") 
+        assert value_from_swap == test_value
+        self.del_from_swap_scope("DEFINING_NAME")
+        value_from_swap = self.get_from_swap_scope("DEFINING_NAME")
+        assert value_from_swap is None
         return msg
 ```
 
