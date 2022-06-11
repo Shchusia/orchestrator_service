@@ -16,6 +16,7 @@ from tests.settings.settings_test_block import (
     MSG_TO_PROCESS_IN_SECOND_BLOCK,
 )
 from tests.settings.settings_test_flow import (
+    CorrectTestFlowWithDublicatBlocks,
     IncorrectTestAsyncFlowUseSyncBlock,
     IncorrectTestFlowUseAsyncBlock,
     IncorrectTestFlowWithIncorrectTypeSteps,
@@ -54,6 +55,9 @@ def test_build_flow():
         IncorrectTestFlowUseAsyncBlock()
     with pytest.raises(WorkTypeMismatchException):
         IncorrectTestAsyncFlowUseSyncBlock()
+
+    ctf = CorrectTestFlowWithDublicatBlocks()
+    print(ctf.get_steps())
 
 
 def test_flow_handling():

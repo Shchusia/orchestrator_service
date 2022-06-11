@@ -122,6 +122,16 @@ class SecondTestAsyncFlow(AsyncFlow):
         return message
 
 
+class CorrectTestFlowWithDublicatBlocks(SyncFlow):
+    name_flow = "test_flow_with_double_blocks "
+
+    steps_flow = FlowBuilder(
+        FlowBlock(FirstBlock),
+        FlowBlock(FirstBlock),
+    )
+    is_contains_duplicat_blocks = True
+
+
 class IncorrectTestFlowWithoutNameFlow(SyncFlow):
     steps_flow = FlowBuilder(
         FlowBlock(FirstBlock),

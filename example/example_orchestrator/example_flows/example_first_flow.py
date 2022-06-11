@@ -22,7 +22,7 @@ async def other_async_method(message: BaseOrchServMsg) -> Optional[BaseOrchServM
 
 class FirstFlow(SyncFlow):
     name_flow = "first_flow"
-
+    is_contains_duplicat_blocks = True
     steps_flow = FlowBuilder(
         FlowBlock(
             FirstBlock,
@@ -33,6 +33,11 @@ class FirstFlow(SyncFlow):
             SecondBlock,
             pre_handler_function=other_method,
             post_handler_function="static_flow_method",
+        ),
+        FlowBlock(
+            FirstBlock,
+            pre_handler_function="static_flow_method",
+            post_handler_function=other_method,
         ),
     )
 

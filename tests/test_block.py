@@ -2,9 +2,12 @@
 Tests for block
 """
 from copy import deepcopy
+from typing import Optional
 
 import pytest
 
+from orch_serv import BaseOrchServMsg
+from orch_serv.orchestrator.block.base_block import AsyncBaseBlock, SyncBaseBlock
 from tests.settings.settings_test_block import (
     CONST_LIST_ASYNC,
     CONST_LIST_SYNC,
@@ -68,6 +71,43 @@ def test_block():
     assert block_f.get_next() == block_s
     assert block_s.get_next() is None
 
+    CONST_LIST_SYNC.clear()
+    assert block_f.name_block == FirstBlock.name_block
+    assert block_s.name_block == SecondBlock.name_block
+
+    block_f.process(deepcopy(MSG_TO_PROCESS_IN_FIRST_BLOCK))
+    assert CONST_LIST_SYNC == [1]
+    block_s.process(deepcopy(MSG_TO_PROCESS_IN_FIRST_BLOCK))
+    assert CONST_LIST_SYNC == [1, 2]
+
+    class TestClass(SyncBaseBlock):
+        pass
+
+    class TestSecondClass(SyncBaseBlock):
+        def set_next(self, handler: SyncBaseBlock) -> SyncBaseBlock:
+            pass
+
+        def get_next(self) -> SyncBaseBlock:
+            pass
+
+        def get_list_flow(self) -> str:
+            pass
+
+        def handle(self, message: BaseOrchServMsg) -> None:
+            pass
+
+        def process(self, message: BaseOrchServMsg) -> Optional[BaseOrchServMsg]:
+            pass
+
+    with pytest.raises(TypeError):
+        TestClass()
+    with pytest.raises(NotImplementedError):
+        TestSecondClass().name_block
+    with pytest.raises(NotImplementedError):
+        TestSecondClass().pre_handler_function
+    with pytest.raises(NotImplementedError):
+        TestSecondClass().post_handler_function
+
 
 @pytest.mark.asyncio
 async def test_async_block():
@@ -114,3 +154,37 @@ async def test_async_block():
 
     assert block_f.get_next() == block_s
     assert block_s.get_next() is None
+
+    CONST_LIST_ASYNC.clear()
+    await block_f.process(deepcopy(MSG_TO_PROCESS_IN_FIRST_BLOCK))
+    assert CONST_LIST_ASYNC == [1]
+    await block_s.process(deepcopy(MSG_TO_PROCESS_IN_FIRST_BLOCK))
+    assert CONST_LIST_ASYNC == [1, 2]
+
+    class TestClass(AsyncBaseBlock):
+        pass
+
+    class TestSecondClass(AsyncBaseBlock):
+        async def set_next(self, handler: AsyncBaseBlock) -> AsyncBaseBlock:  # type: ignore  # noqa
+            pass
+
+        async def get_next(self) -> AsyncBaseBlock:  # type: ignore
+            pass
+
+        async def get_list_flow(self) -> str:  # type: ignore
+            pass
+
+        async def handle(self, message: BaseOrchServMsg) -> None:
+            pass
+
+        async def process(self, message: BaseOrchServMsg) -> Optional[BaseOrchServMsg]:
+            pass
+
+    with pytest.raises(TypeError):
+        TestClass()
+    with pytest.raises(NotImplementedError):
+        TestSecondClass().name_block
+    with pytest.raises(NotImplementedError):
+        TestSecondClass().pre_handler_function
+    with pytest.raises(NotImplementedError):
+        TestSecondClass().post_handler_function

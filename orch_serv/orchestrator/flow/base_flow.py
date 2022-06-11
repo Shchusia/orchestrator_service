@@ -77,10 +77,13 @@ class FlowBlock:
         else:
             return function_to_get
 
-    def init_block(self, instance_main: Flow) -> Union[SyncBlock, AsyncBlock]:
+    def init_block(
+        self, instance_main: Flow, step_number: int = 0
+    ) -> Union[SyncBlock, AsyncBlock]:
         """
         Method init instance subclass MainBlock
         :param instance_main:
+        :param step_number:
         :return: object subclass MainBlock
         """
         if not isinstance(instance_main, Flow):
@@ -107,6 +110,8 @@ class FlowBlock:
             )
             self.obj_block.logger = instance_main.logger
             result = self.obj_block
+        if instance_main.is_contains_duplicat_blocks:
+            result.name_block = result.name_block + f"_{step_number}"  # type: ignore
         return result
 
 
@@ -135,10 +140,10 @@ class FlowBuilder:
         :return:
         """
 
-        flow = self.steps[0].init_block(instance_main)
+        flow = self.steps[0].init_block(instance_main, 0)
         cur_step = flow
-        for step in self.steps[1:]:
-            cur_step = cur_step.set_next(step.init_block(instance_main))
+        for i, step in enumerate(self.steps[1:]):
+            cur_step = cur_step.set_next(step.init_block(instance_main, i + 1))
         return flow
 
 
@@ -148,6 +153,7 @@ class Flow:
     """
 
     flow_chain: Union[SyncBlock, AsyncBlock] = None
+    is_contains_duplicat_blocks: bool = False
 
     @property
     def name_flow(self) -> str:
