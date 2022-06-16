@@ -19,7 +19,7 @@ from orch_serv.orchestrator.flow import AsyncFlow, SyncFlow
 from orch_serv.settings import DEFAULT_LOGGER
 
 
-class Orchestrator:
+class SyncOrchestrator:
     """
     Orchestrator class for build service
     """
@@ -126,6 +126,7 @@ class Orchestrator:
         return list allowed blocks
         :return:
         """
+        print(self._targets)
         return list(self._targets.keys())
 
     def _validate_data(self):
@@ -283,7 +284,7 @@ class Orchestrator:
                         target = self._targets.get(self._default_block)
                     if isinstance(target, type):
                         target = target(logger=self.logger)
-                        self._targets[name_target] = target
+                        self._targets[target.name_block] = target
                     try:
                         target.process(message)
                     except Exception as exc:
@@ -313,7 +314,7 @@ class Orchestrator:
                         flow = self._flows.get(self._default_flow)
                     if isinstance(flow, type):
                         flow = flow(logger=self.logger)
-                        self._flows[name_flow] = flow
+                        self._flows[flow.name_flow] = flow
                     try:
                         flow.to_go_with_the_flow(message)
                     except Exception as exc:

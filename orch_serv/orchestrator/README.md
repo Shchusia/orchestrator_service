@@ -52,23 +52,23 @@ class ExampleFlow(SyncFlow):
 
 #### Create Orchestrator
 
-
 ```python
-from orch_serv import Orchestrator
+from orch_serv import SyncOrchestrator
 
-class ExampleOrchestrator(Orchestrator):
-    flows=[ExampleFlow]
-    blocks=[ExampleBlock]
+
+class ExampleOrchestrator(SyncOrchestrator):
+    flows = [ExampleFlow]
+    blocks = [ExampleBlock]
 ```
 
 #### Use orchestrator
 
 ```python
-from orch_serv import Orchestrator
+from orch_serv import SyncOrchestrator
 
 msg: BaseOrchServMsg
 orchestrator = ExampleOrchestrator()
-orchestrator_alternative = Orchestrator(
+orchestrator_alternative = SyncOrchestrator(
     flows=[ExampleFlow],
     blocks=[ExampleBlock])
 orchestrator.handle(msg)

@@ -6,7 +6,7 @@ import types
 from abc import ABC
 from copy import deepcopy
 from logging import Logger
-from typing import Awaitable, Callable, Optional
+from typing import Awaitable, Callable, Optional, Type, Union
 
 from orch_serv.exc import FlowException
 from orch_serv.msg import BaseOrchServMsg
@@ -123,12 +123,22 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         self.pre_handler_function = pre_handler_function  # type: ignore # noqa
         self.post_handler_function = post_handler_function  # type: ignore # noqa
 
-    def set_next(self, handler: AsyncBaseBlock) -> AsyncBaseBlock:
+    def set_next(
+        self, handler: Union[AsyncBaseBlock, Type[AsyncBaseBlock]]
+    ) -> AsyncBaseBlock:
         """
         Save Next handler after this handler
-        :param handler:
-        :return: Optional[BlockHandler, None]
+        :param AsyncBaseBlock handler:
+        :return: AsyncBaseBlock
+        :raise Exception: some exception if error in time init handler if
+         handler provided as type
+        :raise TypeError: if handler not is instance of type SyncBaseBlock
         """
+        if isinstance(handler, type):
+            try:
+                handler = handler()
+            except Exception as exc:
+                raise exc
         if not isinstance(handler, AsyncBaseBlock):
             raise TypeError("Incorrect type for next handler")
         self._next_handler = handler
