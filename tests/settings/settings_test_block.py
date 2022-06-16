@@ -1,8 +1,9 @@
-from typing import Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel
 
 from orch_serv import AsyncBlock, BaseOrchServMsg, SyncBlock
+from orch_serv.exc import OrchServError
 
 
 class BodyModel(BaseModel):
@@ -91,3 +92,17 @@ async def async_tst_method_with_correct_processing(msg: BaseOrchServMsg):
 async def async_tst_method_with_incorrect_processing(msg: BaseOrchServMsg):
     CONST_LIST_ASYNC.append(-2)
     return None
+
+
+class OtherClassForBlocks:
+    pass
+
+
+class OtherClassForBlocksWithErrorInTimeInit:
+    def __init__(self, some_argument: Any):
+        self.some_argument = some_argument
+
+
+class OtherClassForBlocksWithErrorInTimeInitWithoutArguments:
+    def __init__(self):
+        raise OrchServError

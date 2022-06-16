@@ -9,9 +9,9 @@ from .orchestrator import (
     AsyncOrchestrator,
     FlowBlock,
     FlowBuilder,
-    Orchestrator,
     SyncBlock,
     SyncFlow,
+    SyncOrchestrator,
 )
 from .service import (
     AsyncCommandHandlerPostProcessStrategy,
@@ -33,7 +33,7 @@ __all__ = [
     "SyncFlow",
     "AsyncFlow",
     "AsyncOrchestrator",
-    "Orchestrator",
+    "SyncOrchestrator",
     "FlowBlock",
     "FlowBuilder",
     "AsyncCommandHandlerPostProcessStrategy",

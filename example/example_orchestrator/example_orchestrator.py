@@ -22,7 +22,7 @@ from example_flows import (
 )
 from pydantic import BaseModel
 
-from orch_serv import AsyncOrchestrator, BaseOrchServMsg, Orchestrator
+from orch_serv import AsyncOrchestrator, BaseOrchServMsg, SyncOrchestrator
 
 
 class BodyModel(BaseModel):
@@ -52,8 +52,8 @@ class ExampleMessageModel(BaseOrchServMsg):
         return self.header.flow
 
 
-orchestrator1 = Orchestrator(flows=importer_sync_flows, blocks=importer_sync_block)
-orchestrator2 = Orchestrator(
+orchestrator1 = SyncOrchestrator(flows=importer_sync_flows, blocks=importer_sync_block)
+orchestrator2 = SyncOrchestrator(
     flows=[FirstFlow, SecondFlow],
     blocks=[FirstBlock, SecondBlock],
     default_flow=FirstFlow.name_flow,
@@ -63,7 +63,7 @@ orchestrator2 = Orchestrator(
 )
 
 
-class ExampleOrchestrator(Orchestrator):
+class ExampleOrchestrator(SyncOrchestrator):
     flows = [FirstFlow, SecondFlow]
     blocks = [FirstBlock, SecondBlock]
 

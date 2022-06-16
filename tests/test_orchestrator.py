@@ -1,11 +1,12 @@
 """
 Test Orchestrator
 """
+import inspect
 from copy import deepcopy
 
 import pytest
 
-from orch_serv import AsyncOrchestrator, Orchestrator
+from orch_serv import AsyncOrchestrator, SyncOrchestrator
 from orch_serv.exc import (
     NoDateException,
     NotFoundDefaultError,
@@ -52,74 +53,167 @@ def test_init_orchestrator():
     :return:
     """
     with pytest.raises(NoDateException):
+        SyncOrchestrator()
+    with pytest.raises(UniqueNameException):
+        SyncOrchestrator(flows=settings_incorrect_flows_not_unique_names)
+    with pytest.raises(UniqueNameException):
+
+        class Orchestrator(SyncOrchestrator):
+            flows = settings_incorrect_flows_not_unique_names
+
         Orchestrator()
     with pytest.raises(UniqueNameException):
-        Orchestrator(flows=settings_incorrect_flows_not_unique_names)
+        SyncOrchestrator(flows=settings_incorrect_flows_not_unique_names_option_2)
     with pytest.raises(UniqueNameException):
-        Orchestrator(flows=settings_incorrect_flows_not_unique_names_option_2)
+
+        class Orchestrator(SyncOrchestrator):
+            flows = settings_incorrect_flows_not_unique_names_option_2
+
+        Orchestrator()
     with pytest.raises(UniqueNameException):
-        Orchestrator(
+        SyncOrchestrator(
             flows=[
                 settings_incorrect_flows_not_unique_names.flow,
                 settings_incorrect_flows_not_unique_names.flow2,
             ]
         )
+    with pytest.raises(UniqueNameException):
+
+        class Orchestrator(SyncOrchestrator):
+            flows = [
+                settings_incorrect_flows_not_unique_names.flow,
+                settings_incorrect_flows_not_unique_names.flow2,
+            ]
+
+        Orchestrator()
     with pytest.raises(NoDateException):
-        Orchestrator(
+        SyncOrchestrator(
             flows=[settings_incorrect_flows_not_unique_names.flow],
             flows_to_ignore=(
                 settings_incorrect_flows_not_unique_names.names_file_to_ignore
             ),
         )
-    with pytest.raises(UniqueNameException):
-        Orchestrator(blocks=settings_incorrect_blocks_not_unique_names)
-    with pytest.raises(UniqueNameException):
+    with pytest.raises(NoDateException):
+
+        class Orchestrator(SyncOrchestrator):
+            flows = [settings_incorrect_flows_not_unique_names.flow]
+
         Orchestrator(
-            blocks=[
+            flows_to_ignore=(
+                settings_incorrect_flows_not_unique_names.names_file_to_ignore
+            ),
+        )
+    with pytest.raises(UniqueNameException):
+        SyncOrchestrator(blocks=settings_incorrect_blocks_not_unique_names)
+    with pytest.raises(UniqueNameException):
+
+        class Orchestrator(SyncOrchestrator):
+            blocks = settings_incorrect_blocks_not_unique_names
+
+        Orchestrator()
+
+    with pytest.raises(UniqueNameException):
+
+        class Orchestrator(SyncOrchestrator):
+            blocks = [
                 settings_incorrect_blocks_not_unique_names.block,
                 settings_incorrect_blocks_not_unique_names.block2,
             ]
-        )
+
+        Orchestrator()
     with pytest.raises(NoDateException):
-        Orchestrator(
+        SyncOrchestrator(
             blocks=[settings_incorrect_blocks_not_unique_names.block],
             blocks_to_ignore=(
                 settings_incorrect_blocks_not_unique_names.names_file_to_ignore
             ),
         )
-    with pytest.raises(TypeError):
-        Orchestrator(flows=settings_incorrect_blocks_not_unique_names)
-    with pytest.raises(TypeError):
-        Orchestrator(blocks=settings_incorrect_flows_not_unique_names)
-    with pytest.raises(WorkTypeMismatchException):
+    with pytest.raises(NoDateException):
+
+        class Orchestrator(SyncOrchestrator):
+            blocks = [settings_incorrect_blocks_not_unique_names.block]
+
         Orchestrator(
+            blocks_to_ignore=(
+                settings_incorrect_blocks_not_unique_names.names_file_to_ignore
+            ),
+        )
+    with pytest.raises(TypeError):
+        SyncOrchestrator(flows=settings_incorrect_blocks_not_unique_names)
+    with pytest.raises(TypeError):
+
+        class Orchestrator(SyncOrchestrator):
+            flows = settings_incorrect_blocks_not_unique_names
+
+        Orchestrator()
+    with pytest.raises(TypeError):
+        SyncOrchestrator(blocks=settings_incorrect_flows_not_unique_names)
+    with pytest.raises(TypeError):
+
+        class Orchestrator(SyncOrchestrator):
+            blocks = settings_incorrect_flows_not_unique_names
+
+        Orchestrator()
+    with pytest.raises(WorkTypeMismatchException):
+        SyncOrchestrator(
             flows=[settings_incorrect_async_flows_not_unique_names.flow],
         )
     with pytest.raises(WorkTypeMismatchException):
-        Orchestrator(
+
+        class Orchestrator(SyncOrchestrator):
+            flows = [settings_incorrect_async_flows_not_unique_names.flow]
+
+        Orchestrator()
+
+    with pytest.raises(WorkTypeMismatchException):
+        SyncOrchestrator(
             blocks=[settings_incorrect_async_blocks_not_unique_names.block],
         )
 
-    with pytest.raises(NotFoundDefaultError):
-        Orchestrator(blocks=settings_correct_orchestrator_blocks, default_block="test")
-    with pytest.raises(NotFoundDefaultError):
-        Orchestrator(flows=settings_correct_orchestrator_flows, default_flow="test")
-    with pytest.raises(NotFoundDefaultError):
-        Orchestrator(blocks=settings_correct_orchestrator_blocks, default_flow="test")
-    with pytest.raises(NotFoundDefaultError):
-        Orchestrator(flows=settings_correct_orchestrator_flows, default_block="test")
+    with pytest.raises(WorkTypeMismatchException):
 
-    class TestOrchestrator(Orchestrator):
-        flows = settings_correct_orchestrator_flows
+        class Orchestrator(SyncOrchestrator):
+            blocks = [settings_incorrect_async_blocks_not_unique_names.block]
 
-    TestOrchestrator()
+        Orchestrator()
+
     with pytest.raises(NotFoundDefaultError):
-        TestOrchestrator(default_block="test")
+        SyncOrchestrator(
+            blocks=settings_correct_orchestrator_blocks, default_block="test"
+        )
+    with pytest.raises(NotFoundDefaultError):
+
+        class Orchestrator(SyncOrchestrator):
+            blocks = settings_correct_orchestrator_blocks
+
+        Orchestrator(default_block="test")
+    with pytest.raises(NotFoundDefaultError):
+        SyncOrchestrator(flows=settings_correct_orchestrator_flows, default_flow="test")
+    with pytest.raises(NotFoundDefaultError):
+
+        class Orchestrator(SyncOrchestrator):
+            flows = settings_correct_orchestrator_flows
+
+        Orchestrator(default_flow="test")
+    with pytest.raises(NotFoundDefaultError):
+        SyncOrchestrator(
+            blocks=settings_correct_orchestrator_blocks, default_flow="test"
+        )
+    with pytest.raises(NotFoundDefaultError):
+        SyncOrchestrator(
+            blocks=settings_correct_orchestrator_blocks, default_flow="test"
+        )
+    with pytest.raises(NotFoundDefaultError):
+
+        class Orchestrator(SyncOrchestrator):
+            flows = settings_correct_orchestrator_flows
+
+        Orchestrator(default_block="test")
 
 
 def test_init_async_orchestrator():
     """
-    Test setup orchestrator
+    Test setup async orchestrator
     :return:
     """
     with pytest.raises(NoDateException):
@@ -185,11 +279,123 @@ def test_init_async_orchestrator():
         AsyncOrchestrator(
             flows=settings_correct_orchestrator_async_flows, default_block="test"
         )
+    with pytest.raises(NoDateException):
+
+        class Orchestrator(AsyncOrchestrator):
+            pass
+
+        Orchestrator()
+    with pytest.raises(UniqueNameException):
+
+        class Orchestrator(AsyncOrchestrator):
+            flows = settings_incorrect_async_flows_not_unique_names
+
+        Orchestrator()
+
+    with pytest.raises(UniqueNameException):
+
+        class Orchestrator(AsyncOrchestrator):
+            flows = [
+                settings_incorrect_async_flows_not_unique_names.flow,
+                settings_incorrect_async_flows_not_unique_names.flow2,
+            ]
+
+        Orchestrator()
+
+    with pytest.raises(NoDateException):
+
+        class Orchestrator(AsyncOrchestrator):
+            flows = [settings_incorrect_async_flows_not_unique_names.flow]
+
+        Orchestrator(
+            flows_to_ignore=(
+                settings_incorrect_async_flows_not_unique_names.names_file_to_ignore
+            ),
+        )
+    with pytest.raises(UniqueNameException):
+
+        class Orchestrator(AsyncOrchestrator):
+            blocks = settings_incorrect_async_blocks_not_unique_names
+
+        Orchestrator()
+    with pytest.raises(UniqueNameException):
+
+        class Orchestrator(AsyncOrchestrator):
+            blocks = [
+                settings_incorrect_async_blocks_not_unique_names.block,
+                settings_incorrect_async_blocks_not_unique_names.block2,
+            ]
+
+        Orchestrator()
+
+    with pytest.raises(NoDateException):
+
+        class Orchestrator(AsyncOrchestrator):
+            blocks = [settings_incorrect_async_blocks_not_unique_names.block]
+
+        Orchestrator(
+            blocks_to_ignore=(
+                settings_incorrect_async_blocks_not_unique_names.names_file_to_ignore
+            ),
+        )
+    with pytest.raises(TypeError):
+
+        class Orchestrator(AsyncOrchestrator):
+            flows = settings_incorrect_async_blocks_not_unique_names
+
+        Orchestrator()
+    with pytest.raises(TypeError):
+
+        class Orchestrator(AsyncOrchestrator):
+            blocks = settings_incorrect_async_flows_not_unique_names
+
+        Orchestrator()
+    with pytest.raises(WorkTypeMismatchException):
+
+        class Orchestrator(AsyncOrchestrator):
+            flows = [settings_incorrect_flows_not_unique_names.flow]
+
+        Orchestrator()
+    with pytest.raises(WorkTypeMismatchException):
+
+        class Orchestrator(AsyncOrchestrator):
+            blocks = [settings_incorrect_blocks_not_unique_names.block]
+
+        Orchestrator()
+
+    with pytest.raises(NotFoundDefaultError):
+
+        class Orchestrator(AsyncOrchestrator):
+            blocks = settings_correct_orchestrator_async_blocks
+
+        Orchestrator(default_block="test")
+    with pytest.raises(NotFoundDefaultError):
+
+        class Orchestrator(AsyncOrchestrator):
+            flows = settings_correct_orchestrator_async_flows
+
+        Orchestrator(default_flow="test")
+    with pytest.raises(NotFoundDefaultError):
+
+        class Orchestrator(AsyncOrchestrator):
+            blocks = settings_correct_orchestrator_async_blocks
+
+        Orchestrator(default_flow="test")
+    with pytest.raises(NotFoundDefaultError):
+
+        class Orchestrator(AsyncOrchestrator):
+            flows = settings_correct_orchestrator_async_flows
+
+        Orchestrator(default_block="test")
 
 
 def test_orchestrator_handler():
+    """
+    Test orchestrator handling msgs
+    :return:
+    """
     CONST_LIST_SYNC.clear()
-    orchestrator = Orchestrator(
+    orchestrator = SyncOrchestrator(
         flows=settings_correct_orchestrator_flows,
         blocks=settings_correct_orchestrator_blocks,
     )
@@ -234,7 +440,7 @@ def test_orchestrator_handler():
     assert res == INCORRECT_MSG_SECOND_FLOW_SECOND_BLOCK2
     assert CONST_LIST_SYNC == []
 
-    orchestrator = Orchestrator(
+    orchestrator = SyncOrchestrator(
         flows=settings_correct_orchestrator_flows,
         blocks=settings_correct_orchestrator_blocks,
         default_block=settings_correct_orchestrator_blocks.FirstBlock.name_block,
@@ -249,10 +455,26 @@ def test_orchestrator_handler():
 
     with pytest.raises(TypeError):
         orchestrator.handle(CONST_LIST_SYNC)
+    list_blocks = list()
+    list_flows = list()
+    for _, clazz in inspect.getmembers(
+        settings_correct_orchestrator_blocks, inspect.isclass
+    ):
+        list_blocks.append(clazz.name_block)
+    for _, clazz in inspect.getmembers(
+        settings_correct_orchestrator_flows, inspect.isclass
+    ):
+        list_flows.append(clazz.name_flow)
+    assert orchestrator.get_list_blocks().sort() == list_blocks.sort()
+    assert orchestrator.get_list_flows().sort() == list_flows.sort()
 
 
 @pytest.mark.asyncio
 async def test_async_orchestrator_handler():
+    """
+    Test orchestrator handling msgs
+    :return:
+    """
     CONST_LIST_ASYNC.clear()
     orchestrator = AsyncOrchestrator(
         blocks=settings_correct_orchestrator_async_blocks,
@@ -323,3 +545,16 @@ async def test_async_orchestrator_handler():
 
     with pytest.raises(TypeError):
         await orchestrator.handle(CONST_LIST_ASYNC)
+
+    list_blocks = list()
+    list_flows = list()
+    for _, clazz in inspect.getmembers(
+        settings_correct_orchestrator_async_blocks, inspect.isclass
+    ):
+        list_blocks.append(clazz.name_block)
+    for _, clazz in inspect.getmembers(
+        settings_correct_orchestrator_async_flows, inspect.isclass
+    ):
+        list_flows.append(clazz.name_flow)
+    assert orchestrator.get_list_blocks().sort() == list_blocks.sort()
+    assert orchestrator.get_list_flows().sort() == list_flows.sort()

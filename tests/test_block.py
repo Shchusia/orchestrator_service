@@ -7,6 +7,7 @@ from typing import Optional
 import pytest
 
 from orch_serv import BaseOrchServMsg
+from orch_serv.exc import OrchServError
 from orch_serv.orchestrator.block.base_block import AsyncBaseBlock, SyncBaseBlock
 from tests.settings.settings_test_block import (
     CONST_LIST_ASYNC,
@@ -16,6 +17,9 @@ from tests.settings.settings_test_block import (
     MSG_TO_PROCESS_IN_SECOND_BLOCK,
     FirstAsyncBlock,
     FirstBlock,
+    OtherClassForBlocks,
+    OtherClassForBlocksWithErrorInTimeInit,
+    OtherClassForBlocksWithErrorInTimeInitWithoutArguments,
     SecondAsyncBlock,
     SecondBlock,
     async_tst_method_with_correct_processing,
@@ -30,7 +34,26 @@ def test_block():
     block_s = SecondBlock()
 
     with pytest.raises(TypeError):
-        block = block_f.set_next(FirstAsyncBlock())  # noqa
+        block_f.set_next(FirstAsyncBlock())  # noqa
+    with pytest.raises(TypeError):
+        block_f.set_next(FirstAsyncBlock)  # noqa
+    with pytest.raises(TypeError):
+        block_f.set_next(OtherClassForBlocks)  # noqa
+    with pytest.raises(TypeError):
+        block_f.set_next(OtherClassForBlocksWithErrorInTimeInit)  # noqa
+    with pytest.raises(OrchServError):
+        block_f.set_next(OtherClassForBlocksWithErrorInTimeInitWithoutArguments)  # noqa
+    with pytest.raises(TypeError):
+        block_s.set_next(FirstAsyncBlock())  # noqa
+    with pytest.raises(TypeError):
+        block_s.set_next(FirstAsyncBlock)  # noqa
+    with pytest.raises(TypeError):
+        block_s.set_next(OtherClassForBlocks)  # noqa
+    with pytest.raises(TypeError):
+        block_s.set_next(OtherClassForBlocksWithErrorInTimeInit)  # noqa
+    with pytest.raises(OrchServError):
+        block_s.set_next(OtherClassForBlocksWithErrorInTimeInitWithoutArguments)  # noqa
+
     block_f.set_next(block_s)
 
     assert block_f.get_list_flow() == "first block -> second block -> end"
@@ -115,7 +138,25 @@ async def test_async_block():
     block_s = SecondAsyncBlock()
 
     with pytest.raises(TypeError):
-        block = block_f.set_next(FirstBlock())  # noqa
+        block_f.set_next(FirstBlock())  # noqa
+    with pytest.raises(TypeError):
+        block_f.set_next(FirstBlock)  # noqa
+    with pytest.raises(TypeError):
+        block_f.set_next(OtherClassForBlocks)  # noqa
+    with pytest.raises(TypeError):
+        block_f.set_next(OtherClassForBlocksWithErrorInTimeInit)  # noqa
+    with pytest.raises(OrchServError):
+        block_f.set_next(OtherClassForBlocksWithErrorInTimeInitWithoutArguments)  # noqa
+    with pytest.raises(TypeError):
+        block_s.set_next(FirstBlock())  # noqa
+    with pytest.raises(TypeError):
+        block_s.set_next(FirstBlock)  # noqa
+    with pytest.raises(TypeError):
+        block_s.set_next(OtherClassForBlocks)  # noqa
+    with pytest.raises(TypeError):
+        block_s.set_next(OtherClassForBlocksWithErrorInTimeInit)  # noqa
+    with pytest.raises(OrchServError):
+        block_s.set_next(OtherClassForBlocksWithErrorInTimeInitWithoutArguments)  # noqa
     block_f.set_next(block_s)
     assert block_f.get_list_flow() == "first async block -> second async block -> end"
     await block_f.handle(deepcopy(MSG_TO_PROCESS_IN_FIRST_BLOCK))
