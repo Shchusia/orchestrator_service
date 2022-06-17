@@ -45,17 +45,22 @@ class SyncBaseBlock(ABC):
     @abstractmethod
     def set_next(self, handler: SyncBaseBlock) -> SyncBaseBlock:
         """
-        method for adding a new handler
-        :param BaseBlock handler: object next handler in chain flow
-        :return: BlockHandler
+        Save Next handler after this handler in flow
+        :param  handler: block for execution after current
+        :type  handler: Union[AsyncBaseBlock, Type[AsyncBaseBlock]]
+        :return: AsyncBaseBlock
+        :raise Exception: some exception if error in time init handler if
+         handler provided as type
+        :raise TypeError: if handler not is instance of type SyncBaseBlock
         """
         raise NotImplementedError
 
     @abstractmethod
     def get_next(self) -> SyncBaseBlock:
         """
-        method for get next handler if exist
-        :return: BlockHandler
+        the method returns the next block after the current one
+        :return: next block if exist
+        :rtype: Optional[AsyncBaseBlock]
         """
         raise NotImplementedError
 
@@ -70,19 +75,26 @@ class SyncBaseBlock(ABC):
     @abstractmethod
     def handle(self, message: BaseOrchServMsg) -> None:
         """
-        flow chain management method
-        :param MessageQueue message:
-        :return: None
+        A function that determines which handler should now process
+         the message based on the source from which the message came.
+        :param message: message for processing
+        :type message: BaseOrchServMsg
+        :return: nothing
+        :raise FlowException: exception if a message with the wrong source
+         is passed to the flow
         """
         raise NotImplementedError
 
     @abstractmethod
     def process(self, message: BaseOrchServMsg) -> Optional[BaseOrchServMsg]:
         """
-        Method for executing the logic of a given block
-        in it, only send messages to other services
+        Function to be redefined in subclasses which contains
+         the main logic of this block
+        If necessary, after executing this function, execute
+         the post function method must return a message
         :param message: message to process
-        :return: message
+        :type message: BaseOrchServMsg
+        :return: message after processing
         :rtype: Optional[BaseOrchServMsg]
         """
         raise NotImplementedError("Not Implemented method for processing messages")
@@ -124,14 +136,23 @@ class AsyncBaseBlock(ABC):
     @abstractmethod
     def set_next(self, handler: AsyncBaseBlock) -> AsyncBaseBlock:
         """
-        method for adding a new handler
-        :param BaseBlock handler: object next handler in chain flow
-        :return: BlockHandler
+        Save Next handler after this handler in flow
+        :param  handler: block for execution after current
+        :type  handler: Union[AsyncBaseBlock, Type[AsyncBaseBlock]]
+        :return: AsyncBaseBlock
+        :raise Exception: some exception if error in time init handler if
+         handler provided as type
+        :raise TypeError: if handler not is instance of type SyncBaseBlock
         """
         raise NotImplementedError
 
     @abstractmethod
     def get_next(self) -> Optional[AsyncBaseBlock]:
+        """
+        the method returns the next block after the current one
+        :return: next block if exist
+        :rtype: Optional[AsyncBaseBlock]
+        """
         """
         method for get next handler if exist
         :return: next block
@@ -149,19 +170,26 @@ class AsyncBaseBlock(ABC):
     @abstractmethod
     async def handle(self, message: BaseOrchServMsg) -> None:
         """
-        flow chain management method
-        :param MessageQueue message:
-        :return: None
+        A function that determines which handler should now process
+         the message based on the source from which the message came.
+        :param message: message for processing
+        :type message: BaseOrchServMsg
+        :return: nothing
+        :raise FlowException: exception if a message with the wrong source
+         is passed to the flow
         """
         raise NotImplementedError
 
     @abstractmethod
     async def process(self, message: BaseOrchServMsg) -> Optional[BaseOrchServMsg]:
         """
-        Method for executing the logic of a given block
-        in it, only send messages to other services
+        Function to be redefined in subclasses which contains
+         the main logic of this block
+        If necessary, after executing this function, execute
+         the post function method must return a message
         :param message: message to process
-        :return: message
+        :type message: BaseOrchServMsg
+        :return: message after processing
         :rtype: Optional[BaseOrchServMsg]
         """
         raise NotImplementedError("Not Implemented method for processing messages")

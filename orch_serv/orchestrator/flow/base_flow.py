@@ -15,6 +15,7 @@ from orch_serv.exc import (
     WorkTypeMismatchException,
 )
 from orch_serv.orchestrator.block import AsyncBlock, SyncBlock
+from orch_serv.orchestrator.block.base_block import AsyncBaseBlock, SyncBaseBlock
 
 
 class FlowBlock:
@@ -26,19 +27,21 @@ class FlowBlock:
 
     def __init__(
         self,
-        obj_block: Union[SyncBlock, AsyncBlock, type],
-        pre_handler_function: Union[
-            str, types.FunctionType, types.MethodType, Callable
+        obj_block: Union[SyncBlock, AsyncBlock, Type[Union[SyncBlock, AsyncBlock]]],
+        pre_handler_function: Optional[
+            Union[str, types.FunctionType, types.MethodType, Callable]
         ] = None,
-        post_handler_function: Union[
-            str, types.FunctionType, types.MethodType, Callable
+        post_handler_function: Optional[
+            Union[str, types.FunctionType, types.MethodType, Callable]
         ] = None,
     ):
         """
         Init FlowBlock
-        :param obj_block: type stepBlock
-        :param pre_handler_function
-        :param  post_handler_function
+        :param obj_block: block for flow
+        :type obj_block: Union[SyncBlock, AsyncBlock,
+         Type[Union[SyncBlock, AsyncBlock]]]
+        :param pre_handler_function: optional function for execution before block
+        :param  post_handler_function: optional function for execution after block
         """
         try:
             if isinstance(obj_block, type):
@@ -71,8 +74,20 @@ class FlowBlock:
     @staticmethod
     def _get_function(
         instance_main: Flow,
-        function_to_get: Union[str, types.FunctionType, types.MethodType, Callable],
+        function_to_get: Optional[
+            Union[str, types.FunctionType, types.MethodType, Callable]
+        ],
     ) -> Optional[Union[types.FunctionType, types.MethodType, Callable]]:
+        """
+        helper function that returns a function if specified for the block
+        :param instance_main:
+        :type instance_main: Flow
+        :param function_to_get: name of function or the function itself
+        :type function_to_get: Union[str, types.FunctionType,
+         types.MethodType, Callable]
+        :return: a function object if provided
+        :rtype: Optional[Union[types.FunctionType, types.MethodType, Callable]]
+        """
         if isinstance(function_to_get, str):
             return getattr(instance_main, function_to_get, None)
         else:
@@ -83,9 +98,12 @@ class FlowBlock:
     ) -> Union[SyncBlock, AsyncBlock]:
         """
         Method init instance subclass MainBlock
-        :param instance_main:
-        :param step_number:
+        :param instance_main: flow object for which this
+         block is initialized
+        :type instance_main: Flow
+        :param int step_number: sequence number of the current block
         :return: object subclass MainBlock
+        :rtype: Union[SyncBlock, AsyncBlock]
         """
         if not isinstance(instance_main, Flow):
             raise TypeError("Value `instance_main` must be a Flow")
@@ -126,7 +144,7 @@ class FlowBuilder:
         """
         Init FlowBuilder
         :param FlowBlock step: first block in flow
-        :param List[FlowBlock] args:  other steps  if value exsst
+        :param List[FlowBlock] args:  other steps  if value exist
         """
         self.steps = list(args)
         self.steps.insert(0, step)
@@ -134,11 +152,13 @@ class FlowBuilder:
             if not isinstance(_step, FlowBlock):
                 raise FlowBuilderException(f"on index {_index}")
 
-    def build_flow(self, instance_main: Flow) -> SyncBlock:
+    def build_flow(self, instance_main: Flow) -> Union[SyncBlock, AsyncBlock]:
         """
-        Build chain flow for StrategyFlow
-        :param instance_main:
-        :return:
+        Build chain flow for Flow
+        :param instance_main: current flow
+        :type instance_main: Flow
+        :return: the first block in the flow chain
+        :rtype: Union[SyncBlock, AsyncBlock]
         """
 
         flow = self.steps[0].init_block(instance_main, 0)
@@ -151,28 +171,40 @@ class FlowBuilder:
 class Flow:
     """
     Class for inheritance for a specific flow
+    :attr flow_chain: flow chain starting from the first block
+    :type flow_chain: Union[SyncBlock, AsyncBlock]
+    :attr is_contains_duplicat_blocks: whether the flow contains repeating blocks
+     needed to avoid looping
+    :type is_contains_duplicat_blocks: bool
+
     """
 
-    flow_chain: Union[SyncBlock, AsyncBlock] = None
+    flow_chain: Optional[Union[SyncBaseBlock, AsyncBaseBlock]] = None
     is_contains_duplicat_blocks: bool = False
 
     @property
     def name_flow(self) -> str:
         """
         Unique name to identify flow
-        for override in subclass   name_flow
+        for override in subclass 'name_flow'
         :return: name flow
         """
         raise NotImplementedError
 
     @property
     def _base_class_for_blocks(self) -> Type[Union[AsyncBlock, SyncBlock]]:
+        """
+        An additional property for child classes to make the flow work only
+         with synchronous or asynchronous blocks.
+         necessary to maintain integrity
+        :return:
+        """
         raise NotImplementedError
 
     @property
     def steps_flow(self):
         """
-        Steps current flow
+        blocks that make up the current flow
         :return:
         """
         raise NotImplementedError
@@ -206,7 +238,10 @@ class Flow:
             )
         self._validate_data()
 
-    def _validate_data(self):
+    def _validate_data(self) -> None:
+        """
+        flow validation function after initialization
+        """
         current = self.flow_chain
         list_exists_blocks = list()
         while current:

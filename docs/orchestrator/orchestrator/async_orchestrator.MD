@@ -11,7 +11,7 @@ override handle function for async mode
 ```
 
 ### Basses(s)
-+ Orchestrator
++ SyncOrchestrator
 ### SubElement(s)
  > `_base_class_for_flow` = AsyncFlow
  > `_base_class_for_target` = AsyncBlock

@@ -30,12 +30,28 @@ class SyncBlock(SyncBaseBlock, ABC):
     ] = None
 
     @property
+    def is_execute_after_nullable_process_msg(self) -> bool:
+        """
+        Execute if the block handler did not return a message
+        :return: true if should execute with previous msg after empty process msg
+        :rtype: bool
+        """
+        return True
+
+    @property
     def pre_handler_function(
         self,
     ) -> Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]:
         """
-        function which call before send to handler
-        :return:
+        A class property that returns an asynchronous function that will be
+         called before being sent to the main handler.
+        the function should only take one parameter msg: BaseOrchServMsg
+        Attention!!!
+        The function must return a message object.
+        If the function does not return a message, then the handler will not be called
+        :return: async function if exist pre_handler_function
+        :rtype: Optional[Callable[[BaseOrchServMsg],
+         Awaitable[Optional[BaseOrchServMsg]]]]
         """
         return self._pre_handler_function
 
@@ -44,8 +60,16 @@ class SyncBlock(SyncBaseBlock, ABC):
         self,
     ) -> Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]:
         """
-        function which call after received from source
-        :return:
+        A class property that returns an asynchronous function that will be
+         called after this block`s handler.
+        the function should only take one parameter msg: BaseOrchServMsg
+        if the `process` does not return a message to the function,
+         the message sent to the handler will be transferred
+        if it is not necessary to execute, redefine
+         the variable `is_execute_after_nullable_process_msg = False` in your block
+        :return: async function if exist pre_handler_function
+        :rtype: Optional[Callable[[BaseOrchServMsg],
+         Awaitable[Optional[BaseOrchServMsg]]]]
         """
         return self._post_handler_function
 
@@ -121,7 +145,7 @@ class SyncBlock(SyncBaseBlock, ABC):
         self, handler: Union[SyncBaseBlock, Type[SyncBaseBlock]]
     ) -> SyncBaseBlock:
         """
-        Save Next handler after this handler
+        Save Next handler after this handler in flow
         :param handler: block for execution after current
         :type handler: Union[SyncBaseBlock, Type[SyncBaseBlock]]
         :return: SyncBaseBlock
@@ -141,7 +165,54 @@ class SyncBlock(SyncBaseBlock, ABC):
         return handler
 
     def get_next(self) -> Optional[SyncBaseBlock]:
+        """
+        the method returns the next block after the current one
+        :return: next block if exist
+        :rtype: Optional[SyncBaseBlock]
+        """
         return self._next_handler
+
+    def _process_logic(self, block: SyncBaseBlock, message: BaseOrchServMsg) -> None:
+        """
+        Auxiliary function in which the logic of working with additional
+         functions is hidden
+        :param block: block for processing
+        :type block: SyncBaseBlock
+        :param message: message for processing
+        :type message: BaseOrchServMsg
+        :return: nothing
+        """
+        if block.pre_handler_function:
+            message = block.pre_handler_function(message)
+        if not message:
+            return
+        message.set_source(block.name_block)
+        copy_msg = deepcopy(message)
+        new_msg = block.process(message)
+        if block.post_handler_function:
+            if new_msg:
+                block.post_handler_function(new_msg)
+            elif self.is_execute_after_nullable_process_msg:
+                block.post_handler_function(copy_msg)
+
+    def handle(self, message: BaseOrchServMsg) -> None:
+        """
+        A function that determines which handler should now process
+         the message based on the source from which the message came.
+        :param message: message for processing
+        :type message: BaseOrchServMsg
+        :return: nothing
+        :raise FlowException: exception if a message with the wrong source
+         is passed to the flow
+        """
+        if not message.get_source():
+            self._process_logic(block=self, message=message)
+        elif message.get_source() == self.name_block:
+            self._process_logic(block=self._next_handler, message=message)
+        elif self._next_handler:
+            self._next_handler.handle(message)
+        else:
+            raise FlowException(f"Not found block for source: {message}")
 
     def get_list_flow(self) -> str:
         """
@@ -153,34 +224,3 @@ class SyncBlock(SyncBaseBlock, ABC):
         else:
             next_blocks = "end"
         return f"{self.name_block} -> {next_blocks}"
-
-    @staticmethod
-    def _process_logic(block: SyncBaseBlock, message: BaseOrchServMsg):
-        if block.pre_handler_function:
-            message = block.pre_handler_function(message)
-        if not message:
-            return
-        message.set_source(block.name_block)
-        copy_msg = deepcopy(message)
-        new_msg = block.process(message)
-        if block.post_handler_function:
-            if new_msg:
-                block.post_handler_function(new_msg)
-            else:
-                block.post_handler_function(copy_msg)
-
-    def handle(self, message: BaseOrchServMsg) -> None:
-        """
-        Method handle process msg
-        :param BaseOrchServMsg message: msg to process
-        :raise FlowException: if not found handle for source from message
-        :return: nothing
-        """
-        if not message.get_source():
-            self._process_logic(block=self, message=message)
-        elif message.get_source() == self.name_block:
-            self._process_logic(block=self._next_handler, message=message)
-        elif self._next_handler:
-            self._next_handler.handle(message)
-        else:
-            raise FlowException(f"Not found block for source: {message}")

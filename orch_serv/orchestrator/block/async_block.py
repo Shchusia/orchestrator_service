@@ -17,6 +17,17 @@ from .base_block import AsyncBaseBlock
 class AsyncBlock(AsyncBaseBlock, ABC):
     """
     Base block for async mode
+    :attr _next_handler: the object of the next handler
+     in the flow where this block participates
+    :type _next_handler: AsyncBaseBlock
+    :attr _pre_handler_function: function called before this block's handler
+    :type _pre_handler_function:  Optional[
+        Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
+    ]
+    :attr _post_handler_function: function called after this block's handler
+    :type _post_handler_function:  Optional[
+        Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
+    ]
     """
 
     _next_handler: AsyncBaseBlock = None
@@ -28,12 +39,28 @@ class AsyncBlock(AsyncBaseBlock, ABC):
     ] = None
 
     @property
+    def is_execute_after_nullable_process_msg(self) -> bool:
+        """
+        Execute if the block handler did not return a message
+        :return: true if should execute with previous msg after empty process msg
+        :rtype: bool
+        """
+        return True
+
+    @property
     def pre_handler_function(
         self,
     ) -> Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]:
         """
-        function which call before send to handler
-        :return:
+        A class property that returns an asynchronous function that will be
+         called before being sent to the main handler.
+        the function should only take one parameter msg: BaseOrchServMsg
+        Attention!!!
+        The function must return a message object.
+         If the function does not return a message, then the handler will not be called
+        :return: async function if exist pre_handler_function
+        :rtype: Optional[Callable[[BaseOrchServMsg],
+         Awaitable[Optional[BaseOrchServMsg]]]]
         """
         return self._pre_handler_function
 
@@ -42,8 +69,16 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         self,
     ) -> Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]:
         """
-        function which call after received from source
-        :return:
+        A class property that returns an asynchronous function that will be
+         called after this block`s handler.
+        the function should only take one parameter msg: BaseOrchServMsg
+        if the `process` does not return a message to the function,
+         the message sent to the handler will be transferred
+        if it is not necessary to execute, redefine
+         the variable `is_execute_after_nullable_process_msg = False` in your block
+        :return: async function if exist pre_handler_function
+        :rtype: Optional[Callable[[BaseOrchServMsg],
+         Awaitable[Optional[BaseOrchServMsg]]]]
         """
         return self._post_handler_function
 
@@ -127,8 +162,9 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         self, handler: Union[AsyncBaseBlock, Type[AsyncBaseBlock]]
     ) -> AsyncBaseBlock:
         """
-        Save Next handler after this handler
-        :param AsyncBaseBlock handler:
+        Save Next handler after this handler in flow
+        :param  handler: block for execution after current
+        :type  handler: Union[AsyncBaseBlock, Type[AsyncBaseBlock]]
         :return: AsyncBaseBlock
         :raise Exception: some exception if error in time init handler if
          handler provided as type
@@ -145,13 +181,25 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         return handler
 
     def get_next(self) -> Optional[AsyncBaseBlock]:
+        """
+        the method returns the next block after the current one
+        :return: next block if exist
+        :rtype: Optional[AsyncBaseBlock]
+        """
         return self._next_handler
 
-    async def process(self, message: BaseOrchServMsg):
-        raise NotImplementedError
-
-    @staticmethod
-    async def _process_logic(block: AsyncBaseBlock, message: BaseOrchServMsg):
+    async def _process_logic(
+        self, block: AsyncBaseBlock, message: BaseOrchServMsg
+    ) -> None:
+        """
+        Auxiliary function in which the logic of working with additional
+         functions is hidden
+        :param block: block for processing
+        :type block: AsyncBaseBlock
+        :param message: message for processing
+        :type message: BaseOrchServMsg
+        :return: nothing
+        """
         if block.pre_handler_function:
             message = await block.pre_handler_function(message)
         if not message:
@@ -162,10 +210,19 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         if block.post_handler_function:
             if new_msg:
                 await block.post_handler_function(new_msg)
-            else:
+            elif self.is_execute_after_nullable_process_msg:
                 await block.post_handler_function(copy_msg)
 
     async def handle(self, message: BaseOrchServMsg) -> None:
+        """
+        A function that determines which handler should now process
+         the message based on the source from which the message came.
+        :param message: message for processing
+        :type message: BaseOrchServMsg
+        :return: nothing
+        :raise FlowException: exception if a message with the wrong source
+         is passed to the flow
+        """
         if not message.get_source():
             await self._process_logic(block=self, message=message)
         elif message.get_source() == self.name_block:

@@ -14,6 +14,9 @@ Base message class for processing and to use the library
 ### Basses(s)
 + GenericModel
 + Generic[SubPydanticBodyModel, SubPydanticHeaderModel]
+### Attributes(s)
++ body` - message body to be processed with basic information
++ header` - message header with data to be processed
 ### Example 
 ```python
 >>> # How to use BaseOrchServMsg to create a custom message for your needs
