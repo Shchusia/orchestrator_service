@@ -40,29 +40,32 @@ Base class for handling sync blocks
  > + property
  > ## Function  `set_next`
  > ```text
- > method for adding a new handler
+ > Save Next handler after this handler in flow
  > ```
  > 
  > ### Decorator(s)
  > + abstractmethod
  > ### Argument(s)
- > + `handler`: SyncBaseBlock - object next handler in chain flow
+ > + `handler`: SyncBaseBlock - empty doc string
  > ### Return
  > ```text
- > BlockHandler
+ > AsyncBaseBlock
+ > :raise Exception: some exception if error in time init handler if
+ > handler provided as type
+ > :raise TypeError: if handler not is instance of type SyncBaseBlock
  > ```
  > 
  > #### Declared returns: `SyncBaseBlock`
  > ## Function  `get_next`
  > ```text
- > method for get next handler if exist
+ > the method returns the next block after the current one
  > ```
  > 
  > ### Decorator(s)
  > + abstractmethod
  > ### Return
  > ```text
- > BlockHandler
+ > next block if exist
  > ```
  > 
  > #### Declared returns: `SyncBaseBlock`
@@ -81,22 +84,27 @@ Base class for handling sync blocks
  > #### Declared returns: `str`
  > ## Function  `handle`
  > ```text
- > flow chain management method
+ > A function that determines which handler should now process
+ > the message based on the source from which the message came.
  > ```
  > 
  > ### Decorator(s)
  > + abstractmethod
  > ### Argument(s)
- > + `message`: BaseOrchServMsg - empty doc string
+ > + `message`: BaseOrchServMsg - message for processing
  > ### Return
  > ```text
- > None
+ > nothing
+ > :raise FlowException: exception if a message with the wrong source
+ > is passed to the flow
  > ```
  > 
  > ## Function  `process`
  > ```text
- > Method for executing the logic of a given block
- > in it, only send messages to other services
+ > Function to be redefined in subclasses which contains
+ > the main logic of this block
+ > If necessary, after executing this function, execute
+ > the post function method must return a message
  > ```
  > 
  > ### Decorator(s)
@@ -105,7 +113,7 @@ Base class for handling sync blocks
  > + `message`: BaseOrchServMsg - message to process
  > ### Return
  > ```text
- > message
+ > message after processing
  > ```
  > 
  > #### Declared returns: `Optional[BaseOrchServMsg]`
@@ -145,29 +153,32 @@ Base class for handling async blocks
  > + property
  > ## Function  `set_next`
  > ```text
- > method for adding a new handler
+ > Save Next handler after this handler in flow
  > ```
  > 
  > ### Decorator(s)
  > + abstractmethod
  > ### Argument(s)
- > + `handler`: AsyncBaseBlock - object next handler in chain flow
+ > + `handler`: AsyncBaseBlock - empty doc string
  > ### Return
  > ```text
- > BlockHandler
+ > AsyncBaseBlock
+ > :raise Exception: some exception if error in time init handler if
+ > handler provided as type
+ > :raise TypeError: if handler not is instance of type SyncBaseBlock
  > ```
  > 
  > #### Declared returns: `AsyncBaseBlock`
  > ## Function  `get_next`
  > ```text
- > method for get next handler if exist
+ > the method returns the next block after the current one
  > ```
  > 
  > ### Decorator(s)
  > + abstractmethod
  > ### Return
  > ```text
- > next block
+ > next block if exist
  > ```
  > 
  > #### Declared returns: `Optional[AsyncBaseBlock]`
@@ -186,22 +197,27 @@ Base class for handling async blocks
  > #### Declared returns: `str`
  > ## Function `async` `handle`
  > ```text
- > flow chain management method
+ > A function that determines which handler should now process
+ > the message based on the source from which the message came.
  > ```
  > 
  > ### Decorator(s)
  > + abstractmethod
  > ### Argument(s)
- > + `message`: BaseOrchServMsg - empty doc string
+ > + `message`: BaseOrchServMsg - message for processing
  > ### Return
  > ```text
- > None
+ > nothing
+ > :raise FlowException: exception if a message with the wrong source
+ > is passed to the flow
  > ```
  > 
  > ## Function `async` `process`
  > ```text
- > Method for executing the logic of a given block
- > in it, only send messages to other services
+ > Function to be redefined in subclasses which contains
+ > the main logic of this block
+ > If necessary, after executing this function, execute
+ > the post function method must return a message
  > ```
  > 
  > ### Decorator(s)
@@ -210,7 +226,7 @@ Base class for handling async blocks
  > + `message`: BaseOrchServMsg - message to process
  > ### Return
  > ```text
- > message
+ > message after processing
  > ```
  > 
  > #### Declared returns: `Optional[BaseOrchServMsg]`

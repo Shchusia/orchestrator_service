@@ -14,7 +14,7 @@ AsyncFlow for execution async blocks
 + ABC
 ### SubElement(s)
  > `_base_class_for_blocks` = AsyncBlock
- > `flow_chain`: Union[AsyncBlock] = None
+ > `flow_chain`: AsyncBlock = None
  > ## Function `async` `to_go_with_the_flow`
  > ```text
  > Method that starts flow execution from the first block

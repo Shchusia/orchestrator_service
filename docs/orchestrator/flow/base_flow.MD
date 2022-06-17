@@ -17,15 +17,24 @@ Block for FlowBuilder
  > ```
  > 
  > ### Argument(s)
- > + `obj_block`: Union[SyncBlock, AsyncBlock, type] - type stepBlock
- > + `pre_handler_function`: Union[str, types.FunctionType, types.MethodType, Callable] - empty doc string
- > + `post_handler_function`: Union[str, types.FunctionType, types.MethodType, Callable] - empty doc string
+ > + `obj_block`: Union[SyncBlock, AsyncBlock, Type[Union[SyncBlock, AsyncBlock]]] - block for flow
+ > + `pre_handler_function`: Optional[Union[str, types.FunctionType, types.MethodType, Callable]] - optional function for execution before block
+ > + `post_handler_function`: Optional[Union[str, types.FunctionType, types.MethodType, Callable]] - empty doc string
  > ## Function  `_get_function`
+ > ```text
+ > helper function that returns a function if specified for the block
+ > ```
+ > 
  > ### Decorator(s)
  > + staticmethod
  > ### Argument(s)
  > + `instance_main`: Flow - empty doc string
- > + `function_to_get`: Union[str, types.FunctionType, types.MethodType, Callable] - empty doc string
+ > + `function_to_get`: Optional[Union[str, types.FunctionType, types.MethodType, Callable]] - name of function or the function itself
+ > ### Return
+ > ```text
+ > a function object if provided
+ > ```
+ > 
  > #### Declared returns: `Optional[Union[types.FunctionType, types.MethodType, Callable]]`
  > ## Function  `init_block`
  > ```text
@@ -33,8 +42,9 @@ Block for FlowBuilder
  > ```
  > 
  > ### Argument(s)
- > + `instance_main`: Flow - empty doc string
- > + `step_number`: int - empty doc string
+ > + `instance_main`: Flow - flow object for which this
+ > block is initialized
+ > + `step_number`: int - sequence number of the current block
  > ### Return
  > ```text
  > object subclass MainBlock
@@ -55,27 +65,36 @@ build chain flow from flow blocks
  > 
  > ### Argument(s)
  > + `step`: FlowBlock - first block in flow
- > + *`args`: List[FlowBlock] - other steps  if value exsst
+ > + *`args`: List[FlowBlock] - other steps  if value exist
  > ## Function  `build_flow`
  > ```text
- > Build chain flow for StrategyFlow
+ > Build chain flow for Flow
  > ```
  > 
  > ### Argument(s)
- > + `instance_main`: Flow - empty doc string
- > #### Declared returns: `SyncBlock`
+ > + `instance_main`: Flow - current flow
+ > ### Return
+ > ```text
+ > the first block in the flow chain
+ > ```
+ > 
+ > #### Declared returns: `Union[SyncBlock, AsyncBlock]`
 ## Class `Flow`
 ```text
 Class for inheritance for a specific flow
 ```
 
+### Attributes(s)
++ flow_chain`:Union[SyncBlock, AsyncBlock] - flow chain starting from the first block
++ is_contains_duplicat_blocks`:bool - whether the flow contains repeating blocks
+needed to avoid looping
 ### SubElement(s)
- > `flow_chain`: Union[SyncBlock, AsyncBlock] = None
+ > `flow_chain`: Optional[Union[SyncBaseBlock, AsyncBaseBlock]] = None
  > `is_contains_duplicat_blocks`: bool = False
  > ## Function  `name_flow`
  > ```text
  > Unique name to identify flow
- > for override in subclass   name_flow
+ > for override in subclass 'name_flow'
  > ```
  > 
  > ### Decorator(s)
@@ -87,12 +106,18 @@ Class for inheritance for a specific flow
  > 
  > #### Declared returns: `str`
  > ## Function  `_base_class_for_blocks`
+ > ```text
+ > An additional property for child classes to make the flow work only
+ > with synchronous or asynchronous blocks.
+ > necessary to maintain integrity
+ > ```
+ > 
  > ### Decorator(s)
  > + property
  > #### Declared returns: `Type[Union[AsyncBlock, SyncBlock]]`
  > ## Function  `steps_flow`
  > ```text
- > Steps current flow
+ > blocks that make up the current flow
  > ```
  > 
  > ### Decorator(s)
@@ -118,7 +143,11 @@ Class for inheritance for a specific flow
  > 
  > ### Argument(s)
  > + `logger`: Optional[Logger] - orchestrator logger
- > ## Function  `_validate_data`
+ > ## Function  `_validate_data`
+ > ```text
+ > flow validation function after initialization
+ > ```
+ > 
  > ## Function  `get_steps`
  > ```text
  > Print steps flow
