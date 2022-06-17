@@ -1,6 +1,4 @@
-"""
-Module with base msg for processing
-"""
+"""Module with base msg for processing"""
 # pylint: disable=too-few-public-methods,no-name-in-module
 
 from typing import Generic, Optional, TypeVar
@@ -17,9 +15,9 @@ class BaseOrchServMsg(
 ):
     """
     Base message class for processing and to use the library
-    :attr body:
+    :attr body: message body to be processed with basic information
     :type SubPydanticBodyModel:
-    :attr header:
+    :attr header: message header with data to be processed
     :type SubPydanticHeaderModel:
     :example:
     >>> # How to use BaseOrchServMsg to create a custom message for your needs

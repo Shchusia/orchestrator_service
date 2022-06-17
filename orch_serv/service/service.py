@@ -38,20 +38,13 @@ class CommandHandler(ABC):
         """
         return self._logger
 
-    # @logger.setter
-    # def logger(self, val: Any) -> None:
-    #     """
-    #     setter logger
-    #     :param val:
-    #     :return:
-    #     """
-    #     if not val:
-    #         return
-    #     if isinstance(val, Logger):
-    #         self._logger = val
-    #     else:
-    #         raise TypeError(f"Type must be logger but not {val}")
     def set_logger(self, val: Any) -> None:
+        """
+        Set logger to handler
+        :param Any val: logger
+        :return: nothing
+        :raise TypeError: if val is not a logger
+        """
         if not val:
             return
         if isinstance(val, Logger):
@@ -59,7 +52,12 @@ class CommandHandler(ABC):
         else:
             raise TypeError(f"Type must be logger but not {val}")
 
-    def set_service_instance(self, service: Service):
+    def set_service_instance(self, service: Service) -> None:
+        """
+        set to instance handler current service object for use swap
+        :param Service service:
+        :return: nothing
+        """
         if isinstance(service, Service):
             self._service_instance = service
 
@@ -132,7 +130,7 @@ class CommandHandler(ABC):
 
 class CommandHandlerProcessStrategy(CommandHandler, ABC):
     """
-    Handler class for base processing messga
+    Handler class for base processing message
     """
 
     @property
@@ -140,7 +138,7 @@ class CommandHandlerProcessStrategy(CommandHandler, ABC):
         """
         this command will determine that the message should be processed
         by this particular service
-
+        must be unique within the service
         """
         raise NotImplementedError
 
@@ -187,7 +185,7 @@ class AsyncCommandHandlerProcessStrategy(CommandHandler, ABC):
         """
         this command will determine that the message should be processed
         by this particular service
-
+        must be unique within the service
         """
         raise NotImplementedError
 
@@ -226,17 +224,33 @@ class AsyncCommandHandlerPostProcessStrategy(CommandHandler, ABC):
 
 class DefaultPostProcessStrategy(CommandHandlerPostProcessStrategy):
     def post_process(self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None):
+        """
+        default post process function for sync service
+        :param BaseOrchServMsg msg: msg received after processing
+        :param Optional[Any] additional_data:
+        :return:
+        """
         pass
 
 
 class AsyncDefaultPostProcessStrategy(AsyncCommandHandlerPostProcessStrategy):
     async def post_process(
         self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None
-    ):
+    ) -> None:
+        """
+        default post process function for sync service
+        :param BaseOrchServMsg msg: msg received after processing
+        :param Optional[Any] additional_data:
+        :return: nothing
+        """
         pass
 
 
 class ServiceCommand(BaseModel):
+    """
+    Structure class
+    """
+
     processor: Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy]
     post_processor: Union[
         CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy
@@ -247,6 +261,11 @@ class ServiceCommand(BaseModel):
 
 
 class ServiceBlock:
+    """
+    Class for build service - one Block with process
+     and post process handlers
+    """
+
     _processor: Union[
         CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy
     ] = None
@@ -258,6 +277,11 @@ class ServiceBlock:
     def processor(
         self,
     ) -> Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy]:
+        """
+        Property contains process handler
+        :return: process command instance
+        :rtype: Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy]
+        """
         return self._processor
 
     @property
@@ -266,6 +290,12 @@ class ServiceBlock:
     ) -> Union[
         CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy
     ]:
+        """
+        Property contains post_process handler
+        :return: post_processor instance
+        :rtype:Union[CommandHandlerPostProcessStrategy,
+         AsyncCommandHandlerPostProcessStrategy]
+        """
         return self._post_processor
 
     @processor.setter  # type: ignore # noqa
@@ -375,6 +405,10 @@ class ServiceBlock:
 
 
 class ServiceBuilder:
+    """
+    Class for aggregating service commands
+    """
+
     _default_post_processor: Union[
         CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy
     ] = None
@@ -414,10 +448,11 @@ class ServiceBuilder:
             )
 
     @staticmethod
-    def check_is_post_processor(obj, message_error: str):
+    def check_is_post_processor(obj: Any, message_error: str):
         """
-
+        Method check is correct obj to post_processor
         :param obj:
+        :param message_error:
         :raise ServiceBlockException: if incorrect type
 
         :return:
@@ -478,6 +513,13 @@ class ServiceBuilder:
     def build(
         self, service_instance: Service, logger: Optional[Logger] = None
     ) -> Dict[str, ServiceCommand]:
+        """
+        Method builds all commands current service.
+        :param service_instance: current service
+        :param Optional[Logger] logger: logger
+        :return: {command_name: ServiceCommand} dict commands and proccess classes
+        :rtype: Dict[str, ServiceCommand]
+        """
         logger = logger or DEFAULT_LOGGER
         dict_commands = dict()  # type: Dict[str, ServiceCommand]
 
@@ -539,7 +581,7 @@ class Service(ABC):
             # for validate if use property setup
             service_commands = self.service_commands
 
-        self.validate_service_builder(service_commands)
+        self.__validate_service_builder(service_commands)
         self._dict_handlers = self.service_commands.build(
             service_instance=self, logger=logger
         )
@@ -552,7 +594,12 @@ class Service(ABC):
                 self._default_command = default_command
         self._validate_data()
 
-    def validate_service_builder(self, service_builder):
+    def __validate_service_builder(self, service_builder: ServiceBuilder):
+        """
+        Help function for validate service_builder object
+        :param service_builder:
+        :return:
+        """
         if not isinstance(service_builder, ServiceBuilder):
             raise ServiceBuilderException(
                 f"Variable `service_builder` must be a"
@@ -568,9 +615,12 @@ class Service(ABC):
 
     @service_commands.setter
     def service_commands(self, service_builder: ServiceBuilder) -> None:
-        self.validate_service_builder(service_builder)
+        self.__validate_service_builder(service_builder)
 
     def _validate_data(self):
+        """
+        Help function to validate data service
+        """
         if not issubclass(self._base_process_class, CommandHandler):
             raise TypeError(
                 f"Incorrect type `_base_processor_class`. "
@@ -603,6 +653,11 @@ class Service(ABC):
     def _get_service_command(
         self, message: BaseOrchServMsg
     ) -> Optional[ServiceCommand]:
+        """
+        Function for get command to handle received message
+        :param BaseOrchServMsg message: received message
+        :return: handler if exist
+        """
         command = self._dict_handlers.get(message.get_command())
         if command:
             return command
@@ -615,10 +670,10 @@ class Service(ABC):
         self, message: BaseOrchServMsg, is_force_return: bool = False
     ) -> Optional[BaseOrchServMsg]:
         """
-
-        :param message:
-        :param is_force_return:
-        :return:
+        the main function of processing received messages
+        :param BaseOrchServMsg message: message to process
+        :param bool is_force_return: return msgs all time after execution
+        :return: not processed msgs or received msgs if is_force_return==True
         """
         is_return_message = is_force_return
         self.logger.info("Service. Started processing message %s", message)

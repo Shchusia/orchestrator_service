@@ -2,7 +2,6 @@
 Flow for sync mode
 """
 from abc import ABC
-from typing import Union
 
 from orch_serv.msg import BaseOrchServMsg
 
@@ -16,7 +15,7 @@ class AsyncFlow(Flow, ABC):
     """
 
     _base_class_for_blocks = AsyncBlock
-    flow_chain: Union[AsyncBlock] = None
+    flow_chain: AsyncBlock = None
 
     async def to_go_with_the_flow(self, message: BaseOrchServMsg) -> None:
         """

@@ -54,6 +54,24 @@ class SyncOrchestrator:
         default_flow: Optional[str] = None,
         default_block: Optional[str] = None,
     ):
+        """
+        init Orchestrator
+        :param flows: data flows to init for current orchestrator
+        :type flows: Optional[Union[ModuleType, List]]
+        :param blocks: data blocks to init for current orchestrator
+        :type blocks: Optional[Union[ModuleType, List]]
+        :param logger: logger orchestrator
+        :param flows_to_ignore: name of the flows to
+         ignore which will not be initialized
+        :type flows_to_ignore: List[str]
+        :param blocks_to_ignore: name of the blocks to
+         ignore which will not be initialized
+        :type blocks_to_ignore: List[str]
+        :param str default_flow: name of the flow that will be called
+         if a non-existing flow is specified
+        :param str default_block: name of the block that will be called
+         if a non-existing block is specified
+        """
         self.logger = logger or DEFAULT_LOGGER
 
         if flows:
@@ -116,20 +134,18 @@ class SyncOrchestrator:
 
     def get_list_flows(self) -> List[str]:
         """
-        return list allowed flows
-        :return:
+        :return: list allowed flows
         """
         return list(self._flows.keys())
 
     def get_list_blocks(self) -> List[str]:
         """
-        return list allowed blocks
-        :return:
+        :return:  list allowed blocks
         """
         print(self._targets)
         return list(self._targets.keys())
 
-    def _validate_data(self):
+    def _validate_data(self) -> None:
         """
         Checks the types of objects in the flow and goals so that
         the synchronous orchestrator does not redistribute a
