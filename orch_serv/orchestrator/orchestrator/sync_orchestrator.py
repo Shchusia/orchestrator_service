@@ -147,8 +147,8 @@ class SyncOrchestrator:
 
     def _validate_data(self) -> None:
         """
-        Checks the types of objects in the flow and goals so that
-        the synchronous orchestrator does not redistribute a
+        Checks the types of objects in the flow and targets the
+        synchronous orchestrator not to redistribute a
         synchronous flows or blocks and vice versa
         :raise WorkTypeMismatchException: if incorrect type
         """
@@ -262,7 +262,7 @@ class SyncOrchestrator:
         """
         Message processing method
 
-        !!! the presence of a `target` in the message is more priority
+        !!! the presence of a `target` in the message has higher priority
          than the presence of a `flow`
         :param message: message to process
         :type message: BaseOrchServMsg

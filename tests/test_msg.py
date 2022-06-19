@@ -56,7 +56,7 @@ def header_data(is_raw: bool = True) -> Union[Dict[str, str], HeaderModel]:
 
 def tst_full(obj_type: Type[BaseOrchServMsg], is_optional_header: bool = False) -> None:
     """
-    Method to test on type with full fields
+    Method to test the type with full fields
     :param obj: type to test correct validation
     :type obj: Type[BaseOrchServMsg]
     :param is_optional_header: use for generic type
@@ -92,7 +92,7 @@ def tst_full(obj_type: Type[BaseOrchServMsg], is_optional_header: bool = False) 
 
 def tst_body(obj_type: Type[BaseOrchServMsg]) -> None:
     """
-    Function test types with only body
+    Function test types with body only
     :param obj_type: type to test
     :return: nothing
     """
@@ -116,7 +116,7 @@ def tst_body(obj_type: Type[BaseOrchServMsg]) -> None:
 
 def test_inheritance() -> None:
     """
-    Test correct types if inheritance base msg model
+    Test correctness of types if inheritance base msg model
     :return: nothing
     """
 
@@ -144,7 +144,7 @@ def test_inheritance() -> None:
 
 def test_generic():
     """
-    Test correct types if you substitute types in generic
+    Test correctness of types if you substitute types in generic
     :return:
     """
     MyType = BaseOrchServMsg[BodyModel, HeaderModel]

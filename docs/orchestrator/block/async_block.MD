@@ -1,6 +1,6 @@
 # Module `async_block.py`
 ```text
-module with base block class for user async blocks
+Module with base block class for user async blocks
 ```
 
 > Path: `orch_serv\orchestrator\block\async_block.py`
@@ -34,7 +34,7 @@ Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
  > + property
  > ### Return
  > ```text
- > true if should execute with previous msg after empty process msg
+ > true if it should be executed with previous msg after empty process msg
  > ```
  > 
  > #### Declared returns: `bool`
@@ -63,7 +63,7 @@ Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
  > the function should only take one parameter msg: BaseOrchServMsg
  > if the `process` does not return a message to the function,
  > the message sent to the handler will be transferred
- > if it is not necessary to execute, redefine
+ > if it is not mandatory to execute, redefine
  > the variable `is_execute_after_nullable_process_msg = False` in your block
  > ```
  > 
@@ -118,7 +118,7 @@ Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
  > + `logger`: Optional[Logger] - orchestrator logger
  > ## Function  `set_next`
  > ```text
- > Save Next handler after this handler in flow
+ > Save next handler after this handler in flow
  > ```
  > 
  > ### Argument(s)
@@ -134,7 +134,7 @@ Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
  > #### Declared returns: `AsyncBaseBlock`
  > ## Function  `get_next`
  > ```text
- > the method returns the next block after the current one
+ > the method returns the next block
  > ```
  > 
  > ### Return

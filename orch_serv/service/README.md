@@ -1,13 +1,13 @@
 # orch_serv.service
 
-> The module contains classes for creating a microservice. Able to perform different tasks.
+> The module contains classes for a microservice creation. Able to perform different tasks.
 
 ## Service creation
 
 #### Process logic
 > Class with message processing logic for a given command
 
-> There can be several such classes with different logic.
+> There can be several such classes with different logics.
 > The `target_command` must be unique
 
 ```python

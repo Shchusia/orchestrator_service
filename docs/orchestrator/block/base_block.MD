@@ -50,15 +50,15 @@ Base class for handling sync blocks
  > ### Return
  > ```text
  > AsyncBaseBlock
- > :raise Exception: some exception if error in time init handler if
+ > :raise Exception: some exception if error is in time init handler if
  > handler provided as type
- > :raise TypeError: if handler not is instance of type SyncBaseBlock
+ > :raise TypeError: if handler is not instance of type SyncBaseBlock
  > ```
  > 
  > #### Declared returns: `SyncBaseBlock`
  > ## Function  `get_next`
  > ```text
- > the method returns the next block after the current one
+ > the method returns the next block after
  > ```
  > 
  > ### Decorator(s)
@@ -104,7 +104,7 @@ Base class for handling sync blocks
  > Function to be redefined in subclasses which contains
  > the main logic of this block
  > If necessary, after executing this function, execute
- > the post function method must return a message
+ > the post function method that must return a message
  > ```
  > 
  > ### Decorator(s)
@@ -127,8 +127,8 @@ Base class for handling async blocks
 ### SubElement(s)
  > ## Function  `pre_handler_function`
  > ```text
- > The function that will be executed before the main handler
- > must return a message if the message is not returned,
+ > The function that will be executed before the main handler.
+ > Must return a message, if the message is not returned,
  > then the message will not get into the handler
  > ```
  > 
@@ -146,14 +146,14 @@ Base class for handling async blocks
  > ## Function  `name_block`
  > ```text
  > Unique name to identify block
- > for override in subclass   name_block
+ > to override in subclass name_block
  > ```
  > 
  > ### Decorator(s)
  > + property
  > ## Function  `set_next`
  > ```text
- > Save Next handler after this handler in flow
+ > Save next handler after this handler in flow
  > ```
  > 
  > ### Decorator(s)
@@ -171,7 +171,7 @@ Base class for handling async blocks
  > #### Declared returns: `AsyncBaseBlock`
  > ## Function  `get_next`
  > ```text
- > the method returns the next block after the current one
+ > the method returns the next block after
  > ```
  > 
  > ### Decorator(s)

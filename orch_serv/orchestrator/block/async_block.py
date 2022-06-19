@@ -1,5 +1,5 @@
 """
-module with base block class for user async blocks
+Module with base block class for user async blocks
 """
 # pylint: disable=not-callable, inconsistent-mro
 import types
@@ -42,7 +42,7 @@ class AsyncBlock(AsyncBaseBlock, ABC):
     def is_execute_after_nullable_process_msg(self) -> bool:
         """
         Execute if the block handler did not return a message
-        :return: true if should execute with previous msg after empty process msg
+        :return: true if it should be executed with previous msg after empty process msg
         :rtype: bool
         """
         return True
@@ -74,7 +74,7 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         the function should only take one parameter msg: BaseOrchServMsg
         if the `process` does not return a message to the function,
          the message sent to the handler will be transferred
-        if it is not necessary to execute, redefine
+        if it is not mandatory to execute, redefine
          the variable `is_execute_after_nullable_process_msg = False` in your block
         :return: async function if exist pre_handler_function
         :rtype: Optional[Callable[[BaseOrchServMsg],
@@ -162,7 +162,7 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         self, handler: Union[AsyncBaseBlock, Type[AsyncBaseBlock]]
     ) -> AsyncBaseBlock:
         """
-        Save Next handler after this handler in flow
+        Save next handler after this handler in flow
         :param  handler: block for execution after current
         :type  handler: Union[AsyncBaseBlock, Type[AsyncBaseBlock]]
         :return: AsyncBaseBlock
@@ -182,7 +182,7 @@ class AsyncBlock(AsyncBaseBlock, ABC):
 
     def get_next(self) -> Optional[AsyncBaseBlock]:
         """
-        the method returns the next block after the current one
+        the method returns the next block
         :return: next block if exist
         :rtype: Optional[AsyncBaseBlock]
         """

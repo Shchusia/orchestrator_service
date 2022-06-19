@@ -1,6 +1,6 @@
 # Module `exc.py`
 ```text
-Module consolidate all exceptions lib
+Module consolidating all exceptions lib
 ```
 
 > Path: `orch_serv\exc.py`
@@ -40,7 +40,7 @@ is not found in the flow
 ## Class `FlowBlockException`
 ```text
 Class custom exception
-for wrong type of flow block
+for incorrect type of flow block
 ```
 
 ### Basses(s)
@@ -87,7 +87,7 @@ Exception if dict flow is empty
  > + `msg`: Optional[str] - empty doc string
 ## Class `WrongTypeException`
 ```text
-Exception for incorrect inputted types
+Exception for incorrect input types
 ```
 
 ### Basses(s)
@@ -113,7 +113,7 @@ a synchronous orchestra, or vice versa
  > + `is_target`: bool - empty doc string
 ## Class `NotFoundDefaultError`
 ```text
-If provided default value but default value not exist in processed data
+If provided default value but default value does not exist in processed data
 ```
 
 ### Basses(s)
@@ -126,7 +126,7 @@ If provided default value but default value not exist in processed data
  > + `is_target`: bool - empty doc string
 ## Class `NotUniqueBlockInFlowError`
 ```text
-If provided default value but default value not exist in processed data
+If provided default value but default value does not exist in processed data
 ```
 
 ### Basses(s)
@@ -184,7 +184,7 @@ Class for exceptions in BuilderService
 + ServiceException
 ## Class `IncorrectDefaultCommand`
 ```text
-among the available commands, there is no default command
+Among the available commands, there is no default command
 ```
 
 ### Basses(s)

@@ -2,11 +2,11 @@ PROJECT:
   # Project name
   title: "orch_serv"
   # Project description
-  description: ""
+  description: "A library for microservice architecture, for interconnected services with different execution sequences, for orchestration services designed for such kind of services relationships."
   # Repository URL
   repository: "https://github.com/Shchusia/orchestrator_service"
   # Project version
-  release: "0.1.0"
+  release: "0.1.1"
 AUTHOR:
   # Author full info
   author: "Denis Shchutskyi"

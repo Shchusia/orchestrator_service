@@ -25,7 +25,7 @@ class AsyncOrchestrator(SyncOrchestrator):
         """
         Message processing method
 
-        !!! the presence of a `target` in the message is more priority
+        !!! the presence of a `target` in the message has higher priority
          than the presence of a `flow`
         :param message: message to process
         :type message: BaseOrchServMsg

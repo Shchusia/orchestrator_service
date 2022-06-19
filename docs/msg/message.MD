@@ -51,7 +51,7 @@ Base message class for processing and to use the library
  > ## Function  `get_source`
  > ```text
  > ### For orchestrator ###
- > Add to the message the source where
+ > Adding the source to the message where
  > the message was processed (will be processed)
  > Method is required to be implemented
  > pair method to method set_source
@@ -105,7 +105,7 @@ Base message class for processing and to use the library
  > ```text
  > ### For orchestrator ###
  > Method returns the name of the command that should execute the given message
- > necessary if you don’t need a flow but want to execute only one
+ > mandatory if you don’t need a flow but want to execute only one
  > block for a message
  > ```
  > 
@@ -118,7 +118,7 @@ Base message class for processing and to use the library
  > ## Function  `get_command`
  > ```text
  > ### For service ###
- > Method returns the name of the processor name
+ > Method returns the name of the processor
  > that should execute the given message
  > ```
  > 

@@ -1,5 +1,5 @@
 """
-Sync Block
+Module with base block class for user sync blocks
 """
 # pylint: disable=not-callable
 from __future__ import annotations
@@ -18,7 +18,18 @@ from .base_block import SyncBaseBlock
 
 class SyncBlock(SyncBaseBlock, ABC):
     """
-    The main class for inheriting the blocks that make up the flow of tasks execution
+    Base block for sync mode
+    :attr _next_handler: the object of the next handler
+     in the flow where this block participates
+    :type _next_handler: SyncBaseBlock
+    :attr _pre_handler_function: function called before this block's handler
+    :type _pre_handler_function:  Optional[
+        Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]
+    ]
+    :attr _post_handler_function: function called after this block's handler
+    :type _post_handler_function:  Optional[
+        Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]
+    ]
     """
 
     _next_handler: SyncBaseBlock = None
@@ -33,7 +44,7 @@ class SyncBlock(SyncBaseBlock, ABC):
     def is_execute_after_nullable_process_msg(self) -> bool:
         """
         Execute if the block handler did not return a message
-        :return: true if should execute with previous msg after empty process msg
+        :return: true if it should be executed with previous msg after empty process msg
         :rtype: bool
         """
         return True
@@ -43,15 +54,15 @@ class SyncBlock(SyncBaseBlock, ABC):
         self,
     ) -> Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]:
         """
-        A class property that returns an asynchronous function that will be
+        A class property that returns an synchronous function that will be
          called before being sent to the main handler.
         the function should only take one parameter msg: BaseOrchServMsg
         Attention!!!
         The function must return a message object.
-        If the function does not return a message, then the handler will not be called
-        :return: async function if exist pre_handler_function
-        :rtype: Optional[Callable[[BaseOrchServMsg],
-         Awaitable[Optional[BaseOrchServMsg]]]]
+         If the function does not return a message, then the handler will not be called
+        :return: sync function if exist pre_handler_function
+        :rtype: Optional[
+            Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]
         """
         return self._pre_handler_function
 
@@ -60,16 +71,16 @@ class SyncBlock(SyncBaseBlock, ABC):
         self,
     ) -> Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]:
         """
-        A class property that returns an asynchronous function that will be
+        A class property that returns an synchronous function that will be
          called after this block`s handler.
         the function should only take one parameter msg: BaseOrchServMsg
         if the `process` does not return a message to the function,
          the message sent to the handler will be transferred
-        if it is not necessary to execute, redefine
+        if it is not mandatory to execute, redefine
          the variable `is_execute_after_nullable_process_msg = False` in your block
-        :return: async function if exist pre_handler_function
-        :rtype: Optional[Callable[[BaseOrchServMsg],
-         Awaitable[Optional[BaseOrchServMsg]]]]
+        :return: sync function if exist pre_handler_function
+        :rtype: Optional[
+         Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]
         """
         return self._post_handler_function
 
@@ -145,9 +156,9 @@ class SyncBlock(SyncBaseBlock, ABC):
         self, handler: Union[SyncBaseBlock, Type[SyncBaseBlock]]
     ) -> SyncBaseBlock:
         """
-        Save Next handler after this handler in flow
-        :param handler: block for execution after current
-        :type handler: Union[SyncBaseBlock, Type[SyncBaseBlock]]
+        Save next handler after this handler in flow
+        :param  handler: block for execution after current
+        :type  handler: Union[SyncBaseBlock, Type[SyncBaseBlock]]
         :return: SyncBaseBlock
         :raise Exception: some exception if error in time init handler if
          handler provided as type
@@ -166,7 +177,7 @@ class SyncBlock(SyncBaseBlock, ABC):
 
     def get_next(self) -> Optional[SyncBaseBlock]:
         """
-        the method returns the next block after the current one
+        the method returns the next block
         :return: next block if exist
         :rtype: Optional[SyncBaseBlock]
         """
