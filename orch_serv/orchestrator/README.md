@@ -1,11 +1,12 @@
 # orch_serv.orchestrator
 
-> The module contains classes for creating an orchestrator
+> The module contains classes for orchestrator creation
 
 ## Service creation
 
 #### Create block 
-> service image - knows how to send a message so that the microservice to which it is attached receives and processes it
+> **Service Image** - knows how to send a message such that the relevant microservice receives and processes it 
+
 
 ```python
 from orch_serv import BaseOrchServMsg
@@ -21,7 +22,7 @@ class ExampleBlock(SyncBlock):
 ```
 
 #### Create flow 
-> A chain of blocks connected by one processing goal is actually one task
+> A chain of blocks connected by one processing goal is considered as one task
 
 ```python
 from typing import Optional

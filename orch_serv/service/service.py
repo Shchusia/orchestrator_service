@@ -85,7 +85,7 @@ class CommandHandler(ABC):
 
     def get_from_swap_scope(self, key: str) -> Optional[Any]:
         """
-        Method gets from the global scope a value available for all services
+        Method gets a value available for all services from the global scope.
         :param str key: name key to get value
         :return: data if exist or None
         """
@@ -110,7 +110,7 @@ class CommandHandler(ABC):
 
     def del_from_swap_scope(self, key: str) -> bool:
         """
-        Method removes attribute from swap_scope if was exist
+        Method removes attribute from swap_scope if any
         """
         is_dropped = False
         if self._service_instance:
@@ -165,7 +165,7 @@ class CommandHandlerPostProcessStrategy(CommandHandler, ABC):
         self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None
     ) -> None:
         """
-        method does post processing
+        method for post-processing
         e.g. sending to another queue
         , must be overridden in the inheritor
         :param MessageQueue msg:
@@ -177,14 +177,14 @@ class CommandHandlerPostProcessStrategy(CommandHandler, ABC):
 
 class AsyncCommandHandlerProcessStrategy(CommandHandler, ABC):
     """
-    Handler class for base processing messga
+    Handler class for base processing message
     """
 
     @property
     def target_command(self):
         """
-        this command will determine that the message should be processed
-        by this particular service
+        this command will determine that the message
+        should be processed by this particular service
         must be unique within the service
         """
         raise NotImplementedError
@@ -194,7 +194,7 @@ class AsyncCommandHandlerProcessStrategy(CommandHandler, ABC):
         self, msg: BaseOrchServMsg
     ) -> Union[Tuple[BaseOrchServMsg, Any], BaseOrchServMsg]:
         """
-        the main method for executing the logic of this handler, must be overridden
+        the main method for this handler execution logic, must be overridden
         in the inheritor
         :param MessageQueue msg: msg from queue
         :return: MessageQueue or None if return None post handler will not be called
@@ -212,7 +212,7 @@ class AsyncCommandHandlerPostProcessStrategy(CommandHandler, ABC):
         self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None
     ) -> None:
         """
-        method does post processing
+        method does post-processing
         e.g. sending to another queue
         , must be overridden in the inheritor
         :param MessageQueue msg:
@@ -228,7 +228,7 @@ class DefaultPostProcessStrategy(CommandHandlerPostProcessStrategy):
         default post process function for sync service
         :param BaseOrchServMsg msg: msg received after processing
         :param Optional[Any] additional_data:
-        :return:
+        :return: None
         """
         pass
 
@@ -238,10 +238,10 @@ class AsyncDefaultPostProcessStrategy(AsyncCommandHandlerPostProcessStrategy):
         self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None
     ) -> None:
         """
-        default post process function for sync service
+        default post process function for async service
         :param BaseOrchServMsg msg: msg received after processing
         :param Optional[Any] additional_data:
-        :return: nothing
+        :return: None
         """
         pass
 
@@ -309,7 +309,7 @@ class ServiceBlock:
         ],
     ) -> None:
         """
-        Setter service processor and check correct type
+        Setups service processor and checks type
         :param processor:
         :raise ServiceBlockException:
         :return:
@@ -348,7 +348,7 @@ class ServiceBlock:
         ],
     ) -> None:
         """
-        Setter service processor and check correct type
+        Setups service processor and checks type
         :param post_processor:
         :raise ServiceBlockException:
         :return:
@@ -432,7 +432,7 @@ class ServiceBuilder:
         ],
     ) -> None:
         """
-        Setter service processor and check correct type
+        Setups service processor and checks correct type
         :param post_processor:
         :raise ServiceBlockException: if incorrect type
         :return:
@@ -450,7 +450,7 @@ class ServiceBuilder:
     @staticmethod
     def check_is_post_processor(obj: Any, message_error: str):
         """
-        Method check is correct obj to post_processor
+        Method checks if obj is post_processor
         :param obj:
         :param message_error:
         :raise ServiceBlockException: if incorrect type
@@ -514,7 +514,7 @@ class ServiceBuilder:
         self, service_instance: Service, logger: Optional[Logger] = None
     ) -> Dict[str, ServiceCommand]:
         """
-        Method builds all commands current service.
+        Method builds all commands' current service.
         :param service_instance: current service
         :param Optional[Logger] logger: logger
         :return: {command_name: ServiceCommand} dict commands and proccess classes
@@ -596,7 +596,7 @@ class Service(ABC):
 
     def __validate_service_builder(self, service_builder: ServiceBuilder):
         """
-        Help function for validate service_builder object
+        Help function for service_builder object validation
         :param service_builder:
         :return:
         """
@@ -670,7 +670,7 @@ class Service(ABC):
         self, message: BaseOrchServMsg, is_force_return: bool = False
     ) -> Optional[BaseOrchServMsg]:
         """
-        the main function of processing received messages
+        the main function to process received messages
         :param BaseOrchServMsg message: message to process
         :param bool is_force_return: return msgs all time after execution
         :return: not processed msgs or received msgs if is_force_return==True
@@ -691,7 +691,7 @@ class Service(ABC):
                 else:
                     self.logger.debug(
                         "Don't send to post-processing because"
-                        " processor don't return data."
+                        " processor doesn't return data."
                     )
             except Exception as exc:
                 is_return_message = True

@@ -1,5 +1,5 @@
 """
-Setup GenDoc
+Setup orch_serv
 """
 import os
 import pathlib
@@ -32,7 +32,7 @@ def get_version() -> Optional[str]:
 
 def get_packages():
     """
-    Method get packages for apply into lib
+    Method for getting packages used in the lib
     """
     ignore = ["__pycache__"]
 
@@ -47,7 +47,7 @@ def get_packages():
 setup(
     name=LIB_NAME,
     version=get_version(),
-    description="Library for quick build service and interaction management",
+    description="Library for fast build service and interaction management",
     author="Denis Shchutkiy",
     long_description=open("README_PYPI.md").read(),
     long_description_content_type="text/markdown",

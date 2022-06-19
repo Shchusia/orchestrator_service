@@ -54,7 +54,7 @@ Block for FlowBuilder
 ## Class `FlowBuilder`
 ```text
 Flow building class
-build chain flow from flow blocks
+build chain flow from its blocks
 ```
 
 ### SubElement(s)

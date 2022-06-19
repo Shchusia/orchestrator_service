@@ -137,7 +137,7 @@ class FlowBlock:
 class FlowBuilder:
     """
     Flow building class
-    build chain flow from flow blocks
+    build chain flow from its blocks
     """
 
     def __init__(self, step: FlowBlock, *args):

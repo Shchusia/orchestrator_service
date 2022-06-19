@@ -49,16 +49,16 @@ class SyncBaseBlock(ABC):
         :param  handler: block for execution after current
         :type  handler: Union[AsyncBaseBlock, Type[AsyncBaseBlock]]
         :return: AsyncBaseBlock
-        :raise Exception: some exception if error in time init handler if
+        :raise Exception: some exception if error is in time init handler if
          handler provided as type
-        :raise TypeError: if handler not is instance of type SyncBaseBlock
+        :raise TypeError: if handler is not instance of type SyncBaseBlock
         """
         raise NotImplementedError
 
     @abstractmethod
     def get_next(self) -> SyncBaseBlock:
         """
-        the method returns the next block after the current one
+        the method returns the next block after
         :return: next block if exist
         :rtype: Optional[AsyncBaseBlock]
         """
@@ -91,7 +91,7 @@ class SyncBaseBlock(ABC):
         Function to be redefined in subclasses which contains
          the main logic of this block
         If necessary, after executing this function, execute
-         the post function method must return a message
+         the post function method that must return a message
         :param message: message to process
         :type message: BaseOrchServMsg
         :return: message after processing
@@ -110,8 +110,8 @@ class AsyncBaseBlock(ABC):
         self,
     ) -> Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]:
         """
-        The function that will be executed before the main handler
-         must return a message if the message is not returned,
+        The function that will be executed before the main handler.
+         Must return a message, if the message is not returned,
          then the message will not get into the handler
         """
         raise NotImplementedError
@@ -129,14 +129,14 @@ class AsyncBaseBlock(ABC):
     def name_block(self):
         """
         Unique name to identify block
-        for override in subclass   name_block
+        to override in subclass name_block
         """
         raise NotImplementedError
 
     @abstractmethod
     def set_next(self, handler: AsyncBaseBlock) -> AsyncBaseBlock:
         """
-        Save Next handler after this handler in flow
+        Save next handler after this handler in flow
         :param  handler: block for execution after current
         :type  handler: Union[AsyncBaseBlock, Type[AsyncBaseBlock]]
         :return: AsyncBaseBlock
@@ -149,14 +149,11 @@ class AsyncBaseBlock(ABC):
     @abstractmethod
     def get_next(self) -> Optional[AsyncBaseBlock]:
         """
-        the method returns the next block after the current one
+        the method returns the next block after
         :return: next block if exist
         :rtype: Optional[AsyncBaseBlock]
         """
-        """
-        method for get next handler if exist
-        :return: next block
-        """
+
         raise NotImplementedError
 
     @abstractmethod

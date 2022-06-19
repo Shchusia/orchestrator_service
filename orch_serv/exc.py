@@ -1,5 +1,5 @@
 """
-Module consolidate all exceptions lib
+Module consolidating all exceptions lib
 """
 
 # pylint: disable=non-parent-init-called, super-init-not-called
@@ -40,7 +40,7 @@ class FlowException(OrchestratorException):
 class FlowBlockException(OrchestratorException):
     """
     Class custom exception
-    for wrong type of flow block
+    for incorrect type of flow block
     """
 
     def __init__(self, message: str = ""):
@@ -91,7 +91,7 @@ class NoDateException(OrchestratorException):
 
 class WrongTypeException(OrchestratorException):
     """
-    Exception for incorrect inputted types
+    Exception for incorrect input types
     """
 
     def __init__(self, variable: str = "flows", type_variable: str = "any"):
@@ -120,7 +120,7 @@ class WorkTypeMismatchException(OrchestratorException):
 
 class NotFoundDefaultError(OrchestratorException):
     """
-    If provided default value but default value not exist in processed data
+    If provided default value but default value does not exist in processed data
     """
 
     def __init__(
@@ -136,7 +136,7 @@ class NotFoundDefaultError(OrchestratorException):
 
 class NotUniqueBlockInFlowError(OrchestratorException):
     """
-    If provided default value but default value not exist in processed data
+    If provided default value but default value does not exist in processed data
     """
 
     def __init__(self, block_name: str, flow_name: str):
@@ -201,7 +201,7 @@ class ServiceBuilderException(ServiceException):
 
 class IncorrectDefaultCommand(ServiceException):
     """
-    among the available commands, there is no default command
+    Among the available commands, there is no default command
     """
 
     def __init__(self, command: str, list_command: List[str]):

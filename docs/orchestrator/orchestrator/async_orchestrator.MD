@@ -18,7 +18,7 @@ override handle function for async mode
  > ## Function `async` `handle`
  > ```text
  > Message processing method
- > !!! the presence of a `target` in the message is more priority
+ > !!! the presence of a `target` in the message has higher priority
  > than the presence of a `flow`
  > ```
  > 

@@ -56,7 +56,7 @@ class BaseOrchServMsg(
     def get_source(self) -> Optional[str]:
         """
         ### For orchestrator ###
-        Add to the message the source where
+        Adding the source to the message where
           the message was processed (will be processed)
 
         Method is required to be implemented
@@ -103,7 +103,7 @@ class BaseOrchServMsg(
         """
         ### For orchestrator ###
         Method returns the name of the command that should execute the given message
-        necessary if you don’t need a flow but want to execute only one
+        mandatory if you don’t need a flow but want to execute only one
          block for a message
         :return: title block to execution
         :rtype: str
@@ -113,7 +113,7 @@ class BaseOrchServMsg(
     def get_command(self) -> Optional[str]:
         """
         ### For service ###
-        Method returns the name of the processor name
+        Method returns the name of the processor
         that should execute the given message
         :return: title processor to execution
         :rtype: str
