@@ -60,8 +60,10 @@ class CommandHandler(ABC):
         """
         if isinstance(service, Service):
             self._service_instance = service
+        else:
+            raise TypeError(f"Type must be Service but not {service}")
 
-    def set_to_swap_scope(self, key: str, data: Any) -> bool:
+    def set_to_swap_scope(self, key: str, data: Any) -> bool:  # pragma: no cover
         """
         Method adds a value to the global scope for access from all services
         :param str key: name key
@@ -83,7 +85,7 @@ class CommandHandler(ABC):
                 self.logger.warning("You can't use swap because it is not initialized ")
         return is_added
 
-    def get_from_swap_scope(self, key: str) -> Optional[Any]:
+    def get_from_swap_scope(self, key: str) -> Optional[Any]:  # pragma: no cover
         """
         Method gets a value available for all services from the global scope.
         :param str key: name key to get value
@@ -108,7 +110,7 @@ class CommandHandler(ABC):
                 )
         return data
 
-    def del_from_swap_scope(self, key: str) -> bool:
+    def del_from_swap_scope(self, key: str) -> bool:  # pragma: no cover
         """
         Method removes attribute from swap_scope if any
         """
@@ -134,7 +136,7 @@ class CommandHandlerProcessStrategy(CommandHandler, ABC):
     """
 
     @property
-    def target_command(self):
+    def target_command(self):  # pragma: no cover
         """
         this command will determine that the message should be processed
         by this particular service
@@ -181,7 +183,7 @@ class AsyncCommandHandlerProcessStrategy(CommandHandler, ABC):
     """
 
     @property
-    def target_command(self):
+    def target_command(self):  # pragma: no cover
         """
         this command will determine that the message
         should be processed by this particular service
@@ -608,7 +610,7 @@ class Service(ABC):
         self._service_commands = service_builder
 
     @property
-    def service_commands(self) -> ServiceBuilder:
+    def service_commands(self) -> ServiceBuilder:  # pragma: no cover
         if not self._service_commands:
             raise NotImplementedError
         return self._service_commands
@@ -617,7 +619,7 @@ class Service(ABC):
     def service_commands(self, service_builder: ServiceBuilder) -> None:
         self.__validate_service_builder(service_builder)
 
-    def _validate_data(self):
+    def _validate_data(self):  # pragma: no cover
         """
         Help function to validate data service
         """
