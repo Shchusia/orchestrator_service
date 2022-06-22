@@ -145,7 +145,7 @@ class CommandHandlerProcessStrategy(CommandHandler, ABC):
     @abstractmethod
     def process(
         self, msg: BaseOrchServMsg
-    ) -> Union[Tuple[BaseOrchServMsg, Any], BaseOrchServMsg]:
+    ) -> Union[Tuple[BaseOrchServMsg, Any], BaseOrchServMsg]:  # pragma: no cover
         """
         the main method for executing the logic of this handler, must be overridden
         in the inheritor
@@ -163,7 +163,7 @@ class CommandHandlerPostProcessStrategy(CommandHandler, ABC):
     @abstractmethod
     def post_process(
         self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None
-    ) -> None:
+    ) -> None:  # pragma: no cover
         """
         method for post-processing
         e.g. sending to another queue
@@ -192,7 +192,7 @@ class AsyncCommandHandlerProcessStrategy(CommandHandler, ABC):
     @abstractmethod
     async def process(
         self, msg: BaseOrchServMsg
-    ) -> Union[Tuple[BaseOrchServMsg, Any], BaseOrchServMsg]:
+    ) -> Union[Tuple[BaseOrchServMsg, Any], BaseOrchServMsg]:  # pragma: no cover
         """
         the main method for this handler execution logic, must be overridden
         in the inheritor
@@ -210,7 +210,7 @@ class AsyncCommandHandlerPostProcessStrategy(CommandHandler, ABC):
     @abstractmethod
     async def post_process(
         self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None
-    ) -> None:
+    ) -> None:  # pragma: no cover
         """
         method does post-processing
         e.g. sending to another queue
