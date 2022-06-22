@@ -70,6 +70,14 @@ class FourthBlock(SyncBlock):
         return None
 
 
+class FifthBlock(SyncBlock):
+    name_block = "fifth block"
+    is_execute_after_nullable_process_msg = False
+
+    def process(self, msg: BaseOrchServMsg):
+        raise Exception
+
+
 class FirstAsyncBlock(AsyncBlock):
     name_block = "first async block"
 
@@ -101,6 +109,14 @@ class FourthAsyncBlock(AsyncBlock):
     async def process(self, msg: BaseOrchServMsg):
         CONST_LIST_ASYNC.append(4)
         return None
+
+
+class FifthAsyncBlock(AsyncBlock):
+    name_block = "fifth async block"
+    is_execute_after_nullable_process_msg = False
+
+    async def process(self, msg: BaseOrchServMsg):
+        raise Exception
 
 
 MSG_TO_PROCESS_IN_FIRST_BLOCK = MyTestModel(body=dict(), header=dict())
