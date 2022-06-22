@@ -142,7 +142,6 @@ class SyncOrchestrator:
         """
         :return:  list allowed blocks
         """
-        print(self._targets)
         return list(self._targets.keys())
 
     def _validate_data(self) -> None:
@@ -188,7 +187,9 @@ class SyncOrchestrator:
         attribute_to_get: str,
         names_to_ignore: Optional[List[str]] = list(),
         type_data: str = "block",
-    ) -> Dict[str, Type[Union[SyncFlow, AsyncFlow, SyncBlock, AsyncBlock]]]:
+    ) -> Dict[
+        str, Type[Union[SyncFlow, AsyncFlow, SyncBlock, AsyncBlock]]
+    ]:  # pragma: no cover
         """
         The method prepares the data for the orchestrator to work
         Converts data from a list or retrieves from a module
@@ -221,6 +222,8 @@ class SyncOrchestrator:
                 if not issubclass(clazz.__base__, type_to_compare):
                     raise TypeError(f"{type_data} is not inheritor {type_to_compare}")
                 unique_identifier = getattr(clazz, attribute_to_get)
+                if unique_identifier in names_to_ignore:
+                    continue
                 if _data.get(unique_identifier):
                     raise UniqueNameException(unique_identifier, type_data)
                 _data[unique_identifier] = clazz
@@ -231,6 +234,8 @@ class SyncOrchestrator:
                         continue
                     if issubclass(obj.__base__, type_to_compare):
                         unique_identifier = getattr(obj, attribute_to_get)
+                        if unique_identifier in names_to_ignore:
+                            continue
                         if _data.get(unique_identifier):
                             raise UniqueNameException(unique_identifier, type_data)
                         _data[unique_identifier] = obj
@@ -242,6 +247,8 @@ class SyncOrchestrator:
                     if obj.__class__.__name__ in names_to_ignore:
                         continue
                     unique_identifier = getattr(obj, attribute_to_get)
+                    if unique_identifier in names_to_ignore:
+                        continue
                     if _data.get(unique_identifier):
                         raise UniqueNameException(unique_identifier, type_data)
                     _data[unique_identifier] = obj

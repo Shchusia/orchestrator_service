@@ -12,6 +12,7 @@ from orch_serv.exc import (
     NotFoundDefaultError,
     UniqueNameException,
     WorkTypeMismatchException,
+    WrongTypeException,
 )
 from tests.settings.settings_orchestrator import (
     settings_correct_orchestrator_async_blocks,
@@ -34,17 +35,27 @@ from tests.settings.settings_orchestrator.settings_orchestrator_msgs import (
     ASYNC_INCORRECT_MSG_SECOND_FLOW_SECOND_BLOCK,
     ASYNC_INCORRECT_MSG_SECOND_FLOW_SECOND_BLOCK2,
     ASYNC_INCORRECT_MSG_TO_BLOCK,
+    CORRECT_EMPTY_MSG,
     CORRECT_MSG_FIRST_FLOW_FIRST_BLOCK,
     CORRECT_MSG_FIRST_FLOW_SECOND_BLOCK,
     CORRECT_MSG_SECOND_FLOW_FIRST_BLOCK,
     CORRECT_MSG_SECOND_FLOW_SECOND_BLOCK,
+    CORRECT_MSG_TO_ASYNC_BLOCK_WITH_EXCEPTION,
+    CORRECT_MSG_TO_BLOCK_WITH_EXCEPTION,
     CORRECT_MSG_TO_FIRST_BLOCK,
     CORRECT_MSG_TO_SECOND_BLOCK,
     INCORRECT_MSG_SECOND_FLOW_SECOND_BLOCK,
     INCORRECT_MSG_SECOND_FLOW_SECOND_BLOCK2,
     INCORRECT_MSG_TO_BLOCK,
+    INCORRECT_MSG_TO_NotExistedBLOCK,
 )
-from tests.settings.settings_test_block import CONST_LIST_ASYNC, CONST_LIST_SYNC
+from tests.settings.settings_test_block import (
+    CONST_LIST_ASYNC,
+    CONST_LIST_SYNC,
+    FirstBlock,
+    SecondBlock,
+)
+from tests.settings.settings_test_flow import SecondTestFlow, TestFlow
 
 
 def test_init_orchestrator():
@@ -209,6 +220,49 @@ def test_init_orchestrator():
             flows = settings_correct_orchestrator_flows
 
         Orchestrator(default_block="test")
+    SyncOrchestrator(
+        flows=[TestFlow, SecondTestFlow()],
+        blocks=[FirstBlock, SecondBlock],
+        blocks_to_ignore=[settings_correct_orchestrator_blocks.FirstBlock.__name__],
+        # flows_to_ignore=[settings_correct_orchestrator_flows.TestFlow.__name__],
+        flows_to_ignore=[TestFlow.name_flow],
+    )
+    SyncOrchestrator(
+        flows=settings_correct_orchestrator_flows,
+        blocks=[FirstBlock, SecondBlock()],
+        blocks_to_ignore=[settings_correct_orchestrator_blocks.FirstBlock.__name__],
+        # flows_to_ignore=[settings_correct_orchestrator_flows.TestFlow.__name__],
+        flows_to_ignore=[TestFlow.name_flow],
+    )
+    with pytest.raises(TypeError):
+        SyncOrchestrator(
+            blocks=settings_correct_orchestrator_flows,
+            flows=[FirstBlock, SecondBlock],
+            blocks_to_ignore=[settings_correct_orchestrator_blocks.FirstBlock.__name__],
+            # flows_to_ignore=[settings_correct_orchestrator_flows.TestFlow.__name__],
+            flows_to_ignore=[TestFlow.name_flow],
+        )
+    with pytest.raises(WrongTypeException):
+        SyncOrchestrator(
+            blocks=(FirstBlock, SecondBlock),
+            flows=settings_correct_orchestrator_flows,
+            blocks_to_ignore=[settings_correct_orchestrator_blocks.FirstBlock.__name__],
+            # flows_to_ignore=[settings_correct_orchestrator_flows.TestFlow.__name__],
+            flows_to_ignore=[TestFlow.name_flow],
+        )
+    with pytest.raises(NoDateException):
+        SyncOrchestrator(
+            blocks=[FirstBlock, SecondBlock],
+            flows=[TestFlow],
+            blocks_to_ignore=[settings_correct_orchestrator_blocks.FirstBlock.__name__],
+            # flows_to_ignore=[settings_correct_orchestrator_flows.TestFlow.__name__],
+            flows_to_ignore=[TestFlow.name_flow],
+        )
+    with pytest.raises(UniqueNameException):
+        SyncOrchestrator(
+            blocks=[FirstBlock, FirstBlock()],
+            flows=[TestFlow],
+        )
 
 
 def test_init_async_orchestrator():
@@ -468,6 +522,19 @@ def test_orchestrator_handler():
     assert orchestrator.get_list_blocks().sort() == list_blocks.sort()
     assert orchestrator.get_list_flows().sort() == list_flows.sort()
 
+    orchestrator = SyncOrchestrator(
+        flows=settings_correct_orchestrator_flows,
+        blocks=settings_correct_orchestrator_blocks,
+    )
+    res = orchestrator.handle(INCORRECT_MSG_TO_NotExistedBLOCK)
+    assert INCORRECT_MSG_TO_NotExistedBLOCK == res
+    orchestrator.handle(deepcopy(CORRECT_MSG_TO_SECOND_BLOCK))
+    orchestrator.handle(deepcopy(CORRECT_MSG_TO_SECOND_BLOCK))
+    res = orchestrator.handle(deepcopy(CORRECT_MSG_TO_BLOCK_WITH_EXCEPTION))
+    assert res == CORRECT_MSG_TO_BLOCK_WITH_EXCEPTION
+    res = orchestrator.handle(deepcopy(CORRECT_EMPTY_MSG))
+    assert res == CORRECT_EMPTY_MSG
+
 
 @pytest.mark.asyncio
 async def test_async_orchestrator_handler():
@@ -558,3 +625,16 @@ async def test_async_orchestrator_handler():
         list_flows.append(clazz.name_flow)
     assert orchestrator.get_list_blocks().sort() == list_blocks.sort()
     assert orchestrator.get_list_flows().sort() == list_flows.sort()
+
+    orchestrator = AsyncOrchestrator(
+        flows=settings_correct_orchestrator_async_flows,
+        blocks=settings_correct_orchestrator_async_blocks,
+    )
+    res = await orchestrator.handle(INCORRECT_MSG_TO_NotExistedBLOCK)
+    assert INCORRECT_MSG_TO_NotExistedBLOCK == res
+    await orchestrator.handle(deepcopy(ASYNC_CORRECT_MSG_TO_SECOND_BLOCK))
+    await orchestrator.handle(deepcopy(ASYNC_CORRECT_MSG_TO_SECOND_BLOCK))
+    res = await orchestrator.handle(deepcopy(CORRECT_MSG_TO_ASYNC_BLOCK_WITH_EXCEPTION))
+    assert res == CORRECT_MSG_TO_ASYNC_BLOCK_WITH_EXCEPTION
+    res = await orchestrator.handle(deepcopy(CORRECT_EMPTY_MSG))
+    assert res == CORRECT_EMPTY_MSG

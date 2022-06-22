@@ -139,13 +139,13 @@ class ThirdAsyncPostProcessHandler(AsyncCommandHandlerPostProcessStrategy):
 class MySyncService(Service):
     service_commands = ServiceBuilder(
         ServiceBlock(
-            processor=FirstProcessHandler, post_processor=FirstPostProcessHandler
+            processor=FirstProcessHandler(), post_processor=FirstPostProcessHandler
         ),
         ServiceBlock(
             processor=SecondProcessHandler,
         ),
         ServiceBlock(
-            processor=ThirdProcessHandler, post_processor=ThirdPostProcessHandler
+            processor=ThirdProcessHandler, post_processor=ThirdPostProcessHandler()
         ),
         default_post_process=SecondPostProcessHandler,
     )

@@ -131,6 +131,30 @@ def test_block():
     with pytest.raises(NotImplementedError):
         TestSecondClass().post_handler_function
 
+    def test_funct(msg):
+        pass
+
+    block_f = FirstBlock()
+    block_f.pre_handler_function = test_funct
+    assert block_f.pre_handler_function == test_funct
+    block_f.post_handler_function = test_funct
+    assert block_f.post_handler_function == test_funct
+    block_f = FirstBlock()
+
+    block_f.pre_handler_function = ""
+    block_f.post_handler_function = ""
+    assert block_f.pre_handler_function is None
+    assert block_f.post_handler_function is None
+
+    with pytest.raises(TypeError):
+        block_f.pre_handler_function = 1
+    with pytest.raises(TypeError):
+        block_f.pre_handler_function = "sad"
+    with pytest.raises(TypeError):
+        block_f.post_handler_function = 1
+    with pytest.raises(TypeError):
+        block_f.post_handler_function = "sad"
+
 
 @pytest.mark.asyncio
 async def test_async_block():
@@ -229,3 +253,27 @@ async def test_async_block():
         TestSecondClass().pre_handler_function
     with pytest.raises(NotImplementedError):
         TestSecondClass().post_handler_function
+
+    async def test_funct(msg):
+        pass
+
+    block_f = FirstAsyncBlock()
+    block_f.pre_handler_function = test_funct
+    assert block_f.pre_handler_function == test_funct
+    block_f.post_handler_function = test_funct
+    assert block_f.post_handler_function == test_funct
+    block_f = FirstAsyncBlock()
+
+    block_f.pre_handler_function = ""
+    block_f.post_handler_function = ""
+    assert block_f.pre_handler_function is None
+    assert block_f.post_handler_function is None
+
+    with pytest.raises(TypeError):
+        block_f.pre_handler_function = 1
+    with pytest.raises(TypeError):
+        block_f.pre_handler_function = "sad"
+    with pytest.raises(TypeError):
+        block_f.post_handler_function = 1
+    with pytest.raises(TypeError):
+        block_f.post_handler_function = "sad"
