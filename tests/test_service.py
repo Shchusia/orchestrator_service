@@ -1,3 +1,5 @@
+import logging
+
 import pytest
 
 from orch_serv.exc import (
@@ -41,6 +43,8 @@ from tests.settings.settings_test_service import (
     msg_to_third_handler_swap_async,
     msg_to_third_handler_with_error,
 )
+
+DEFAULT_LOGGER = logging.getLogger(__name__)
 
 
 def test_setup_service():
@@ -186,6 +190,24 @@ def test_setup_service():
             )
 
         MyService()
+
+    fph = FirstProcessHandler()
+    log = fph.logger
+    fph.set_logger(None)
+    assert fph.logger == log
+    fph.set_logger(DEFAULT_LOGGER)
+    assert fph.logger == DEFAULT_LOGGER
+    assert log != DEFAULT_LOGGER
+    with pytest.raises(TypeError):
+        fph.set_logger(FirstProcessHandler)
+    with pytest.raises(TypeError):
+        fph.set_logger(FirstProcessHandler())
+    with pytest.raises(TypeError):
+        fph.set_service_instance(FirstProcessHandler)
+    with pytest.raises(TypeError):
+        fph.set_service_instance(FirstProcessHandler())
+    with pytest.raises(TypeError):
+        fph.set_service_instance(None)
 
 
 def test_setup_async_service():

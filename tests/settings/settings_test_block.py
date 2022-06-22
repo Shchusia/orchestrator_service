@@ -49,6 +49,33 @@ class SecondBlock(SyncBlock):
 
     def process(self, msg: BaseOrchServMsg):
         CONST_LIST_SYNC.append(2)
+        return msg
+
+
+class ThirdBlock(SyncBlock):
+    name_block = "third block"
+    is_execute_after_nullable_process_msg = True
+
+    def process(self, msg: BaseOrchServMsg):
+        CONST_LIST_SYNC.append(3)
+        return None
+
+
+class FourthBlock(SyncBlock):
+    name_block = "fourth block"
+    is_execute_after_nullable_process_msg = False
+
+    def process(self, msg: BaseOrchServMsg):
+        CONST_LIST_SYNC.append(4)
+        return None
+
+
+class FifthBlock(SyncBlock):
+    name_block = "fifth block"
+    is_execute_after_nullable_process_msg = False
+
+    def process(self, msg: BaseOrchServMsg):
+        raise Exception
 
 
 class FirstAsyncBlock(AsyncBlock):
@@ -63,6 +90,33 @@ class SecondAsyncBlock(AsyncBlock):
 
     async def process(self, msg: BaseOrchServMsg):
         CONST_LIST_ASYNC.append(2)
+        return msg
+
+
+class ThirdAsyncBlock(AsyncBlock):
+    name_block = "third async block"
+    is_execute_after_nullable_process_msg = True
+
+    async def process(self, msg: BaseOrchServMsg):
+        CONST_LIST_ASYNC.append(3)
+        return None
+
+
+class FourthAsyncBlock(AsyncBlock):
+    name_block = "fourth async block"
+    is_execute_after_nullable_process_msg = False
+
+    async def process(self, msg: BaseOrchServMsg):
+        CONST_LIST_ASYNC.append(4)
+        return None
+
+
+class FifthAsyncBlock(AsyncBlock):
+    name_block = "fifth async block"
+    is_execute_after_nullable_process_msg = False
+
+    async def process(self, msg: BaseOrchServMsg):
+        raise Exception
 
 
 MSG_TO_PROCESS_IN_FIRST_BLOCK = MyTestModel(body=dict(), header=dict())
@@ -72,6 +126,10 @@ MSG_TO_PROCESS_IN_SECOND_BLOCK = MyTestModel(
 MSG_TO_PROCESS_IN_SECOND_ASYNC_BLOCK = MyTestModel(
     body=dict(), header=dict(source="first async block")
 )
+MSG_TO_PROCESS_IN_THIRD_ASYNC_BLOCK = MyTestModel(body=dict(), header=dict())
+MSG_TO_PROCESS_IN_FORTH_ASYNC_BLOCK = MyTestModel(body=dict(), header=dict())
+MSG_TO_PROCESS_IN_THIRD_SYNC_BLOCK = MyTestModel(body=dict(), header=dict())
+MSG_TO_PROCESS_IN_FORTH_SYNC_BLOCK = MyTestModel(body=dict(), header=dict())
 
 
 def tst_method_with_correct_processing(msg: BaseOrchServMsg) -> BaseOrchServMsg:

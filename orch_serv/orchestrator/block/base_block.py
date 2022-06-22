@@ -17,7 +17,9 @@ class SyncBaseBlock(ABC):
     @property
     def pre_handler_function(
         self,
-    ) -> Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]:
+    ) -> Optional[
+        Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]
+    ]:  # pragma: no cover
         """
         The function that will be executed before the main handler
          must return a message if the message is not returned,
@@ -28,14 +30,16 @@ class SyncBaseBlock(ABC):
     @property
     def post_handler_function(
         self,
-    ) -> Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]:
+    ) -> Optional[
+        Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]
+    ]:  # pragma: no cover
         """
         function to be executed after the main handler
         """
         raise NotImplementedError
 
     @property
-    def name_block(self):
+    def name_block(self):  # pragma: no cover
         """
         Unique name to identify block
         for override in subclass   name_block
@@ -43,7 +47,7 @@ class SyncBaseBlock(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def set_next(self, handler: SyncBaseBlock) -> SyncBaseBlock:
+    def set_next(self, handler: SyncBaseBlock) -> SyncBaseBlock:  # pragma: no cover
         """
         Save Next handler after this handler in flow
         :param  handler: block for execution after current
@@ -56,7 +60,7 @@ class SyncBaseBlock(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_next(self) -> SyncBaseBlock:
+    def get_next(self) -> SyncBaseBlock:  # pragma: no cover
         """
         the method returns the next block after
         :return: next block if exist
@@ -65,7 +69,7 @@ class SyncBaseBlock(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_list_flow(self) -> str:
+    def get_list_flow(self) -> str:  # pragma: no cover
         """
         Method return str steps flow
         :return: str
@@ -73,7 +77,7 @@ class SyncBaseBlock(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def handle(self, message: BaseOrchServMsg) -> None:
+    def handle(self, message: BaseOrchServMsg) -> None:  # pragma: no cover
         """
         A function that determines which handler should now process
          the message based on the source from which the message came.
@@ -86,7 +90,9 @@ class SyncBaseBlock(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def process(self, message: BaseOrchServMsg) -> Optional[BaseOrchServMsg]:
+    def process(
+        self, message: BaseOrchServMsg
+    ) -> Optional[BaseOrchServMsg]:  # pragma: no cover
         """
         Function to be redefined in subclasses which contains
          the main logic of this block
@@ -108,7 +114,9 @@ class AsyncBaseBlock(ABC):
     @property
     def pre_handler_function(
         self,
-    ) -> Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]:
+    ) -> Optional[
+        Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
+    ]:  # pragma: no cover
         """
         The function that will be executed before the main handler.
          Must return a message, if the message is not returned,
@@ -119,14 +127,16 @@ class AsyncBaseBlock(ABC):
     @property
     def post_handler_function(
         self,
-    ) -> Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]:
+    ) -> Optional[
+        Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
+    ]:  # pragma: no cover
         """
         function to be executed after the main handler
         """
         raise NotImplementedError
 
     @property
-    def name_block(self):
+    def name_block(self):  # pragma: no cover
         """
         Unique name to identify block
         to override in subclass name_block
@@ -134,7 +144,7 @@ class AsyncBaseBlock(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def set_next(self, handler: AsyncBaseBlock) -> AsyncBaseBlock:
+    def set_next(self, handler: AsyncBaseBlock) -> AsyncBaseBlock:  # pragma: no cover
         """
         Save next handler after this handler in flow
         :param  handler: block for execution after current
@@ -147,7 +157,7 @@ class AsyncBaseBlock(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_next(self) -> Optional[AsyncBaseBlock]:
+    def get_next(self) -> Optional[AsyncBaseBlock]:  # pragma: no cover
         """
         the method returns the next block after
         :return: next block if exist
@@ -157,7 +167,7 @@ class AsyncBaseBlock(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_list_flow(self) -> str:
+    def get_list_flow(self) -> str:  # pragma: no cover
         """
         Method return str steps flow
         :return: str
@@ -165,7 +175,7 @@ class AsyncBaseBlock(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def handle(self, message: BaseOrchServMsg) -> None:
+    async def handle(self, message: BaseOrchServMsg) -> None:  # pragma: no cover
         """
         A function that determines which handler should now process
          the message based on the source from which the message came.
@@ -178,7 +188,9 @@ class AsyncBaseBlock(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def process(self, message: BaseOrchServMsg) -> Optional[BaseOrchServMsg]:
+    async def process(
+        self, message: BaseOrchServMsg
+    ) -> Optional[BaseOrchServMsg]:  # pragma: no cover
         """
         Function to be redefined in subclasses which contains
          the main logic of this block

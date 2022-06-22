@@ -44,23 +44,16 @@ class FlowBlock:
         :param  post_handler_function: optional function for execution after block
         """
         try:
-            if isinstance(obj_block, type):
-                if getattr(obj_block, "__base__"):
-                    if obj_block.__base__.__name__ in ["Block", "AsyncBlock"]:
-                        self.obj_block = obj_block
-                        self.pre_handler_function = pre_handler_function
-                        self.post_handler_function = post_handler_function
-                        return
-                    elif issubclass(obj_block.__base__, (SyncBlock, AsyncBlock)):
-
-                        self.obj_block = obj_block
-                        self.pre_handler_function = pre_handler_function
-                        self.post_handler_function = post_handler_function
-                        return
-
-            elif issubclass(type(obj_block), (SyncBlock, AsyncBlock)):
+            if isinstance(obj_block, type) and issubclass(
+                obj_block, (SyncBlock, AsyncBlock)
+            ):
                 self.obj_block = obj_block
+                self.pre_handler_function = pre_handler_function
+                self.post_handler_function = post_handler_function
+                return
 
+            elif isinstance(obj_block, (SyncBlock, AsyncBlock)):
+                self.obj_block = obj_block
                 self.pre_handler_function = pre_handler_function
                 self.post_handler_function = post_handler_function
                 return
@@ -183,7 +176,7 @@ class Flow:
     is_contains_duplicat_blocks: bool = False
 
     @property
-    def name_flow(self) -> str:
+    def name_flow(self) -> str:  # pragma: no cover
         """
         Unique name to identify flow
         for override in subclass 'name_flow'
@@ -192,7 +185,9 @@ class Flow:
         raise NotImplementedError
 
     @property
-    def _base_class_for_blocks(self) -> Type[Union[AsyncBlock, SyncBlock]]:
+    def _base_class_for_blocks(
+        self,
+    ) -> Type[Union[AsyncBlock, SyncBlock]]:  # pragma: no cover
         """
         An additional property for child classes to make the flow work only
          with synchronous or asynchronous blocks.
@@ -202,7 +197,7 @@ class Flow:
         raise NotImplementedError
 
     @property
-    def steps_flow(self):
+    def steps_flow(self):  # pragma: no cover
         """
         blocks that make up the current flow
         :return:
@@ -210,7 +205,7 @@ class Flow:
         raise NotImplementedError
 
     @steps_flow.setter
-    def steps_flow(self, flow: FlowBuilder):
+    def steps_flow(self, flow: FlowBuilder):  # pragma: no cover
         """
         check the set value to property `steps_flow` value
         :param FlowBuilder flow: builder flow for current flow
