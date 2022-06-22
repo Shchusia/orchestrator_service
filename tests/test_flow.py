@@ -19,6 +19,8 @@ from tests.settings.settings_test_block import (
     MSG_TO_PROCESS_IN_SECOND_BLOCK,
     MSG_TO_PROCESS_IN_THIRD_ASYNC_BLOCK,
     MSG_TO_PROCESS_IN_THIRD_SYNC_BLOCK,
+    FirstAsyncBlock,
+    FirstBlock,
 )
 from tests.settings.settings_test_flow import (
     CorrectTestFlowWithDublicatBlocks,
@@ -119,3 +121,17 @@ async def test_async_flow_handling():
     assert CONST_LIST_ASYNC == [-1, 3, -1, -3]
     await flow_4.to_go_with_the_flow(MSG_TO_PROCESS_IN_FORTH_ASYNC_BLOCK)
     assert CONST_LIST_ASYNC == [-1, 3, -1, -3, -1, 4]
+    assert flow_4.get_steps() == "fourth async block -> end"
+
+
+def test_flow_block():
+    fb = FlowBlock(FirstBlock)
+    FlowBlock(FirstBlock())
+    FlowBlock(FirstAsyncBlock)
+    FlowBlock(FirstAsyncBlock())
+    with pytest.raises(FlowBlockException):
+        FlowBlock(ThirdTestAsyncFlow)
+    with pytest.raises(TypeError):
+        fb.init_block(ThirdTestAsyncFlow)
+    with pytest.raises(TypeError):
+        fb.init_block(FirstBlock)

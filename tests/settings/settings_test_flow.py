@@ -1,3 +1,6 @@
+"""
+Test fl
+"""
 from orch_serv import AsyncFlow, BaseOrchServMsg, FlowBlock, FlowBuilder, SyncFlow
 
 from .settings_test_block import (
@@ -184,7 +187,7 @@ class ThirdTestAsyncFlow(AsyncFlow):
 
     steps_flow = FlowBuilder(
         FlowBlock(
-            ThirdAsyncBlock,
+            ThirdAsyncBlock(),
             pre_handler_function=async_tst_method_with_correct_processing,
             post_handler_function=async_tst_method_with_correct_processing,
         ),
