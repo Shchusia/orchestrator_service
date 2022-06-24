@@ -3,7 +3,7 @@ Module consolidating all exceptions lib
 """
 
 # pylint: disable=non-parent-init-called, super-init-not-called
-from typing import List, Optional
+from typing import Any, List, Optional
 
 
 class OrchServError(Exception):
@@ -208,5 +208,84 @@ class IncorrectDefaultCommand(ServiceException):
         self.message = (
             f"The `{command}` command which is the default "
             f"command is not among the valid commands : {str(list_command)}"
+        )
+        Exception.__init__(self, self.message)
+
+
+class StepperException(OrchServError):
+    """
+    Main exception class exceptions with Stepper
+    """
+
+
+class NoDataForExecutionStepException(StepperException):
+    """
+    Exception for empty response
+    """
+
+    def __init__(
+        self,
+        step: str,
+    ):
+        self.message = (
+            f"Object run step `{step}` didn't return data. "
+            f"Check object logic or change settings Stepper.is_execute_if_empty = True."
+        )
+
+        Exception.__init__(self, self.message)
+
+
+class ConsistencyStepsException(StepperException):
+    """
+    handling attribute error
+    for cases when the data returned by the
+     previous object + additional arguments declared during
+     block initialization do not fit the method structure
+    """
+
+    def __init__(
+        self,
+        step: str,
+        previous_step: str,
+        signature_step_obj: str,
+        return_annotation_previous_step_obj: str,
+        received_from_previous_step: Any,
+        args_on_init_step: Any,
+    ):
+        self.message = (
+            f"Error occurred while trying to execute a step {step}. "
+            f"The error is related to the attributes passed to the method."
+            f"Method expects the following signature `({signature_step_obj})`. "
+            f"From previous step `{previous_step}`->"
+            f" {return_annotation_previous_step_obj}"
+            f" received value(s) {received_from_previous_step} "
+            f"additional arguments passed during step"
+            f" initialization {args_on_init_step}. "
+            f"Check the reality of the input and output data."
+        )
+
+        Exception.__init__(self, self.message)
+
+
+class DataConsistencyError(StepperException):
+    """
+    Error when expected and passed data do not match
+    """
+
+    def __init__(self, obj: str, errors: List[str]):
+        self.message = f"Error during check object{obj}. Error(s):\n {','.join(errors)}"
+        Exception.__init__(self, self.message)
+
+
+class ExtraAttributeError(StepperException):
+    """
+    If in kwargs for function provided extra attributes
+    """
+
+    def __init__(self, obj: str, extra_attributes: list[str], obj_attributes: str):
+        self.message = (
+            f"When declaring a step for an object `{obj}`"
+            f" extra attribute(s) were passed `{','.join(extra_attributes)}`."
+            f" Allowed attribute(s): {obj_attributes}"
         )
         Exception.__init__(self, self.message)
