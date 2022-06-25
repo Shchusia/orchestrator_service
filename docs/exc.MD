@@ -193,4 +193,66 @@ Among the available commands, there is no default command
  > ## Function  `__init__`
  > ### Argument(s)
  > + `command`: str - empty doc string
- > + `list_command`: List[str] - empty doc string
+ > + `list_command`: List[str] - empty doc string
+## Class `StepperException`
+```text
+Main exception class exceptions with Stepper
+```
+
+### Basses(s)
++ OrchServError
+## Class `NoDataForExecutionStepException`
+```text
+Exception for empty response
+```
+
+### Basses(s)
++ StepperException
+### SubElement(s)
+ > ## Function  `__init__`
+ > ### Argument(s)
+ > + `step`: str - empty doc string
+## Class `ConsistencyStepsException`
+```text
+handling attribute error
+for cases when the data returned by the
+previous object + additional arguments declared during
+block initialization do not fit the method structure
+```
+
+### Basses(s)
++ StepperException
+### SubElement(s)
+ > ## Function  `__init__`
+ > ### Argument(s)
+ > + `step`: str - empty doc string
+ > + `previous_step`: str - empty doc string
+ > + `signature_step_obj`: str - empty doc string
+ > + `return_annotation_previous_step_obj`: str - empty doc string
+ > + `received_from_previous_step`: Any - empty doc string
+ > + `args_on_init_step`: Any - empty doc string
+## Class `DataConsistencyError`
+```text
+Error when expected and passed data do not match
+```
+
+### Basses(s)
++ StepperException
+### SubElement(s)
+ > ## Function  `__init__`
+ > ### Argument(s)
+ > + `obj`: str - empty doc string
+ > + `errors`: List[str] - empty doc string
+## Class `ExtraAttributeError`
+```text
+If in kwargs for function provided extra attributes
+```
+
+### Basses(s)
++ StepperException
+### SubElement(s)
+ > ## Function  `__init__`
+ > ### Argument(s)
+ > + `obj`: str - empty doc string
+ > + `extra_attributes`: list[str] - empty doc string
+ > + `obj_attributes`: str - empty doc string
