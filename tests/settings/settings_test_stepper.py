@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from orch_serv import Step, Stepper, StepsBuilder
 
@@ -12,6 +12,10 @@ def tst_function_2(val1: str, val2: int, arg1: int, arg2: int):
 
 
 def tst_function_3(val1: int, val2, arg1: int = 1, arg2: int = 2):
+    pass
+
+
+def tst_function_4(val1: int, val2, arg1: int = 1, arg2: int = 2, **kwargs):
     pass
 
 
@@ -36,7 +40,7 @@ def correct_step_2(value: List[int], arg: int = 1) -> List[int]:
 
 def correct_step_3_without_response(  # type: ignore
     value: List[int], arg: int = 1
-) -> List[int]:  # noqa
+) -> Optional[List[int]]:  # noqa
     LIST_ARGS.append(value[0])
     LIST_ARGS.append(arg)
 
@@ -71,3 +75,11 @@ class MyThirdFlow(Stepper):
 
 DATA_AFTER_FIRST_FLOW = [1, 1, 1, 2, 1]
 DATA_AFTER_SECOND_FLOW = [1, 1, 1, 2, 1, 2, 2]
+
+
+def tst_function_with_optional() -> Optional[int]:
+    pass
+
+
+def tst_function_with_optional_2(val: int) -> None:
+    pass

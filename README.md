@@ -1,5 +1,9 @@
 # orch_serv
+[![Coverage Status](https://img.shields.io/badge/%20Python%20Versions-%3E%3D3.7-informational)](https://pypi.org/project/orch-serv/)
 [![Coverage Status](https://coveralls.io/repos/github/Shchusia/orchestrator_service/badge.svg)](https://coveralls.io/github/Shchusia/orchestrator_service)
+
+[![Coverage Status](https://img.shields.io/badge/Version-0.1.3-informational)](https://pypi.org/project/orch-serv/)
+[![Coverage Status](https://img.shields.io/badge/Docs-passed-green)](https://github.com/Shchusia/orchestrator_service/tree/master/docs)
 > A library for microservice architecture, for interconnected services with different execution sequences, for orchestration services designed for such kind of services relationships.
 
 
@@ -39,3 +43,7 @@ What you need to use the service:
 - define a message for the interaction of services, such that they have a single standard and override key methods,
 - define the commands in the service which are going to be executed and what to do after the main task is completed (this is divided to separate the logic).
 - [More details](./orch_serv/service/README.md)
+
+#### Bonus
+
+Added functionality for the formation of a sequence of steps - [details here](./orch_serv/stepper/README.MD)

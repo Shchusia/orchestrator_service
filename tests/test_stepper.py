@@ -10,7 +10,7 @@ from orch_serv.exc import (
     ExtraAttributeError,
     NoDataForExecutionStepException,
 )
-from orch_serv.stepper.stepper import Step, StepsBuilder
+from orch_serv.stepper.stepper import Step, Stepper, StepsBuilder
 from tests.settings.settings_test_stepper import (
     DATA_AFTER_FIRST_FLOW,
     DATA_AFTER_SECOND_FLOW,
@@ -22,13 +22,16 @@ from tests.settings.settings_test_stepper import (
     tst_function,
     tst_function_2,
     tst_function_3,
+    tst_function_4,
+    tst_function_with_optional,
+    tst_function_with_optional_2,
 )
 
 
 def test_stepper():
     """
-
-    :return:
+    tests for stepper
+        :return:
     """
     with pytest.raises(TypeError):
         Step(42)
@@ -36,7 +39,7 @@ def test_stepper():
         Step(42, val1=1, val2=2)
 
     with pytest.raises(TypeError):
-        StepsBuilder(Step(tst_function, val1=1), TestClass())
+        StepsBuilder(Step(tst_function), TestClass())
     with pytest.raises(DataConsistencyError):
         StepsBuilder(Step(tst_function), Step(tst_function_2))
     with pytest.raises(DataConsistencyError):
@@ -47,19 +50,23 @@ def test_stepper():
         StepsBuilder(Step(tst_function), Step(tst_function_2, arg3=3))
     with pytest.raises(ExtraAttributeError):
         StepsBuilder(Step(tst_function), Step(tst_function_3, arg3=3, val1=1))
+    StepsBuilder(Step(tst_function), Step(tst_function_4, arg3=3, val1=1))
+    with pytest.raises(ExtraAttributeError):
+        Step(tst_function, val1=1)
+    with pytest.raises(ExtraAttributeError):
+        Step(tst_function_2, val1=1, arg1=1, arg3=3)
+
     s1 = Step(tst_function)
     s2 = Step(tst_function_3)
 
     st = StepsBuilder(s1, s2)
-    print(s1)
-    print(str(s1))
     assert len(st) == 2
     assert len(st) == len(st.steps)
     assert s1 == st[0]
     assert s2 == st[1]
     assert isinstance(st.steps, list)
 
-    StepsBuilder(Step(tst_function), Step(tst_function_3, val1=1))
+    sb1 = StepsBuilder(Step(tst_function), Step(tst_function_3, val1=1))
     StepsBuilder(Step(tst_function), Step(tst_function_3, arg1=1))
     StepsBuilder(
         Step(tst_function),
@@ -69,6 +76,11 @@ def test_stepper():
 
     with pytest.raises(NoDataForExecutionStepException):
         MyFirstFlow().step_by_step()
+    with pytest.raises(TypeError):
+        Stepper(steps=s1)
+    with pytest.raises(NotImplementedError):
+        Stepper()
+    assert Stepper.is_execute_if_empty != Stepper(steps=sb1, is_execute_if_empty=True)
 
     assert LIST_ARGS == DATA_AFTER_FIRST_FLOW
     with pytest.raises(ConsistencyStepsException):
@@ -77,3 +89,5 @@ def test_stepper():
     resp = MySecondFlow().step_by_step()
     assert LIST_ARGS == DATA_AFTER_SECOND_FLOW
     assert resp == [3]
+
+    StepsBuilder(Step(tst_function_with_optional), Step(tst_function_with_optional_2))
