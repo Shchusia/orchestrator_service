@@ -1,9 +1,11 @@
 """
 Example how use work stepper
 """
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from orch_serv import Step, Stepper, StepsBuilder
+
+print("Example use 1")
 
 
 def function_get_data() -> List[int]:
@@ -38,4 +40,28 @@ class MyLogicFlow(Stepper):
 
 
 mlf = MyLogicFlow()
-print("response:", mlf.step_by_step())
+print("result:", mlf.step_by_step())
+
+print("Example use 2")
+AGGREGATOR = list()
+
+
+def second_example_function_1(val1: int) -> Optional[int]:
+    val1 += 1
+    AGGREGATOR.append(val1)
+    return None
+
+
+def second_example_function_2(val1: int) -> Optional[int]:
+    val1 += 1
+    AGGREGATOR.append(val1)
+    return val1
+
+
+step_builder = StepsBuilder(
+    Step(second_example_function_1),
+    Step(second_example_function_2),
+)
+stepper = Stepper(steps=step_builder, is_execute_if_empty=True)
+print("result:", stepper.step_by_step(1))
+print("aggregated:", AGGREGATOR)

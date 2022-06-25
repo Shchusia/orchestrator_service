@@ -1,7 +1,7 @@
 import enum
 import inspect
 import warnings
-from typing import Callable, Dict, Tuple, get_args, get_origin
+from typing import Callable, Dict, Tuple, Union, get_args, get_origin
 
 from orch_serv.exc import DataConsistencyError, ExtraAttributeError
 
@@ -59,9 +59,9 @@ def format_signature_parameters(parameters) -> str:  # pragma: no cover
 
 def parse_signature(obj: Callable) -> Tuple[str, str]:
     """
-
-    :param func:
-    :return:
+    parse_signature of obj
+    :param obj:
+    :return: (attributes, returned)
     """
     signature = inspect.signature(obj)
     return format_signature_parameters(signature.parameters), inspect.formatannotation(
@@ -81,24 +81,64 @@ def get_attributes_obj(obj: Callable) -> str:
     return " ,".join(list(signature.parameters.keys()))
 
 
-def validation_data_consistency(
+def is_optional(field):
+    return get_origin(field) is Union and type(None) in get_args(field)
+
+
+def validate_data_step(obj: Callable, additional_args: Dict):
+    """
+    Validate provided data for execution step
+    :param Callable obj: obj to execution
+    :param additional_args: kwargs for execution obj
+    :return: nothing
+    :raises ExtraAttributeError: if in kwargs
+    """
+    signature_func = inspect.signature(obj)
+    provided_args = set(additional_args.keys())
+    existed_attributes = set(signature_func.parameters.keys())
+    extra_attributes = provided_args - existed_attributes
+    if extra_attributes and not is_exist_keyword_variable(obj):
+        raise ExtraAttributeError(
+            obj.__name__, list(additional_args), get_attributes_obj(obj)
+        )
+
+
+def is_exist_keyword_variable(obj: Callable):
+    """
+    Check is exist **keyword variable in `obj`
+    :param Callable obj: obj to execution
+    :return: is exist in function **kwargs
+    """
+    for param in inspect.signature(obj).parameters.values():
+        if str(param.kind) == "VAR_KEYWORD":
+            return True
+    return False
+
+
+def validate_data_consistency(
     obj: Callable, return_previous_obj, additional_args: Dict
 ):
     """
-
-    :param obj:
-    :param return_previous_obj:
-    :param additional_args:
+    Function for validate data consistency between steps
+    :param Callable obj: obj to execution
+    :param return_previous_obj: annotations returned from previous step
+    :param additional_args: kwargs for execution obj
     :return: nothing
     :raises DataConsistencyError: if not consistent data
     """
     signature_func = inspect.signature(obj)
-    # print(signature_func.parameters)
     data_to_check = [return_previous_obj]
     if isinstance(return_previous_obj, tuple):
         data_to_check = list(return_previous_obj)
+    if is_optional(return_previous_obj):
+        # check is optional value
+        for val in get_args(return_previous_obj):
+            if val is not None:
+                data_to_check = [val]
+                break
     check_warnings = []
     errors = []
+
     for i, (param, val) in enumerate(signature_func.parameters.items()):
         # inspect._empty
         if i < len(data_to_check):
@@ -106,8 +146,6 @@ def validation_data_consistency(
             if val.annotation != inspect._empty:  # type: ignore
                 # check if the return type matches the expected type
                 if data_to_check[i] == val.annotation:
-                    if param in additional_args:
-                        del additional_args[param]
                     continue
                 else:
                     errors.append(
@@ -120,10 +158,12 @@ def validation_data_consistency(
             # check in args or check is default
             if param in additional_args:
                 # exist and we don't check type
-                del additional_args[param]
                 continue
             elif val.default != inspect._empty:  # type: ignore
                 # not existing in additional_args but existing default value
+                continue
+            elif str(val.kind) == "VAR_KEYWORD":
+                # for **kwargs
                 continue
             else:
                 # not returned, not existed in kwargs, not existing default value
@@ -132,10 +172,6 @@ def validation_data_consistency(
                     f" Provide a default value or pass a value when "
                     f"initializing the step"
                 )
-    if additional_args:
-        raise ExtraAttributeError(
-            obj.__name__, list(additional_args), get_attributes_obj(obj)
-        )
     if check_warnings:
         warnings.warn(
             f"orch_serv.Stepper."
