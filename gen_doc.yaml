@@ -6,7 +6,7 @@ PROJECT:
   # Repository URL
   repository: "https://github.com/Shchusia/orchestrator_service"
   # Project version
-  release: "0.1.2"
+  release: "0.1.3"
 AUTHOR:
   # Author full info
   author: "Denis Shchutskyi"
