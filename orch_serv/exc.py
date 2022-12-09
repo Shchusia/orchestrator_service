@@ -282,7 +282,7 @@ class ExtraAttributeError(StepperException):
     If in kwargs for function provided extra attributes
     """
 
-    def __init__(self, obj: str, extra_attributes: list[str], obj_attributes: str):
+    def __init__(self, obj: str, extra_attributes: List[str], obj_attributes: str):
         self.message = (
             f"When declaring a step for an object `{obj}`"
             f" extra attribute(s) were passed `{','.join(extra_attributes)}`."
