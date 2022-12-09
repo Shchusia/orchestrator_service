@@ -55,6 +55,6 @@ setup(
     url="https://github.com/Shchusia/orchestrator_service/",
     packages=get_packages(),
     keywords=["pip", LIB_NAME],
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     install_requires=["pydantic==1.9.0"],
 )
