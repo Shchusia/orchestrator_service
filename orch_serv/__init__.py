@@ -25,7 +25,7 @@ from .service import (
 )
 from .stepper import Step, Stepper, StepsBuilder
 
-__version__ = "0.1.4"
+__version__ = "0.1.7"
 __all__ = [
     "__version__",
     "BaseOrchServMsg",

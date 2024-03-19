@@ -678,7 +678,7 @@ class Service(ABC):
         :return: not processed msgs or received msgs if is_force_return==True
         """
         is_return_message = is_force_return
-        self.logger.info("Service. Started processing message %s", message)
+        self.logger.info("Service. Started processing message %s", message.dict(exclude_unset=True))
         command = self._get_service_command(message)
         if command:
             try:
@@ -707,9 +707,9 @@ class Service(ABC):
                     raise exc
         else:
             is_return_message = True
-            self.logger.warning("Not found command to process message %s", str(message))
+            self.logger.warning("Not found command to process message %s", str(message.dict(exclude_unset=True)))
 
-        self.logger.info("Service. Finished processing message %s", message)
+        self.logger.info("Service. Finished processing message %s", message.dict(exclude_unset=True))
         if is_return_message:
             return message
         return None
@@ -731,7 +731,7 @@ class AsyncService(Service, ABC):
         :return:
         """
         is_return_message = is_force_return
-        self.logger.info("Service. Started processing message %s", message)
+        self.logger.info("Service. Started processing message %s", message.dict(exclude_unset=True))
         command = self._get_service_command(message)
         if command:
             try:
@@ -754,7 +754,7 @@ class AsyncService(Service, ABC):
                 is_return_message = True
                 self.logger.warning(
                     "Error in time processing msg %s. Error %s",
-                    str(message),
+                    str(message.dict(exclude_unset=True)),
                     str(exc),
                     exc_info=True,
                 )
@@ -762,9 +762,9 @@ class AsyncService(Service, ABC):
                     raise exc
         else:
             is_return_message = True
-            self.logger.warning("Not found command to process message %s", str(message))
+            self.logger.warning("Not found command to process message %s", str(message.dict(exclude_unset=True)))
 
-        self.logger.info("Service. Finished processing message %s", message)
+        self.logger.info("Service. Finished processing message %s", message.dict(exclude_unset=True))
         if is_return_message:
             return message
         return None

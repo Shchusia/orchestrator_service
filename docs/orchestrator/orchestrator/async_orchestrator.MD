@@ -1,20 +1,20 @@
-# Module `async_orchestrator.py`
+# Module `async_orchestrator.py`
 ```text
 Module with async orchestrator
 ```
-
-> Path: `orch_serv\orchestrator\orchestrator\async_orchestrator.py`
-## Class `AsyncOrchestrator`
+
+> Path: `orch_serv/orchestrator/orchestrator/async_orchestrator.py`
+## Class `AsyncOrchestrator`
 ```text
 AsyncOrchestrator
 override handle function for async mode
 ```
-
-### Basses(s)
-+ SyncOrchestrator
-### SubElement(s)
- > `_base_class_for_flow` = AsyncFlow
- > `_base_class_for_target` = AsyncBlock
+
+### Basses(s)
++ SyncOrchestrator
+### SubElement(s)
+ > `_base_class_for_flow` = AsyncFlow
+ > `_base_class_for_target` = AsyncBlock
  > ## Function `async` `handle`
  > ```text
  > Message processing method
@@ -31,4 +31,5 @@ override handle function for async mode
  > if is_force_return is False
  > ```
  > 
- > #### Declared returns: `Optional[BaseOrchServMsg]`
+ > #### Declared returns: `Optional[BaseOrchServMsg]
+ > `

@@ -1,20 +1,20 @@
-# Module `service.py`
+# Module `service.py`
 ```text
 Module Service with help classes for build service
 ```
-
-> Path: `orch_serv\service\service.py`
-## Class `CommandHandler`
+
+> Path: `orch_serv/service/service.py`
+## Class `CommandHandler`
 ```text
 Class with method for all handlers
 ```
-
-### Basses(s)
-+ ABC
-### SubElement(s)
- > `_logger`: Logger = DEFAULT_LOGGER
- > `_service_instance`: Service = None
- > `_is_logged` = False
+
+### Basses(s)
++ ABC
+### SubElement(s)
+ > `_logger`: Logger = DEFAULT_LOGGER
+ > `_service_instance`: Service = None
+ > `_is_logged` = False
  > ## Function  `logger`
  > ```text
  > get logger
@@ -27,7 +27,8 @@ Class with method for all handlers
  > logger or None
  > ```
  > 
- > #### Declared returns: `Optional[Logger]`
+ > #### Declared returns: `Optional[Logger]
+ > `
  > ## Function  `set_logger`
  > ```text
  > Set logger to handler
@@ -40,7 +41,7 @@ Class with method for all handlers
  > nothing
  > :raise TypeError: if val is not a logger
  > ```
- > 
+ > 
  > ## Function  `set_service_instance`
  > ```text
  > set to instance handler current service object for use swap
@@ -52,7 +53,7 @@ Class with method for all handlers
  > ```text
  > nothing
  > ```
- > 
+ > 
  > ## Function  `set_to_swap_scope`
  > ```text
  > Method adds a value to the global scope for access from all services
@@ -66,7 +67,7 @@ Class with method for all handlers
  > bool: is_added_value
  > ```
  > 
- > #### Declared returns: `bool`
+ > #### Declared returns: `bool`
  > ## Function  `get_from_swap_scope`
  > ```text
  > Method gets a value available for all services from the global scope.
@@ -79,7 +80,8 @@ Class with method for all handlers
  > data if exist or None
  > ```
  > 
- > #### Declared returns: `Optional[Any]`
+ > #### Declared returns: `Optional[Any]
+ > `
  > ## Function  `del_from_swap_scope`
  > ```text
  > Method removes attribute from swap_scope if any
@@ -87,16 +89,16 @@ Class with method for all handlers
  > 
  > ### Argument(s)
  > + `key`: str - empty doc string
- > #### Declared returns: `bool`
-## Class `CommandHandlerProcessStrategy`
+ > #### Declared returns: `bool`
+## Class `CommandHandlerProcessStrategy`
 ```text
 Handler class for base processing message
 ```
-
-### Basses(s)
-+ CommandHandler
-+ ABC
-### SubElement(s)
+
+### Basses(s)
++ CommandHandler
++ ABC
+### SubElement(s)
  > ## Function  `target_command`
  > ```text
  > this command will determine that the message should be processed
@@ -105,7 +107,7 @@ Handler class for base processing message
  > ```
  > 
  > ### Decorator(s)
- > + property
+ > + property
  > ## Function  `process`
  > ```text
  > the main method for executing the logic of this handler, must be overridden
@@ -121,16 +123,17 @@ Handler class for base processing message
  > MessageQueue or None if return None post handler will not be called
  > ```
  > 
- > #### Declared returns: `Union[Tuple[BaseOrchServMsg, Any], BaseOrchServMsg]`
-## Class `CommandHandlerPostProcessStrategy`
+ > #### Declared returns: `Union[(Tuple[(BaseOrchServMsg, Any)], BaseOrchServMsg)]
+ > `
+## Class `CommandHandlerPostProcessStrategy`
 ```text
 Post Process Handler
 ```
-
-### Basses(s)
-+ CommandHandler
-+ ABC
-### SubElement(s)
+
+### Basses(s)
++ CommandHandler
++ ABC
+### SubElement(s)
  > ## Function  `post_process`
  > ```text
  > method for post-processing
@@ -142,21 +145,22 @@ Post Process Handler
  > + abstractmethod
  > ### Argument(s)
  > + `msg`: BaseOrchServMsg - empty doc string
- > + `additional_data`: Optional[Any] - optional data got from processing block
+ > + `additional_data`: Optional[Any]
+ > - optional data got from processing block
  > ### Return
  > ```text
  > None
  > ```
- > 
-## Class `AsyncCommandHandlerProcessStrategy`
+ > 
+## Class `AsyncCommandHandlerProcessStrategy`
 ```text
 Handler class for base processing message
 ```
-
-### Basses(s)
-+ CommandHandler
-+ ABC
-### SubElement(s)
+
+### Basses(s)
++ CommandHandler
++ ABC
+### SubElement(s)
  > ## Function  `target_command`
  > ```text
  > this command will determine that the message
@@ -165,7 +169,7 @@ Handler class for base processing message
  > ```
  > 
  > ### Decorator(s)
- > + property
+ > + property
  > ## Function `async` `process`
  > ```text
  > the main method for this handler execution logic, must be overridden
@@ -181,16 +185,17 @@ Handler class for base processing message
  > MessageQueue or None if return None post handler will not be called
  > ```
  > 
- > #### Declared returns: `Union[Tuple[BaseOrchServMsg, Any], BaseOrchServMsg]`
-## Class `AsyncCommandHandlerPostProcessStrategy`
+ > #### Declared returns: `Union[(Tuple[(BaseOrchServMsg, Any)], BaseOrchServMsg)]
+ > `
+## Class `AsyncCommandHandlerPostProcessStrategy`
 ```text
 Post Process Handler
 ```
-
-### Basses(s)
-+ CommandHandler
-+ ABC
-### SubElement(s)
+
+### Basses(s)
++ CommandHandler
++ ABC
+### SubElement(s)
  > ## Function `async` `post_process`
  > ```text
  > method does post-processing
@@ -202,16 +207,17 @@ Post Process Handler
  > + abstractmethod
  > ### Argument(s)
  > + `msg`: BaseOrchServMsg - empty doc string
- > + `additional_data`: Optional[Any] - optional data got from processing block
+ > + `additional_data`: Optional[Any]
+ > - optional data got from processing block
  > ### Return
  > ```text
  > None
  > ```
- > 
-## Class `DefaultPostProcessStrategy`
-### Basses(s)
-+ CommandHandlerPostProcessStrategy
-### SubElement(s)
+ > 
+## Class `DefaultPostProcessStrategy`
+### Basses(s)
++ CommandHandlerPostProcessStrategy
+### SubElement(s)
  > ## Function  `post_process`
  > ```text
  > default post process function for sync service
@@ -219,16 +225,17 @@ Post Process Handler
  > 
  > ### Argument(s)
  > + `msg`: BaseOrchServMsg - msg received after processing
- > + `additional_data`: Optional[Any] - empty doc string
+ > + `additional_data`: Optional[Any]
+ > - empty doc string
  > ### Return
  > ```text
  > None
  > ```
- > 
-## Class `AsyncDefaultPostProcessStrategy`
-### Basses(s)
-+ AsyncCommandHandlerPostProcessStrategy
-### SubElement(s)
+ > 
+## Class `AsyncDefaultPostProcessStrategy`
+### Basses(s)
++ AsyncCommandHandlerPostProcessStrategy
+### SubElement(s)
  > ## Function `async` `post_process`
  > ```text
  > default post process function for async service
@@ -236,34 +243,39 @@ Post Process Handler
  > 
  > ### Argument(s)
  > + `msg`: BaseOrchServMsg - msg received after processing
- > + `additional_data`: Optional[Any] - empty doc string
+ > + `additional_data`: Optional[Any]
+ > - empty doc string
  > ### Return
  > ```text
  > None
  > ```
- > 
-## Class `ServiceCommand`
+ > 
+## Class `ServiceCommand`
 ```text
 Structure class
 ```
-
-### Basses(s)
-+ BaseModel
-### SubElement(s)
- > `processor`: Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy] = None
- > `post_processor`: Union[CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy] = None
+
+### Basses(s)
++ BaseModel
+### SubElement(s)
+ > `processor`: Union[(CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy)]
+ > = None
+ > `post_processor`: Union[(CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy)]
+ > = None
  > ## Class `Config`
  > ### SubElement(s)
- > > `arbitrary_types_allowed` = True
-## Class `ServiceBlock`
+ > > `arbitrary_types_allowed` = True
+## Class `ServiceBlock`
 ```text
 Class for build service - one Block with process
 and post process handlers
 ```
-
-### SubElement(s)
- > `_processor`: Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy] = None
- > `_post_processor`: Optional[Union[CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy]] = None
+
+### SubElement(s)
+ > `_processor`: Union[(CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy)]
+ > = None
+ > `_post_processor`: Optional[Union[(CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy)]]
+ > = None
  > ## Function  `processor`
  > ```text
  > Property contains process handler
@@ -276,7 +288,8 @@ and post process handlers
  > process command instance
  > ```
  > 
- > #### Declared returns: `Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy]`
+ > #### Declared returns: `Union[(CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy)]
+ > `
  > ## Function  `post_processor`
  > ```text
  > Property contains post_process handler
@@ -289,7 +302,8 @@ and post process handlers
  > post_processor instance
  > ```
  > 
- > #### Declared returns: `Union[CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy]`
+ > #### Declared returns: `Union[(CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy)]
+ > `
  > ## Function  `processor`
  > ```text
  > Setups service processor and checks type
@@ -297,8 +311,10 @@ and post process handlers
  > 
  > ### Decorator(s)
  > + processor.setter
+ > 
  > ### Argument(s)
- > + `processor`: Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy, Type[CommandHandlerProcessStrategy], Type[AsyncCommandHandlerProcessStrategy]] - empty doc string
+ > + `processor`: Union[(CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy, Type[CommandHandlerProcessStrategy], Type[AsyncCommandHandlerProcessStrategy])]
+ > - empty doc string
  > ## Function  `post_processor`
  > ```text
  > Setups service processor and checks type
@@ -306,27 +322,33 @@ and post process handlers
  > 
  > ### Decorator(s)
  > + post_processor.setter
+ > 
  > ### Argument(s)
- > + `post_processor`: Optional[Union[CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy, Type[CommandHandlerPostProcessStrategy], Type[AsyncCommandHandlerPostProcessStrategy]]] - empty doc string
+ > + `post_processor`: Optional[Union[(CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy, Type[CommandHandlerPostProcessStrategy], Type[AsyncCommandHandlerPostProcessStrategy])]]
+ > - empty doc string
  > ## Function  `__init__`
  > ```text
  > Init ServiceBlock
  > ```
  > 
  > ### Argument(s)
- > + `processor`: Union[Type[CommandHandlerProcessStrategy], CommandHandlerProcessStrategy, Type[AsyncCommandHandlerProcessStrategy], AsyncCommandHandlerProcessStrategy] - empty doc string
- > + `post_processor`: Union[Type[CommandHandlerPostProcessStrategy], CommandHandlerPostProcessStrategy, Type[AsyncCommandHandlerPostProcessStrategy], AsyncCommandHandlerPostProcessStrategy] - empty doc string
-## Class `ServiceBuilder`
+ > + `processor`: Union[(Type[CommandHandlerProcessStrategy], CommandHandlerProcessStrategy, Type[AsyncCommandHandlerProcessStrategy], AsyncCommandHandlerProcessStrategy)]
+ > - empty doc string
+ > + `post_processor`: Union[(Type[CommandHandlerPostProcessStrategy], CommandHandlerPostProcessStrategy, Type[AsyncCommandHandlerPostProcessStrategy], AsyncCommandHandlerPostProcessStrategy)]
+ > - empty doc string
+## Class `ServiceBuilder`
 ```text
 Class for aggregating service commands
 ```
-
-### SubElement(s)
- > `_default_post_processor`: Union[CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy] = None
+
+### SubElement(s)
+ > `_default_post_processor`: Union[(CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy)]
+ > = None
  > ## Function  `default_post_processor`
  > ### Decorator(s)
  > + property
- > #### Declared returns: `Union[CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy]`
+ > #### Declared returns: `Union[(CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy)]
+ > `
  > ## Function  `default_post_processor`
  > ```text
  > Setups service processor and checks correct type
@@ -334,8 +356,10 @@ Class for aggregating service commands
  > 
  > ### Decorator(s)
  > + default_post_processor.setter
+ > 
  > ### Argument(s)
- > + `default_post_processor`: Union[CommandHandlerPostProcessStrategy, Type[CommandHandlerPostProcessStrategy], AsyncCommandHandlerPostProcessStrategy, Type[AsyncCommandHandlerPostProcessStrategy]] - empty doc string
+ > + `default_post_processor`: Union[(CommandHandlerPostProcessStrategy, Type[CommandHandlerPostProcessStrategy], AsyncCommandHandlerPostProcessStrategy, Type[AsyncCommandHandlerPostProcessStrategy])]
+ > - empty doc string
  > ## Function  `check_is_post_processor`
  > ```text
  > Method checks if obj is post_processor
@@ -345,11 +369,12 @@ Class for aggregating service commands
  > + staticmethod
  > ### Argument(s)
  > + `obj`: Any - empty doc string
- > + `message_error`: str - empty doc string
+ > + `message_error`: str - empty doc string
  > ## Function  `__init__`
  > ### Argument(s)
- > + `default_post_process`: Optional[Union[Type[CommandHandlerPostProcessStrategy], CommandHandlerPostProcessStrategy, Type[AsyncCommandHandlerPostProcessStrategy], AsyncCommandHandlerPostProcessStrategy]] - empty doc string
- > + *`args`: ServiceBlock - empty doc string
+ > + `default_post_process`: Optional[Union[(Type[CommandHandlerPostProcessStrategy], CommandHandlerPostProcessStrategy, Type[AsyncCommandHandlerPostProcessStrategy], AsyncCommandHandlerPostProcessStrategy)]]
+ > - empty doc string
+ > + *`args`: ServiceBlock - empty doc string
  > ## Function  `build`
  > ```text
  > Method builds all commands' current service.
@@ -357,53 +382,60 @@ Class for aggregating service commands
  > 
  > ### Argument(s)
  > + `service_instance`: Service - current service
- > + `logger`: Optional[Logger] - logger
+ > + `logger`: Optional[Logger]
+ > - logger
  > ### Return
  > ```text
  > {command_name: ServiceCommand} dict commands and proccess classes
  > ```
  > 
- > #### Declared returns: `Dict[str, ServiceCommand]`
-## Class `Service`
+ > #### Declared returns: `Dict[(str, ServiceCommand)]
+ > `
+## Class `Service`
 ```text
 Class Service for handle msg-s
 ```
-
-### Basses(s)
-+ ABC
-### SubElement(s)
- > `_service_commands`: ServiceBuilder = None
- > `_dict_handlers`: Dict[str, ServiceCommand] = dict()
- > `_default_command`: str = None
- > `_base_process_class` = CommandHandlerProcessStrategy
- > `_base_post_process_class` = CommandHandlerPostProcessStrategy
+
+### Basses(s)
++ ABC
+### SubElement(s)
+ > `_service_commands`: ServiceBuilder = None
+ > `_dict_handlers`: Dict[(str, ServiceCommand)]
+ > = dict()
+ > `_default_command`: str = None
+ > `_base_process_class` = CommandHandlerProcessStrategy
+ > `_base_post_process_class` = CommandHandlerPostProcessStrategy
  > ## Function  `__init__`
  > ### Argument(s)
- > + `service_commands`: Optional[ServiceBuilder] - empty doc string
- > + `default_command`: Optional[str] - empty doc string
- > + `logger`: Optional[Logger] - empty doc string
- > + `is_catch_exceptions`: bool - empty doc string
+ > + `service_commands`: Optional[ServiceBuilder]
+ > - empty doc string
+ > + `default_command`: Optional[str]
+ > - empty doc string
+ > + `logger`: Optional[Logger]
+ > - empty doc string
+ > + `is_catch_exceptions`: bool - empty doc string
  > ## Function  `__validate_service_builder`
  > ```text
  > Help function for service_builder object validation
  > ```
  > 
  > ### Argument(s)
- > + `service_builder`: ServiceBuilder - empty doc string
+ > + `service_builder`: ServiceBuilder - empty doc string
  > ## Function  `service_commands`
  > ### Decorator(s)
  > + property
- > #### Declared returns: `ServiceBuilder`
+ > #### Declared returns: `ServiceBuilder`
  > ## Function  `service_commands`
  > ### Decorator(s)
  > + service_commands.setter
+ > 
  > ### Argument(s)
- > + `service_builder`: ServiceBuilder - empty doc string
+ > + `service_builder`: ServiceBuilder - empty doc string
  > ## Function  `_validate_data`
  > ```text
  > Help function to validate data service
  > ```
- > 
+ > 
  > ## Function  `_get_service_command`
  > ```text
  > Function for get command to handle received message
@@ -416,7 +448,8 @@ Class Service for handle msg-s
  > handler if exist
  > ```
  > 
- > #### Declared returns: `Optional[ServiceCommand]`
+ > #### Declared returns: `Optional[ServiceCommand]
+ > `
  > ## Function  `handle`
  > ```text
  > the main function to process received messages
@@ -430,16 +463,18 @@ Class Service for handle msg-s
  > not processed msgs or received msgs if is_force_return==True
  > ```
  > 
- > #### Declared returns: `Optional[BaseOrchServMsg]`
-## Class `AsyncService`
-### Basses(s)
-+ Service
-+ ABC
-### SubElement(s)
- > `_base_process_class` = AsyncCommandHandlerProcessStrategy
- > `_base_post_process_class` = AsyncCommandHandlerPostProcessStrategy
+ > #### Declared returns: `Optional[BaseOrchServMsg]
+ > `
+## Class `AsyncService`
+### Basses(s)
++ Service
++ ABC
+### SubElement(s)
+ > `_base_process_class` = AsyncCommandHandlerProcessStrategy
+ > `_base_post_process_class` = AsyncCommandHandlerPostProcessStrategy
  > ## Function `async` `handle`
  > ### Argument(s)
  > + `message`: BaseOrchServMsg - empty doc string
  > + `is_force_return`: bool - empty doc string
- > #### Declared returns: `Optional[BaseOrchServMsg]`
+ > #### Declared returns: `Optional[BaseOrchServMsg]
+ > `

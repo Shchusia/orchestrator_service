@@ -1,6 +1,6 @@
-# Module `__init__.py`
+# Module `__init__.py`
 ```text
 import `service` module content
 ```
-
-> Path: `orch_serv\service\__init__.py`
+
+> Path: `orch_serv/service/__init__.py`
