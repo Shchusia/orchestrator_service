@@ -15,7 +15,7 @@ class BodyModel(BaseModel):
     Body model for test
     """
 
-    body_option: str
+    body_option: Optional[str] = None
 
 
 class HeaderModel(BaseModel):
@@ -23,7 +23,7 @@ class HeaderModel(BaseModel):
     Header model for test
     """
 
-    header_option: str
+    header_option: Optional[str] = None
 
 
 def body_data(is_raw: bool = True) -> Union[Dict[str, str], BodyModel]:
@@ -180,7 +180,7 @@ def test_msg_source():
         test class
         """
 
-        source: Optional[str]
+        source: Optional[str] = None
 
     class CorrectMsg(BaseOrchServMsg):
         """
@@ -219,8 +219,8 @@ def test_get_flow() -> None:
         test class
         """
 
-        source: Optional[str]
-        flow: Optional[str]
+        source: Optional[str] = None
+        flow: Optional[str] = None
 
     class CorrectMsg(BaseOrchServMsg):
         """

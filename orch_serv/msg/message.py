@@ -4,15 +4,13 @@
 from typing import Generic, Optional, TypeVar
 
 from pydantic import BaseModel, Field
-from pydantic.generics import GenericModel
+# from pydantic.generics import GenericModel
 
 SubPydanticBodyModel = TypeVar("SubPydanticBodyModel", bound=BaseModel)
 SubPydanticHeaderModel = TypeVar("SubPydanticHeaderModel", bound=BaseModel)
 
 
-class BaseOrchServMsg(
-    GenericModel, Generic[SubPydanticBodyModel, SubPydanticHeaderModel]
-):
+class BaseOrchServMsg(BaseModel, Generic[SubPydanticBodyModel,SubPydanticHeaderModel]):
     """
     Base message class for processing and to use the library
     :attr body: message body to be processed with basic information
@@ -50,7 +48,7 @@ class BaseOrchServMsg(
         ..., description="The body of the message with the " "structure you need"
     )
     header: Optional[SubPydanticHeaderModel] = Field(
-        description="Optional message header " "with the structure you need"
+        None, description="Optional message header " "with the structure you need"
     )
 
     def get_source(self) -> Optional[str]:

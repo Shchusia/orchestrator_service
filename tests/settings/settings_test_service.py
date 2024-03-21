@@ -19,12 +19,12 @@ CONST_LIST_ASYNC = []
 
 
 class BodyModel(BaseModel):
-    base_option: Optional[str]
-    with_error: Optional[bool]
+    base_option: Optional[str] = None
+    with_error: Optional[bool] = None
 
 
 class HeaderModel(BaseModel):
-    command: Optional[str]
+    command: Optional[str] = None
 
 
 class ServiceTestMessage(BaseOrchServMsg):
