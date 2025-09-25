@@ -1,7 +1,8 @@
+from collections.abc import Callable
 import enum
 import inspect
+from typing import Any, Union, get_args, get_origin
 import warnings
-from typing import Callable, Dict, Tuple, Union, get_args, get_origin
 
 from orch_serv.exc import DataConsistencyError, ExtraAttributeError
 
@@ -14,7 +15,7 @@ class ParameterKind(enum.IntEnum):
     VAR_KEYWORD = 4
 
 
-def format_signature_parameters(parameters) -> str:  # pragma: no cover
+def format_signature_parameters(parameters) -> str:
     """
     Method copied from inspect for private usage
     """
@@ -27,8 +28,8 @@ def format_signature_parameters(parameters) -> str:  # pragma: no cover
         kind = param.kind
 
         if kind == ParameterKind.POSITIONAL_ONLY.value:
-            render_pos_only_separator = True
-        elif render_pos_only_separator:
+            render_pos_only_separator = True  # pragma: no cover
+        elif render_pos_only_separator:  # pragma: no cover
             # It's not a positional-only parameter, and the flag
             # is set to 'True' (there were pos-only params before.)
             result.append("/")
@@ -37,8 +38,10 @@ def format_signature_parameters(parameters) -> str:  # pragma: no cover
         if kind == ParameterKind.VAR_POSITIONAL.value:
             # OK, we have an '*args'-like parameter, so we won't need
             # a '*' to separate keyword-only arguments
-            render_kw_only_separator = False
-        elif kind == ParameterKind.KEYWORD_ONLY.value and render_kw_only_separator:
+            render_kw_only_separator = False  # pragma: no cover
+        elif (
+            kind == ParameterKind.KEYWORD_ONLY.value and render_kw_only_separator
+        ):  # pragma: no cover
             # We have a keyword-only parameter to render and we haven't
             # rendered an '*args'-like parameter before, so add a '*'
             # separator to the parameters list ("foo(arg1, *, arg2)" case)
@@ -52,12 +55,12 @@ def format_signature_parameters(parameters) -> str:  # pragma: no cover
     if render_pos_only_separator:
         # There were only positional-only parameters, hence the
         # flag was not reset to 'False'
-        result.append("/")
+        result.append("/")  # pragma: no cover
 
     return ", ".join(result)
 
 
-def parse_signature(obj: Callable) -> Tuple[str, str]:
+def parse_signature(obj: Callable) -> tuple[str, str]:
     """
     parse_signature of obj
     :param obj:
@@ -71,7 +74,7 @@ def parse_signature(obj: Callable) -> Tuple[str, str]:
 
 def get_returned_value(obj: Callable):
     signature = inspect.signature(obj)
-    if get_origin(signature.return_annotation) == tuple:
+    if get_origin(signature.return_annotation) is tuple:
         return get_args(signature.return_annotation)
     return signature.return_annotation
 
@@ -85,7 +88,7 @@ def is_optional(field):
     return get_origin(field) is Union and type(None) in get_args(field)
 
 
-def validate_data_step(obj: Callable, additional_args: Dict):
+def validate_data_step(obj: Callable, additional_args: dict):
     """
     Validate provided data for execution step
     :param Callable obj: obj to execution
@@ -115,9 +118,9 @@ def is_exist_keyword_variable(obj: Callable):
     return False
 
 
-def validate_data_consistency(
-    obj: Callable, return_previous_obj, additional_args: Dict
-):
+def validate_data_consistency(  # noqa: C901
+    obj: Callable, return_previous_obj: Any, additional_args: dict
+) -> None:
     """
     Function for validate data consistency between steps
     :param Callable obj: obj to execution
@@ -146,14 +149,16 @@ def validate_data_consistency(
             if val.annotation != inspect._empty:  # type: ignore
                 # check if the return type matches the expected type
                 if data_to_check[i] == val.annotation:
-                    continue
+                    continue  # pragma: no cover
                 else:
                     errors.append(
                         "Expected and passed type do not match."
                         f" Expected `{val.annotation}`, passed `{data_to_check[i]}`"
                     )
             else:
-                check_warnings.append(f"Not exist annotations for variable `{param}`")
+                check_warnings.append(
+                    f"Not exist annotations for variable `{param}`"
+                )  # pragma: no cover
         else:
             # check in args or check is default
             if param in additional_args:
@@ -172,11 +177,12 @@ def validate_data_consistency(
                     f" Provide a default value or pass a value when "
                     f"initializing the step"
                 )
-    if check_warnings:
+    if check_warnings:  # pragma: no cover
         warnings.warn(
             f"orch_serv.Stepper."
             f" Warnings in time check object `{obj.__name__}`. "
-            f"Warning(s):\n {','.join(check_warnings)}"
+            f"Warning(s):\n {','.join(check_warnings)}",
+            stacklevel=1
         )
     if errors:
         raise DataConsistencyError(obj.__name__, errors)

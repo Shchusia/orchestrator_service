@@ -1,8 +1,8 @@
 # orch_serv
-[![Coverage Status](https://img.shields.io/badge/%20Python%20Versions-%3E%3D3.8-informational)](https://pypi.org/project/orch-serv/)
+[![Coverage Status](https://img.shields.io/badge/%20Python%20Versions-%3E%3D3.10-informational)](https://pypi.org/project/orch-serv/)
 [![Coverage Status](https://coveralls.io/repos/github/Shchusia/orchestrator_service/badge.svg)](https://coveralls.io/github/Shchusia/orchestrator_service)
 
-[![Coverage Status](https://img.shields.io/badge/Version-0.1.3-informational)](https://pypi.org/project/orch-serv/)
+[![Coverage Status](https://img.shields.io/badge/Version-0.2.0-informational)](https://pypi.org/project/orch-serv/)
 [![Coverage Status](https://img.shields.io/badge/Docs-passed-green)](https://github.com/Shchusia/orchestrator_service/tree/master/docs)
 > A library for microservice architecture, for interconnected services with different execution sequences, for orchestration services designed for such kind of services relationships.
 
@@ -30,7 +30,7 @@ Task | Service execution sequence
 
 For centralized management of the services interactions, we offer an **orchestrator**: service containing valid block connections.
 
-![file not found](./materials/solution_application_diagram.png "solution_application_diagram")
+![file not found](http://raw.githubusercontent.com/Shchusia/orchestrator_service/refs/heads/master/materials/solution_application_diagram.png "solution_application_diagram")
 
 What you need to do in the orchestrator service:
 - create blocks with known interaction logic with the services they belong to,

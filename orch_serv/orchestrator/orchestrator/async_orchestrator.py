@@ -1,6 +1,7 @@
 """
 Module with async orchestrator
 """
+
 from typing import Optional
 
 from orch_serv.msg import BaseOrchServMsg
@@ -19,9 +20,9 @@ class AsyncOrchestrator(SyncOrchestrator):
     _base_class_for_flow = AsyncFlow  # noqa
     _base_class_for_target = AsyncBlock  # noqa
 
-    async def handle(  # type: ignore
+    async def handle(  # noqa: C901 # type: ignore
         self, message: BaseOrchServMsg, is_force_return: bool = False
-    ) -> Optional[BaseOrchServMsg]:
+    ) -> BaseOrchServMsg | None:
         """
         Message processing method
 

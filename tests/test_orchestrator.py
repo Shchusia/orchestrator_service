@@ -3,6 +3,7 @@ Test Orchestrator
 """
 import inspect
 from copy import deepcopy
+from logging import getLogger
 
 import pytest
 
@@ -23,7 +24,7 @@ from tests.settings.settings_orchestrator import (
     settings_incorrect_async_flows_not_unique_names,
     settings_incorrect_blocks_not_unique_names,
     settings_incorrect_flows_not_unique_names,
-    settings_incorrect_flows_not_unique_names_option_2,
+    settings_incorrect_flows_not_unique_names_option_2, settings_correct_for_ignore_flows,
 )
 from tests.settings.settings_orchestrator.settings_orchestrator_msgs import (
     ASYNC_CORRECT_MSG_FIRST_FLOW_FIRST_BLOCK,
@@ -104,6 +105,16 @@ def test_init_orchestrator():
                 settings_incorrect_flows_not_unique_names.names_file_to_ignore
             ),
         )
+    # with pytest.raises(NoDateException):
+    class Orchestrator(SyncOrchestrator):
+        flows = [settings_correct_for_ignore_flows.TestFlow, settings_correct_for_ignore_flows.SecondTestFlow]
+    so = Orchestrator(
+            # flows=[settings_correct_for_ignore_flows.TestFlow, settings_correct_for_ignore_flows.SecondTestFlow],
+            flows_to_ignore=(
+                settings_correct_for_ignore_flows.names_file_to_ignore
+            ),
+        )
+    assert len(so.get_list_flows()) == 1
     with pytest.raises(NoDateException):
 
         class Orchestrator(SyncOrchestrator):

@@ -1,0 +1,45 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task help
+  help:
+    desc: Show available tasks and their description
+    silent: true
+    cmds:
+      - 'echo ""'
+      - 'echo "Usage: task [task-name] [options]"'
+      - 'echo ""'
+      - 'echo "Available tasks:"'
+      - task --list
+
+  test:
+    desc: Run tests
+    cmds:
+      - coverage run -m pytest tests -s --cov=orch_serv --cov-report=term-missing -o log_cli=true
+    silent: true
+
+  lint:
+    desc: Check code by linters
+    cmds:
+      - uv run black ./orch_serv
+      - uv run ruff  check ./orch_serv
+      - uv run mypy ./orch_serv
+
+  sync:
+    desc: Update libs
+    cmds:
+      - uv sync -U --group lint --group tests
+
+  build:
+    desc: Build library
+    cmds:
+      - uv build
+
+  publish:
+    desc: Publish the compiled library
+    cmds:
+      - uv

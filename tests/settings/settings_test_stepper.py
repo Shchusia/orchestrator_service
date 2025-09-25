@@ -11,11 +11,11 @@ def tst_function_2(val1: str, val2: int, arg1: int, arg2: int):
     pass
 
 
-def tst_function_3(val1: int, val2, arg1: int = 1, arg2: int = 2):
+def tst_function_3(val1: int, val2: int, arg1: int = 1, arg2: int = 2):
     pass
 
 
-def tst_function_4(val1: int, val2, arg1: int = 1, arg2: int = 2, **kwargs):
+def tst_function_4(val1: int, val2: int, arg1: int = 1, arg2: int = 2, **kwargs):
     pass
 
 

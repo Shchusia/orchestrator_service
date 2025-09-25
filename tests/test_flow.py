@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 import pytest
+from charset_normalizer.md import getLogger
 
 from orch_serv import FlowBlock, FlowBuilder, SyncFlow
 from orch_serv.exc import (
@@ -63,6 +64,8 @@ def test_build_flow():
                 FlowBlock(Test),
             )
 
+
+
     with pytest.raises(WorkTypeMismatchException):
         IncorrectTestFlowUseAsyncBlock()
     with pytest.raises(WorkTypeMismatchException):
@@ -71,6 +74,10 @@ def test_build_flow():
         IncorrectTestFlowWithDublicatBlocks()
 
     ctf = CorrectTestFlowWithDublicatBlocks()  # noqa
+    getLogger(__name__).warning(ctf.steps_flow)
+    getLogger(__name__).warning(ctf)
+    ctf.steps_flow = 1
+    getLogger(__name__).warning(ctf.steps_flow)
 
 
 def test_flow_handling():

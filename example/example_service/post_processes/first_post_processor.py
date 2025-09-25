@@ -12,14 +12,14 @@ from orch_serv import (
 
 
 class FirstPostProcessHandler(CommandHandlerPostProcessStrategy):
-    def post_process(self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None):
+    def post_process(self, msg: BaseOrchServMsg, additional_data: Any | None = None):
         # do something
         pass
 
 
 class FirstAsyncPostProcessHandler(AsyncCommandHandlerPostProcessStrategy):
     async def post_process(
-        self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None
+        self, msg: BaseOrchServMsg, additional_data: Any | None = None
     ):
         # do something
         pass

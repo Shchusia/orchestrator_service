@@ -19,7 +19,7 @@ class SecondHandler(CommandHandlerProcessStrategy):
 
     def process(
         self, msg: BaseOrchServMsg
-    ) -> Union[Tuple[BaseOrchServMsg, Any], BaseOrchServMsg]:
+    ) -> tuple[BaseOrchServMsg, Any] | BaseOrchServMsg:
         # do something
         return msg
 
@@ -33,6 +33,6 @@ class SecondAsyncHandler(AsyncCommandHandlerProcessStrategy):
 
     async def process(
         self, msg: BaseOrchServMsg
-    ) -> Union[Tuple[BaseOrchServMsg, Any], BaseOrchServMsg]:
+    ) -> tuple[BaseOrchServMsg, Any] | BaseOrchServMsg:
         # do something
         return msg

@@ -1,6 +1,7 @@
 """
 Flow for sync mode
 """
+
 from abc import ABC
 
 from orch_serv.msg import BaseOrchServMsg
