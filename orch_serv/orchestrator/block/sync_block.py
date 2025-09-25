@@ -1,14 +1,16 @@
 """
 Module with base block class for user sync blocks
 """
+
 # pylint: disable=not-callable
 from __future__ import annotations
 
-import types
 from abc import ABC
+from collections.abc import Callable
 from copy import deepcopy
 from logging import Logger
-from typing import Callable, Optional, Type, Union
+import types
+from typing import Optional
 
 from orch_serv.exc import FlowException
 from orch_serv.msg import BaseOrchServMsg
@@ -32,13 +34,13 @@ class SyncBlock(SyncBaseBlock, ABC):
     ]
     """
 
-    _next_handler: SyncBaseBlock = None
-    _pre_handler_function: Optional[
-        Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]
-    ] = None
-    _post_handler_function: Optional[
-        Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]
-    ] = None
+    _next_handler: SyncBaseBlock = None  # type: ignore
+    _pre_handler_function: (
+        Callable[[BaseOrchServMsg], BaseOrchServMsg | None] | None
+    ) = None
+    _post_handler_function: (
+        Callable[[BaseOrchServMsg], BaseOrchServMsg | None] | None
+    ) = None
 
     @property
     def is_execute_after_nullable_process_msg(self) -> bool:
@@ -52,7 +54,7 @@ class SyncBlock(SyncBaseBlock, ABC):
     @property
     def pre_handler_function(
         self,
-    ) -> Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]:
+    ) -> Callable[[BaseOrchServMsg], BaseOrchServMsg | None] | None:
         """
         A class property that returns an synchronous function that will be
          called before being sent to the main handler.
@@ -69,7 +71,7 @@ class SyncBlock(SyncBaseBlock, ABC):
     @property
     def post_handler_function(
         self,
-    ) -> Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]:
+    ) -> Callable[[BaseOrchServMsg], BaseOrchServMsg | None] | None:
         """
         A class property that returns an synchronous function that will be
          called after this block`s handler.
@@ -87,8 +89,8 @@ class SyncBlock(SyncBaseBlock, ABC):
     @pre_handler_function.setter  # type: ignore
     def pre_handler_function(
         self,
-        func: Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]] = None,
-    ):
+        func: Callable[[BaseOrchServMsg], BaseOrchServMsg | None] | None = None,
+    ) -> None:
         """
         Method check pre_handler_function is func
         :param func: object to check
@@ -109,8 +111,8 @@ class SyncBlock(SyncBaseBlock, ABC):
     @post_handler_function.setter  # type: ignore # noqa
     def post_handler_function(
         self,
-        func: Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]] = None,
-    ):
+        func: Callable[[BaseOrchServMsg], BaseOrchServMsg | None] | None = None,
+    ) -> None:
         """
         Method check post_handler_function is func
         :param func: object to check
@@ -130,13 +132,13 @@ class SyncBlock(SyncBaseBlock, ABC):
 
     def __init__(
         self,
-        pre_handler_function: Optional[
-            Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]
-        ] = None,
-        post_handler_function: Optional[
-            Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]
-        ] = None,
-        logger: Optional[Logger] = None,
+        pre_handler_function: (
+            Callable[[BaseOrchServMsg], BaseOrchServMsg | None] | None
+        ) = None,
+        post_handler_function: (
+            Callable[[BaseOrchServMsg], BaseOrchServMsg | None] | None
+        ) = None,
+        logger: Logger | None = None,
     ):
         """
         Init Block
@@ -152,9 +154,7 @@ class SyncBlock(SyncBaseBlock, ABC):
         self.pre_handler_function = pre_handler_function  # type: ignore # noqa
         self.post_handler_function = post_handler_function  # type: ignore # noqa
 
-    def set_next(
-        self, handler: Union[SyncBaseBlock, Type[SyncBaseBlock]]
-    ) -> SyncBaseBlock:
+    def set_next(self, handler: SyncBaseBlock | type[SyncBaseBlock]) -> SyncBaseBlock:
         """
         Save next handler after this handler in flow
         :param  handler: block for execution after current
@@ -175,7 +175,7 @@ class SyncBlock(SyncBaseBlock, ABC):
         self._next_handler = handler
         return handler
 
-    def get_next(self) -> Optional[SyncBaseBlock]:
+    def get_next(self) -> SyncBaseBlock | None:  # type: ignore
         """
         the method returns the next block
         :return: next block if exist
@@ -194,7 +194,7 @@ class SyncBlock(SyncBaseBlock, ABC):
         :return: nothing
         """
         if block.pre_handler_function:
-            message = block.pre_handler_function(message)
+            message = block.pre_handler_function(message)  # type: ignore
         if not message:
             return
         message.set_source(block.name_block)

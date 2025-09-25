@@ -7,13 +7,13 @@ from orch_serv.exc import OrchServError
 
 
 class BodyModel(BaseModel):
-    body_option: Optional[str]
+    body_option: Optional[str]= None
 
 
 class HeaderModel(BaseModel):
-    source: Optional[str]
-    flow: Optional[str]
-    target: Optional[str]
+    source: Optional[str]= None
+    flow: Optional[str]= None
+    target: Optional[str] = None
 
 
 class MyTestModel(BaseOrchServMsg):

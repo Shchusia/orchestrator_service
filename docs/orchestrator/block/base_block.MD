@@ -1,17 +1,17 @@
-# Module `base_block.py`
+# Module `base_block.py`
 ```text
 Module with block class from which flow chains are formed
 ```
-
-> Path: `orch_serv\orchestrator\block\base_block.py`
-## Class `SyncBaseBlock`
+
+> Path: `orch_serv/orchestrator/block/base_block.py`
+## Class `SyncBaseBlock`
 ```text
 Base class for handling sync blocks
 ```
-
-### Basses(s)
-+ ABC
-### SubElement(s)
+
+### Basses(s)
++ ABC
+### SubElement(s)
  > ## Function  `pre_handler_function`
  > ```text
  > The function that will be executed before the main handler
@@ -21,7 +21,8 @@ Base class for handling sync blocks
  > 
  > ### Decorator(s)
  > + property
- > #### Declared returns: `Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]`
+ > #### Declared returns: `Optional[Callable[([BaseOrchServMsg], Optional[BaseOrchServMsg])]]
+ > `
  > ## Function  `post_handler_function`
  > ```text
  > function to be executed after the main handler
@@ -29,7 +30,8 @@ Base class for handling sync blocks
  > 
  > ### Decorator(s)
  > + property
- > #### Declared returns: `Optional[Callable[[BaseOrchServMsg], Optional[BaseOrchServMsg]]]`
+ > #### Declared returns: `Optional[Callable[([BaseOrchServMsg], Optional[BaseOrchServMsg])]]
+ > `
  > ## Function  `name_block`
  > ```text
  > Unique name to identify block
@@ -37,7 +39,7 @@ Base class for handling sync blocks
  > ```
  > 
  > ### Decorator(s)
- > + property
+ > + property
  > ## Function  `set_next`
  > ```text
  > Save Next handler after this handler in flow
@@ -55,7 +57,7 @@ Base class for handling sync blocks
  > :raise TypeError: if handler is not instance of type SyncBaseBlock
  > ```
  > 
- > #### Declared returns: `SyncBaseBlock`
+ > #### Declared returns: `SyncBaseBlock`
  > ## Function  `get_next`
  > ```text
  > the method returns the next block after
@@ -68,7 +70,7 @@ Base class for handling sync blocks
  > next block if exist
  > ```
  > 
- > #### Declared returns: `SyncBaseBlock`
+ > #### Declared returns: `SyncBaseBlock`
  > ## Function  `get_list_flow`
  > ```text
  > Method return str steps flow
@@ -81,7 +83,7 @@ Base class for handling sync blocks
  > str
  > ```
  > 
- > #### Declared returns: `str`
+ > #### Declared returns: `str`
  > ## Function  `handle`
  > ```text
  > A function that determines which handler should now process
@@ -98,7 +100,7 @@ Base class for handling sync blocks
  > :raise FlowException: exception if a message with the wrong source
  > is passed to the flow
  > ```
- > 
+ > 
  > ## Function  `process`
  > ```text
  > Function to be redefined in subclasses which contains
@@ -116,15 +118,16 @@ Base class for handling sync blocks
  > message after processing
  > ```
  > 
- > #### Declared returns: `Optional[BaseOrchServMsg]`
-## Class `AsyncBaseBlock`
+ > #### Declared returns: `Optional[BaseOrchServMsg]
+ > `
+## Class `AsyncBaseBlock`
 ```text
 Base class for handling async blocks
 ```
-
-### Basses(s)
-+ ABC
-### SubElement(s)
+
+### Basses(s)
++ ABC
+### SubElement(s)
  > ## Function  `pre_handler_function`
  > ```text
  > The function that will be executed before the main handler.
@@ -134,7 +137,8 @@ Base class for handling async blocks
  > 
  > ### Decorator(s)
  > + property
- > #### Declared returns: `Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]`
+ > #### Declared returns: `Optional[Callable[([BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]])]]
+ > `
  > ## Function  `post_handler_function`
  > ```text
  > function to be executed after the main handler
@@ -142,7 +146,8 @@ Base class for handling async blocks
  > 
  > ### Decorator(s)
  > + property
- > #### Declared returns: `Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]`
+ > #### Declared returns: `Optional[Callable[([BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]])]]
+ > `
  > ## Function  `name_block`
  > ```text
  > Unique name to identify block
@@ -150,7 +155,7 @@ Base class for handling async blocks
  > ```
  > 
  > ### Decorator(s)
- > + property
+ > + property
  > ## Function  `set_next`
  > ```text
  > Save next handler after this handler in flow
@@ -168,7 +173,7 @@ Base class for handling async blocks
  > :raise TypeError: if handler not is instance of type SyncBaseBlock
  > ```
  > 
- > #### Declared returns: `AsyncBaseBlock`
+ > #### Declared returns: `AsyncBaseBlock`
  > ## Function  `get_next`
  > ```text
  > the method returns the next block after
@@ -181,7 +186,8 @@ Base class for handling async blocks
  > next block if exist
  > ```
  > 
- > #### Declared returns: `Optional[AsyncBaseBlock]`
+ > #### Declared returns: `Optional[AsyncBaseBlock]
+ > `
  > ## Function  `get_list_flow`
  > ```text
  > Method return str steps flow
@@ -194,7 +200,7 @@ Base class for handling async blocks
  > str
  > ```
  > 
- > #### Declared returns: `str`
+ > #### Declared returns: `str`
  > ## Function `async` `handle`
  > ```text
  > A function that determines which handler should now process
@@ -211,7 +217,7 @@ Base class for handling async blocks
  > :raise FlowException: exception if a message with the wrong source
  > is passed to the flow
  > ```
- > 
+ > 
  > ## Function `async` `process`
  > ```text
  > Function to be redefined in subclasses which contains
@@ -229,4 +235,5 @@ Base class for handling async blocks
  > message after processing
  > ```
  > 
- > #### Declared returns: `Optional[BaseOrchServMsg]`
+ > #### Declared returns: `Optional[BaseOrchServMsg]
+ > `

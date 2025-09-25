@@ -24,7 +24,7 @@ class HeaderModel(BaseModel):
     """
 
     header_option: str
-    source: Optional[str]
+    source: str | None
 
 
 DATA_TO_TEST = dict(

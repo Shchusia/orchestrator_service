@@ -10,12 +10,12 @@ from orch_serv import BaseOrchServMsg
 from orch_serv.orchestrator import AsyncFlow, FlowBlock, FlowBuilder, SyncFlow
 
 
-def other_method(message: BaseOrchServMsg) -> Optional[BaseOrchServMsg]:
+def other_method(message: BaseOrchServMsg) -> BaseOrchServMsg | None:
     # do something
     pass
 
 
-async def other_async_method(message: BaseOrchServMsg) -> Optional[BaseOrchServMsg]:
+async def other_async_method(message: BaseOrchServMsg) -> BaseOrchServMsg | None:
     # do something
     pass
 
@@ -37,7 +37,7 @@ class SecondFlow(SyncFlow):
     )
 
     @staticmethod
-    def static_flow_method(message: BaseOrchServMsg) -> Optional[BaseOrchServMsg]:
+    def static_flow_method(message: BaseOrchServMsg) -> BaseOrchServMsg | None:
         # do something
         pass
 
@@ -61,6 +61,6 @@ class SecondAsyncFlow(AsyncFlow):
     @staticmethod
     async def static_flow_async_method(
         message: BaseOrchServMsg,
-    ) -> Optional[BaseOrchServMsg]:
+    ) -> BaseOrchServMsg | None:
         # do something
         pass

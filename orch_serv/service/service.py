@@ -1,13 +1,14 @@
 """
 Module Service with help classes for build service
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from logging import Logger
-from typing import Any, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Optional, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from orch_serv.exc import (
     DoublePostProcessFunctionDeclaredError,
@@ -21,17 +22,17 @@ from orch_serv.msg import BaseOrchServMsg
 from orch_serv.settings import DEFAULT_LOGGER
 
 
-class CommandHandler(ABC):
+class CommandHandler:
     """
     Class with method for all handlers
     """
 
     _logger: Logger = DEFAULT_LOGGER  # for one global handler
-    _service_instance: Service = None  # single scope for service_commands
+    _service_instance: Service = None  # type: ignore # single scope for service_commands
     _is_logged = False
 
     @property
-    def logger(self) -> Optional[Logger]:
+    def logger(self) -> Logger | None:
         """
         get logger
         :return:  logger or None
@@ -63,7 +64,7 @@ class CommandHandler(ABC):
         else:
             raise TypeError(f"Type must be Service but not {service}")
 
-    def set_to_swap_scope(self, key: str, data: Any) -> bool:  # pragma: no cover
+    def set_to_swap_scope(self, key: str, data: Any) -> bool:
         """
         Method adds a value to the global scope for access from all services
         :param str key: name key
@@ -75,7 +76,7 @@ class CommandHandler(ABC):
             try:
                 setattr(self._service_instance, key, data)
                 is_added = True
-            except Exception as exc:
+            except Exception as exc:  # pragma: no cover
                 if self.logger and self._is_logged:
                     self.logger.warning(
                         "Key `%s` not added. Error %s", key, str(exc), exc_info=True
@@ -85,7 +86,7 @@ class CommandHandler(ABC):
                 self.logger.warning("You can't use swap because it is not initialized ")
         return is_added
 
-    def get_from_swap_scope(self, key: str) -> Optional[Any]:  # pragma: no cover
+    def get_from_swap_scope(self, key: str) -> Any | None:
         """
         Method gets a value available for all services from the global scope.
         :param str key: name key to get value
@@ -97,7 +98,7 @@ class CommandHandler(ABC):
                 data = getattr(self._service_instance, key)
             except Exception as exc:
                 if self.logger and self._is_logged:
-                    self.logger.warning(
+                    self.logger.warning(  # pragma: no cover
                         "Error while fetching data from swap by key %s. Error %s",
                         key,
                         str(exc),
@@ -110,7 +111,7 @@ class CommandHandler(ABC):
                 )
         return data
 
-    def del_from_swap_scope(self, key: str) -> bool:  # pragma: no cover
+    def del_from_swap_scope(self, key: str) -> bool:
         """
         Method removes attribute from swap_scope if any
         """
@@ -119,7 +120,7 @@ class CommandHandler(ABC):
             try:
                 delattr(self._service_instance, key)
                 is_dropped = True
-            except Exception as exc:
+            except Exception as exc:  # pragma: no cover
                 if self.logger and self._is_logged:
                     self.logger.warning(
                         "Key `%s` not deleted. Error %s", key, str(exc), exc_info=True
@@ -136,7 +137,7 @@ class CommandHandlerProcessStrategy(CommandHandler, ABC):
     """
 
     @property
-    def target_command(self):  # pragma: no cover
+    def target_command(self) -> str:
         """
         this command will determine that the message should be processed
         by this particular service
@@ -147,7 +148,7 @@ class CommandHandlerProcessStrategy(CommandHandler, ABC):
     @abstractmethod
     def process(
         self, msg: BaseOrchServMsg
-    ) -> Union[Tuple[BaseOrchServMsg, Any], BaseOrchServMsg]:  # pragma: no cover
+    ) -> tuple[BaseOrchServMsg, Any] | BaseOrchServMsg:
         """
         the main method for executing the logic of this handler, must be overridden
         in the inheritor
@@ -164,8 +165,8 @@ class CommandHandlerPostProcessStrategy(CommandHandler, ABC):
 
     @abstractmethod
     def post_process(
-        self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None
-    ) -> None:  # pragma: no cover
+        self, msg: BaseOrchServMsg, additional_data: Any | None = None
+    ) -> None:
         """
         method for post-processing
         e.g. sending to another queue
@@ -183,7 +184,7 @@ class AsyncCommandHandlerProcessStrategy(CommandHandler, ABC):
     """
 
     @property
-    def target_command(self):  # pragma: no cover
+    def target_command(self) -> str:
         """
         this command will determine that the message
         should be processed by this particular service
@@ -194,7 +195,7 @@ class AsyncCommandHandlerProcessStrategy(CommandHandler, ABC):
     @abstractmethod
     async def process(
         self, msg: BaseOrchServMsg
-    ) -> Union[Tuple[BaseOrchServMsg, Any], BaseOrchServMsg]:  # pragma: no cover
+    ) -> tuple[BaseOrchServMsg, Any] | BaseOrchServMsg:
         """
         the main method for this handler execution logic, must be overridden
         in the inheritor
@@ -211,8 +212,8 @@ class AsyncCommandHandlerPostProcessStrategy(CommandHandler, ABC):
 
     @abstractmethod
     async def post_process(
-        self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None
-    ) -> None:  # pragma: no cover
+        self, msg: BaseOrchServMsg, additional_data: Any | None = None
+    ) -> None:
         """
         method does post-processing
         e.g. sending to another queue
@@ -225,7 +226,7 @@ class AsyncCommandHandlerPostProcessStrategy(CommandHandler, ABC):
 
 
 class DefaultPostProcessStrategy(CommandHandlerPostProcessStrategy):
-    def post_process(self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None):
+    def post_process(self, msg: BaseOrchServMsg, additional_data: Any | None = None):  # type: ignore
         """
         default post process function for sync service
         :param BaseOrchServMsg msg: msg received after processing
@@ -237,7 +238,7 @@ class DefaultPostProcessStrategy(CommandHandlerPostProcessStrategy):
 
 class AsyncDefaultPostProcessStrategy(AsyncCommandHandlerPostProcessStrategy):
     async def post_process(
-        self, msg: BaseOrchServMsg, additional_data: Optional[Any] = None
+        self, msg: BaseOrchServMsg, additional_data: Any | None = None
     ) -> None:
         """
         default post process function for async service
@@ -253,13 +254,14 @@ class ServiceCommand(BaseModel):
     Structure class
     """
 
-    processor: Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy]
-    post_processor: Union[
-        CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy
-    ]
+    processor: CommandHandlerProcessStrategy | AsyncCommandHandlerProcessStrategy
+    post_processor: (
+        CommandHandlerPostProcessStrategy | AsyncCommandHandlerPostProcessStrategy
+    )
 
-    class Config:
-        arbitrary_types_allowed = True
+    # class Config:
+    #     arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class ServiceBlock:
@@ -268,30 +270,32 @@ class ServiceBlock:
      and post process handlers
     """
 
-    _processor: Union[
-        CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy
-    ] = None
-    _post_processor: Optional[
-        Union[CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy]
-    ] = None
+    _processor: CommandHandlerProcessStrategy | AsyncCommandHandlerProcessStrategy
+    _post_processor: (
+        CommandHandlerPostProcessStrategy
+        | AsyncCommandHandlerPostProcessStrategy
+        | None
+    ) = None
 
     @property
     def processor(
         self,
-    ) -> Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy]:
+    ) -> CommandHandlerProcessStrategy | AsyncCommandHandlerProcessStrategy:
         """
         Property contains process handler
         :return: process command instance
         :rtype: Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy]
         """
-        return self._processor
+        return self._processor  #
 
     @property
     def post_processor(
         self,
-    ) -> Union[
-        CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy
-    ]:
+    ) -> (
+        CommandHandlerPostProcessStrategy
+        | AsyncCommandHandlerPostProcessStrategy
+        | None
+    ):
         """
         Property contains post_process handler
         :return: post_processor instance
@@ -303,12 +307,12 @@ class ServiceBlock:
     @processor.setter  # type: ignore # noqa
     def processor(  # noqa
         self,
-        processor: Union[
-            CommandHandlerProcessStrategy,
-            AsyncCommandHandlerProcessStrategy,
-            Type[CommandHandlerProcessStrategy],
-            Type[AsyncCommandHandlerProcessStrategy],
-        ],
+        processor: (
+            CommandHandlerProcessStrategy
+            | AsyncCommandHandlerProcessStrategy
+            | type[CommandHandlerProcessStrategy]
+            | type[AsyncCommandHandlerProcessStrategy]
+        ),
     ) -> None:
         """
         Setups service processor and checks type
@@ -335,19 +339,18 @@ class ServiceBlock:
         ):
             self._processor = processor
         else:
-            raise exc
+            raise exc  # pragma: no cover
 
     @post_processor.setter  # type: ignore # noqa
     def post_processor(  # noqa
         self,
-        post_processor: Optional[
-            Union[
-                CommandHandlerPostProcessStrategy,
-                AsyncCommandHandlerPostProcessStrategy,
-                Type[CommandHandlerPostProcessStrategy],
-                Type[AsyncCommandHandlerPostProcessStrategy],
-            ]
-        ],
+        post_processor: (
+            CommandHandlerPostProcessStrategy
+            | AsyncCommandHandlerPostProcessStrategy
+            | type[CommandHandlerPostProcessStrategy]
+            | type[AsyncCommandHandlerPostProcessStrategy]
+            | None
+        ),
     ) -> None:
         """
         Setups service processor and checks type
@@ -373,29 +376,24 @@ class ServiceBlock:
             ):
                 self._post_processor = post_processor()
             else:
-                raise exc
+                raise exc  # pragma: no cover
         elif isinstance(
             post_processor,
             (CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy),
         ):
             self._post_processor = post_processor
         else:
-            raise exc
+            raise exc  # pragma: no cover
 
     def __init__(
         self,
-        processor: Union[
-            Type[CommandHandlerProcessStrategy],
-            CommandHandlerProcessStrategy,
-            Type[AsyncCommandHandlerProcessStrategy],
-            AsyncCommandHandlerProcessStrategy,
-        ],
-        post_processor: Union[
-            Type[CommandHandlerPostProcessStrategy],
-            CommandHandlerPostProcessStrategy,
-            Type[AsyncCommandHandlerPostProcessStrategy],
-            AsyncCommandHandlerPostProcessStrategy,
-        ] = None,
+        processor: (
+            type[CommandHandlerProcessStrategy]
+            | CommandHandlerProcessStrategy
+            | type[AsyncCommandHandlerProcessStrategy]
+            | AsyncCommandHandlerProcessStrategy
+        ),
+        post_processor: type[CommandHandlerPostProcessStrategy] | CommandHandlerPostProcessStrategy | type[AsyncCommandHandlerPostProcessStrategy] | AsyncCommandHandlerPostProcessStrategy = None,  # type: ignore
     ):
         """
         Init ServiceBlock
@@ -411,27 +409,23 @@ class ServiceBuilder:
     Class for aggregating service commands
     """
 
-    _default_post_processor: Union[
-        CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy
-    ] = None
+    _default_post_processor: CommandHandlerPostProcessStrategy | AsyncCommandHandlerPostProcessStrategy = None  # type: ignore
 
     @property
     def default_post_processor(
         self,
-    ) -> Union[
-        CommandHandlerPostProcessStrategy, AsyncCommandHandlerPostProcessStrategy
-    ]:
+    ) -> CommandHandlerPostProcessStrategy | AsyncCommandHandlerPostProcessStrategy:
         return self._default_post_processor
 
     @default_post_processor.setter
     def default_post_processor(
         self,
-        default_post_processor: Union[
-            CommandHandlerPostProcessStrategy,
-            Type[CommandHandlerPostProcessStrategy],
-            AsyncCommandHandlerPostProcessStrategy,
-            Type[AsyncCommandHandlerPostProcessStrategy],
-        ],
+        default_post_processor: (
+            CommandHandlerPostProcessStrategy
+            | type[CommandHandlerPostProcessStrategy]
+            | AsyncCommandHandlerPostProcessStrategy
+            | type[AsyncCommandHandlerPostProcessStrategy]
+        ),
     ) -> None:
         """
         Setups service processor and checks correct type
@@ -450,7 +444,7 @@ class ServiceBuilder:
             )
 
     @staticmethod
-    def check_is_post_processor(obj: Any, message_error: str):
+    def check_is_post_processor(obj: Any, message_error: str) -> Any:
         """
         Method checks if obj is post_processor
         :param obj:
@@ -477,22 +471,21 @@ class ServiceBuilder:
         ):
             return obj
         else:
-            raise exc
+            raise exc  # pragma: no cover
 
     def __init__(
         self,
         *args: ServiceBlock,
-        default_post_process: Optional[
-            Union[
-                Type[CommandHandlerPostProcessStrategy],
-                CommandHandlerPostProcessStrategy,
-                Type[AsyncCommandHandlerPostProcessStrategy],
-                AsyncCommandHandlerPostProcessStrategy,
-            ]
-        ] = None,
+        default_post_process: (
+            type[CommandHandlerPostProcessStrategy]
+            | CommandHandlerPostProcessStrategy
+            | type[AsyncCommandHandlerPostProcessStrategy]
+            | AsyncCommandHandlerPostProcessStrategy
+            | None
+        ) = None,
     ):
         self.default_post_processor = default_post_process  # type: ignore # noqa
-        list_blocks = list()  # type: List[ServiceBlock]
+        list_blocks = list()  # type: list[ServiceBlock]
         for service_block in args:
             if isinstance(service_block, ServiceBlock):
                 list_blocks.append(service_block)
@@ -507,23 +500,23 @@ class ServiceBuilder:
                     raise TypeError(
                         f"block must be instance class `ServiceBlock`."
                         f" Not {type(service_block)}"
-                    )
+                    ) from None
         if not list_blocks:
             raise EmptyCommandsException()
         self._list_blocks = list_blocks
 
     def build(
-        self, service_instance: Service, logger: Optional[Logger] = None
-    ) -> Dict[str, ServiceCommand]:
+        self, service_instance: Service, logger: Logger | None = None
+    ) -> dict[str, ServiceCommand]:
         """
         Method builds all commands' current service.
         :param service_instance: current service
         :param Optional[Logger] logger: logger
         :return: {command_name: ServiceCommand} dict commands and proccess classes
-        :rtype: Dict[str, ServiceCommand]
+        :rtype: dict[str, ServiceCommand]
         """
         logger = logger or DEFAULT_LOGGER
-        dict_commands = dict()  # type: Dict[str, ServiceCommand]
+        dict_commands = dict()  # type: dict[str, ServiceCommand]
 
         if not self.default_post_processor:
             if service_instance._base_process_class == CommandHandlerProcessStrategy:
@@ -559,22 +552,22 @@ class ServiceBuilder:
         return dict_commands
 
 
-class Service(ABC):
+class Service:
     """
     Class Service for handle msg-s
     """
 
-    _service_commands: ServiceBuilder = None
-    _dict_handlers: Dict[str, ServiceCommand] = dict()
-    _default_command: str = None
+    _service_commands: ServiceBuilder = None  # type: ignore
+    _dict_handlers: dict[str, ServiceCommand] = dict()
+    _default_command: str = None  # type: ignore
     _base_process_class = CommandHandlerProcessStrategy
     _base_post_process_class = CommandHandlerPostProcessStrategy
 
     def __init__(
         self,
-        service_commands: Optional[ServiceBuilder] = None,
-        default_command: Optional[str] = None,
-        logger: Optional[Logger] = None,
+        service_commands: ServiceBuilder | None = None,
+        default_command: str | None = None,
+        logger: Logger | None = None,
         is_catch_exceptions: bool = True,
     ):
         self._is_catch_exceptions = is_catch_exceptions
@@ -596,7 +589,7 @@ class Service(ABC):
                 self._default_command = default_command
         self._validate_data()
 
-    def __validate_service_builder(self, service_builder: ServiceBuilder):
+    def __validate_service_builder(self, service_builder: ServiceBuilder) -> None:
         """
         Help function for service_builder object validation
         :param service_builder:
@@ -610,7 +603,7 @@ class Service(ABC):
         self._service_commands = service_builder
 
     @property
-    def service_commands(self) -> ServiceBuilder:  # pragma: no cover
+    def service_commands(self) -> ServiceBuilder:
         if not self._service_commands:
             raise NotImplementedError
         return self._service_commands
@@ -619,7 +612,7 @@ class Service(ABC):
     def service_commands(self, service_builder: ServiceBuilder) -> None:
         self.__validate_service_builder(service_builder)
 
-    def _validate_data(self):  # pragma: no cover
+    def _validate_data(self) -> None:
         """
         Help function to validate data service
         """
@@ -641,26 +634,24 @@ class Service(ABC):
         for command_name, command in self._dict_handlers.items():
             if not isinstance(command.processor, self._base_process_class):
                 raise TypeError(
-                    f"Incorrect type `processor` of command `{command_name}`."
+                    f"Incorrect type `processor` of command `{command_name}`."  # type: ignore
                     f" Must be a `{self._base_process_class.__name__}` "
                     f"and not `{command.processor.__class__.__base__.__name__}`"
                 )
             if not isinstance(command.post_processor, self._base_post_process_class):
                 raise TypeError(
-                    f"Incorrect type `post_processor` of command `{command_name}`. "
+                    f"Incorrect type `post_processor` of command `{command_name}`. "  # type: ignore
                     f"Must be a `{self._base_post_process_class.__name__}` "
                     f"and not `{command.post_processor.__class__.__base__.__name__}`"
                 )
 
-    def _get_service_command(
-        self, message: BaseOrchServMsg
-    ) -> Optional[ServiceCommand]:
+    def _get_service_command(self, message: BaseOrchServMsg) -> ServiceCommand | None:
         """
         Function for get command to handle received message
         :param BaseOrchServMsg message: received message
         :return: handler if exist
         """
-        command = self._dict_handlers.get(message.get_command())
+        command = self._dict_handlers.get(message.get_command())  # type: ignore
         if command:
             return command
         elif self._default_command:
@@ -670,7 +661,7 @@ class Service(ABC):
 
     def handle(
         self, message: BaseOrchServMsg, is_force_return: bool = False
-    ) -> Optional[BaseOrchServMsg]:
+    ) -> BaseOrchServMsg | None:
         """
         the main function to process received messages
         :param BaseOrchServMsg message: message to process
@@ -678,7 +669,10 @@ class Service(ABC):
         :return: not processed msgs or received msgs if is_force_return==True
         """
         is_return_message = is_force_return
-        self.logger.info("Service. Started processing message %s", message)
+        self.logger.info(
+            "Service. Started processing message %s",
+            message.model_dump(exclude_unset=True),
+        )
         command = self._get_service_command(message)
         if command:
             try:
@@ -689,7 +683,7 @@ class Service(ABC):
                     except TypeError:
                         resp_msg, additional_data = resp_process, None
                     if command.post_processor and resp_msg:
-                        command.post_processor.post_process(resp_msg, additional_data)
+                        command.post_processor.post_process(resp_msg, additional_data)  # type: ignore
                 else:
                     self.logger.debug(
                         "Don't send to post-processing because"
@@ -707,9 +701,15 @@ class Service(ABC):
                     raise exc
         else:
             is_return_message = True
-            self.logger.warning("Not found command to process message %s", str(message))
+            self.logger.warning(
+                "Not found command to process message %s",
+                str(message.model_dump(exclude_unset=True)),
+            )
 
-        self.logger.info("Service. Finished processing message %s", message)
+        self.logger.info(
+            "Service. Finished processing message %s",
+            message.model_dump(exclude_unset=True),
+        )
         if is_return_message:
             return message
         return None
@@ -723,7 +723,7 @@ class AsyncService(Service, ABC):
 
     async def handle(  # type: ignore # noqa
         self, message: BaseOrchServMsg, is_force_return: bool = False
-    ) -> Optional[BaseOrchServMsg]:
+    ) -> BaseOrchServMsg | None:
         """
 
         :param message:
@@ -731,7 +731,10 @@ class AsyncService(Service, ABC):
         :return:
         """
         is_return_message = is_force_return
-        self.logger.info("Service. Started processing message %s", message)
+        self.logger.info(
+            "Service. Started processing message %s",
+            message.model_dump(exclude_unset=True),
+        )
         command = self._get_service_command(message)
         if command:
             try:
@@ -742,7 +745,7 @@ class AsyncService(Service, ABC):
                     except TypeError:
                         resp_msg, additional_data = resp_process, None
                     if command.post_processor and resp_msg:
-                        await command.post_processor.post_process(
+                        await command.post_processor.post_process(  # type: ignore
                             resp_msg, additional_data
                         )
                 else:
@@ -754,7 +757,7 @@ class AsyncService(Service, ABC):
                 is_return_message = True
                 self.logger.warning(
                     "Error in time processing msg %s. Error %s",
-                    str(message),
+                    str(message.model_dump(exclude_unset=True)),
                     str(exc),
                     exc_info=True,
                 )
@@ -762,9 +765,15 @@ class AsyncService(Service, ABC):
                     raise exc
         else:
             is_return_message = True
-            self.logger.warning("Not found command to process message %s", str(message))
+            self.logger.warning(
+                "Not found command to process message %s",
+                str(message.model_dump(exclude_unset=True)),
+            )
 
-        self.logger.info("Service. Finished processing message %s", message)
+        self.logger.info(
+            "Service. Finished processing message %s",
+            message.model_dump(exclude_unset=True),
+        )
         if is_return_message:
             return message
         return None

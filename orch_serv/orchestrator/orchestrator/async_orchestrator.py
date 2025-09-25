@@ -1,6 +1,7 @@
 """
 Module with async orchestrator
 """
+
 from typing import Optional
 
 from orch_serv.msg import BaseOrchServMsg
@@ -19,9 +20,9 @@ class AsyncOrchestrator(SyncOrchestrator):
     _base_class_for_flow = AsyncFlow  # noqa
     _base_class_for_target = AsyncBlock  # noqa
 
-    async def handle(  # type: ignore
+    async def handle(  # type: ignore # noqa: C901
         self, message: BaseOrchServMsg, is_force_return: bool = False
-    ) -> Optional[BaseOrchServMsg]:
+    ) -> BaseOrchServMsg | None:
         """
         Message processing method
 
@@ -47,7 +48,7 @@ class AsyncOrchestrator(SyncOrchestrator):
         if message.get_flow() or message.get_target():
             if message.get_target():
                 name_target = message.get_target()
-                target = self._targets.get(name_target)
+                target = self._targets.get(name_target)  # type: ignore
                 if not target and not self._default_block:
                     is_return_message = True
                     self.logger.warning(
@@ -64,7 +65,8 @@ class AsyncOrchestrator(SyncOrchestrator):
                         target = target(logger=self.logger)
                         self._targets[target.name_block] = target
                     try:
-                        await target.process(message)
+                        if target:
+                            await target.process(message)  # type: ignore
                     except Exception as exc:
                         is_return_message = True
                         self.logger.warning(
@@ -77,7 +79,7 @@ class AsyncOrchestrator(SyncOrchestrator):
                         )
             else:
                 name_flow = message.get_flow()
-                flow = self._flows.get(name_flow)
+                flow = self._flows.get(name_flow)  # type: ignore
                 if not flow and not self._default_flow:
                     is_return_message = True
                     self.logger.warning(
@@ -94,7 +96,8 @@ class AsyncOrchestrator(SyncOrchestrator):
                         flow = flow(logger=self.logger)
                         self._flows[flow.name_flow] = flow
                     try:
-                        await flow.to_go_with_the_flow(message)
+                        if flow:
+                            await flow.to_go_with_the_flow(message)  # type: ignore
                     except Exception as exc:
                         is_return_message = True
                         self.logger.warning(

@@ -2,6 +2,7 @@
 orch_serv - the library for creating services and
 an orchestrator that organized their interaction
 """
+
 from .msg import BaseOrchServMsg
 from .orchestrator import (
     AsyncBlock,
@@ -25,7 +26,7 @@ from .service import (
 )
 from .stepper import Step, Stepper, StepsBuilder
 
-__version__ = "0.1.4"
+__version__ = "0.1.7"
 __all__ = [
     "__version__",
     "BaseOrchServMsg",

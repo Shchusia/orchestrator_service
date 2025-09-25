@@ -1,10 +1,15 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from copy import deepcopy
 from logging import Logger
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
 
-from orch_serv.exc import ConsistencyStepsException, NoDataForExecutionStepException
+from orch_serv.exc import (
+    ConsistencyStepsException,
+    EmptyStepper,
+    NoDataForExecutionStepException,
+)
 from orch_serv.settings import DEFAULT_LOGGER
 from orch_serv.stepper.utils import (
     get_returned_value,
@@ -21,7 +26,7 @@ class Step:
     :type __obj: Callable
     :attr __kwargs: additional kwargs for execution step
      which are not returned from the previous step
-    :type __kwargs: Dict[str, Any]
+    :type __kwargs: dict[str, Any]
     :example:
     >>> def example_function(val: int , arg_1: int = 1) -> int:
     >>>     return val + arg_1
@@ -32,18 +37,18 @@ class Step:
 
     """
 
-    __obj: Callable = None
-    __kwargs: Dict[str, Any] = dict()
+    __obj: Callable
+    __kwargs: dict[str, Any] = dict()
 
     @property
     def obj(self) -> Callable:
         return self.__obj
 
     @property
-    def kwargs(self) -> Dict[str, Any]:
+    def kwargs(self) -> dict[str, Any]:
         return self.__kwargs
 
-    def __init__(self, obj: Callable, **kwargs):
+    def __init__(self, obj: Callable, **kwargs: Any) -> None:
         if not callable(obj):
             raise TypeError("Step `obj` must be a callable")
         self.__obj = obj  # type: ignore
@@ -51,10 +56,7 @@ class Step:
             self.__kwargs = kwargs
         validate_data_step(self.__obj, self.__kwargs)
 
-    def __repr__(self):  # pragma: no cover
-        return str(self)
-
-    def __str__(self):
+    def __str__(self) -> str:
         return f"<Step: obj: {self.obj.__name__}; kwargs:{self.__kwargs}>"
 
     def execute(self, data_to_execute: Any) -> Any:
@@ -67,7 +69,7 @@ class StepsBuilder:
     """
     Class for build and handling steps
     :attr __steps: steps flow
-    :type __steps: List[Step]
+    :type __steps: list[Step]
     :example:
     >>> step_builder = StepsBuilder(
     >>>    Step(function1),
@@ -75,12 +77,12 @@ class StepsBuilder:
     >>>    is_validate_consistency_steps=True)
     """
 
-    __steps: List[Step]
+    __steps: list[Step]
 
     def __init__(self, *steps: Step, is_validate_consistency_steps: bool = True):
         """
         Init StepBuilder
-        :param steps: List of steps
+        :param steps: l of steps
         :type steps: *Step
         :param is_validate_consistency_steps: whether to check
          the consistency of steps by types
@@ -92,14 +94,18 @@ class StepsBuilder:
         :type is_validate_consistency_steps: bool default: True
         """
         self.__steps = list()
-        if not isinstance(steps[0], Step):  # pragma: no cover
-            raise TypeError(f"Step must be a Step and not {type(steps[0])}")
+        if len(steps) == 0:
+            raise EmptyStepper()
+        if not isinstance(steps[0], Step):
+            raise TypeError(
+                f"Step must be a Step and not {type(steps[0])}"
+            )  # pragma: no cover
         self.__steps.append(steps[0])
         returned_previous_steps = get_returned_value(steps[0].obj)
         for step in steps[1:]:
             if not isinstance(step, Step):
                 raise TypeError(f"Step must be a Step and not {type(step)}")
-            if is_validate_consistency_steps:  # pragma: no cover
+            if is_validate_consistency_steps:
                 validate_data_consistency(
                     obj=step.obj,
                     return_previous_obj=returned_previous_steps,
@@ -109,23 +115,23 @@ class StepsBuilder:
             self.__steps.append(step)
 
     @property
-    def steps(self) -> List[Step]:
+    def steps(self) -> list[Step]:
         return self.__steps
 
-    def __iter__(self):
+    def __iter__(self) -> StepsIterator:
         return StepsIterator(self)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.__steps)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> Step:
         return self.__steps[index]
 
 
 class StepsIterator:
     def __init__(self, steps: StepsBuilder):
         if not isinstance(steps, StepsBuilder):
-            raise TypeError
+            raise TypeError  # pragma: no cover
         self.__position = 0
         self.__steps = steps.steps
 
@@ -144,16 +150,16 @@ class Stepper:
      of step n is the output of step n
     """
 
-    __steps: StepsBuilder = None
+    __steps: StepsBuilder
     __is_execute_if_empty: bool = False
 
     @property
-    def steps(self) -> StepsBuilder:  # pragma: no cover
+    def steps(self) -> StepsBuilder:
         """
         Property contains a class with all blocks for the current flow
         :return: StepsBuilder
         """
-        if self.__steps:  # pragma: no cover
+        if self.__steps:
             return self.__steps
         raise NotImplementedError
 
@@ -168,14 +174,16 @@ class Stepper:
 
     def __init__(
         self,
-        steps: Optional[StepsBuilder] = None,
-        is_execute_if_empty: Optional[bool] = None,
-        logger: Optional[Logger] = None,
+        steps: StepsBuilder | None = None,
+        is_execute_if_empty: bool | None = None,
+        logger: Logger | None = None,
     ):
         self.logger = logger or DEFAULT_LOGGER
         if steps:
             self.__steps = steps
-        if not (is_execute_if_empty is None):
+        else:
+            self.__steps = None  # type: ignore
+        if is_execute_if_empty is not None:
             self.__is_execute_if_empty = is_execute_if_empty
         if not isinstance(self.steps, StepsBuilder):
             raise TypeError(
@@ -189,7 +197,7 @@ class Stepper:
         step_data = args
         previous_step = "start"
         result_data: Any = None
-        for i, step in enumerate(self.steps):
+        for i, step in enumerate(self.steps):  # type: ignore
             self.logger.info("Starting Step %s", step)
             try:
                 # if not isinstance(step_data, tuple):
@@ -225,7 +233,7 @@ class Stepper:
                     return_annotation_previous_step_obj=return_prev,
                     received_from_previous_step=step_data,
                     args_on_init_step=str(self.steps[i].kwargs),
-                )
+                ) from exc
             except Exception as exc:
                 self.logger.error(
                     "Error in time processing %s. Error: %s", step, str(exc)

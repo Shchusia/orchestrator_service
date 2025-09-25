@@ -1,12 +1,14 @@
 """
 Module with classes for build flow
 """
+
 # pylint: disable=no-else-return,too-few-public-methods
 from __future__ import annotations
 
+from collections.abc import Callable
+from logging import Logger, getLogger
 import types
-from logging import Logger
-from typing import Callable, Optional, Type, Union
+from typing import Any, Union
 
 from orch_serv.exc import (
     FlowBlockException,
@@ -23,17 +25,17 @@ class FlowBlock:
     Block for FlowBuilder
     """
 
-    obj_block: Union[SyncBlock, AsyncBlock, type] = None
+    obj_block: SyncBlock | AsyncBlock | type = None  # type: ignore
 
     def __init__(
         self,
-        obj_block: Union[SyncBlock, AsyncBlock, Type[Union[SyncBlock, AsyncBlock]]],
-        pre_handler_function: Optional[
-            Union[str, types.FunctionType, types.MethodType, Callable]
-        ] = None,
-        post_handler_function: Optional[
-            Union[str, types.FunctionType, types.MethodType, Callable]
-        ] = None,
+        obj_block: SyncBlock | AsyncBlock | type[SyncBlock | AsyncBlock],
+        pre_handler_function: (
+            str | types.FunctionType | types.MethodType | Callable | None
+        ) = None,
+        post_handler_function: (
+            str | types.FunctionType | types.MethodType | Callable | None
+        ) = None,
     ):
         """
         Init FlowBlock
@@ -61,16 +63,12 @@ class FlowBlock:
             raise FlowBlockException(str(type(obj_block)))
         except FlowBlockException as exc:
             raise exc
-        except Exception:  # noqa
-            raise TypeError("Incorrect type `obj_block`") from Exception
 
     @staticmethod
     def _get_function(
         instance_main: Flow,
-        function_to_get: Optional[
-            Union[str, types.FunctionType, types.MethodType, Callable]
-        ],
-    ) -> Optional[Union[types.FunctionType, types.MethodType, Callable]]:
+        function_to_get: str | types.FunctionType | types.MethodType | Callable | None,
+    ) -> types.FunctionType | types.MethodType | Callable | None:
         """
         helper function that returns a function if specified for the block
         :param instance_main:
@@ -88,7 +86,7 @@ class FlowBlock:
 
     def init_block(
         self, instance_main: Flow, step_number: int = 0
-    ) -> Union[SyncBlock, AsyncBlock]:
+    ) -> SyncBlock | AsyncBlock:
         """
         Method init instance subclass MainBlock
         :param instance_main: flow object for which this
@@ -100,7 +98,7 @@ class FlowBlock:
         """
         if not isinstance(instance_main, Flow):
             raise TypeError("Value `instance_main` must be a Flow")
-        result: Union[AsyncBlock, SyncBlock]
+        result: AsyncBlock | SyncBlock
         if isinstance(self.obj_block, type):
 
             result = self.obj_block(
@@ -133,7 +131,7 @@ class FlowBuilder:
     build chain flow from its blocks
     """
 
-    def __init__(self, step: FlowBlock, *args):
+    def __init__(self, step: FlowBlock, *args: Any) -> None:
         """
         Init FlowBuilder
         :param FlowBlock step: first block in flow
@@ -145,7 +143,7 @@ class FlowBuilder:
             if not isinstance(_step, FlowBlock):
                 raise FlowBuilderException(f"on index {_index}")
 
-    def build_flow(self, instance_main: Flow) -> Union[SyncBlock, AsyncBlock]:
+    def build_flow(self, instance_main: Flow) -> SyncBlock | AsyncBlock:
         """
         Build chain flow for Flow
         :param instance_main: current flow
@@ -172,11 +170,11 @@ class Flow:
 
     """
 
-    flow_chain: Optional[Union[SyncBaseBlock, AsyncBaseBlock]] = None
+    flow_chain: SyncBaseBlock | AsyncBaseBlock | None = None
     is_contains_duplicat_blocks: bool = False
 
     @property
-    def name_flow(self) -> str:  # pragma: no cover
+    def name_flow(self) -> str:
         """
         Unique name to identify flow
         for override in subclass 'name_flow'
@@ -187,7 +185,7 @@ class Flow:
     @property
     def _base_class_for_blocks(
         self,
-    ) -> Type[Union[AsyncBlock, SyncBlock]]:  # pragma: no cover
+    ) -> type[AsyncBlock | SyncBlock]:
         """
         An additional property for child classes to make the flow work only
          with synchronous or asynchronous blocks.
@@ -197,26 +195,27 @@ class Flow:
         raise NotImplementedError
 
     @property
-    def steps_flow(self):  # pragma: no cover
+    def steps_flow(self) -> FlowBuilder:
         """
         blocks that make up the current flow
         :return:
         """
         raise NotImplementedError
 
-    @steps_flow.setter
-    def steps_flow(self, flow: FlowBuilder):  # pragma: no cover
-        """
-        check the set value to property `steps_flow` value
-        :param FlowBuilder flow: builder flow for current flow
-        :return: None or exception
-        """
-        if isinstance(flow, FlowBuilder):
-            self.steps_flow = flow
-        else:
-            raise TypeError("incorrect type flow builder")
+    # @steps_flow.setter
+    # def steps_flow(self, flow: FlowBuilder):
+    #     """
+    #     check the set value to property `steps_flow` value
+    #     :param FlowBuilder flow: builder flow for current flow
+    #     :return: None or exception
+    #     """
+    #     getLogger(__name__).warning('iiiiiii')
+    #     if isinstance(flow, FlowBuilder):
+    #         self.flow_chain = flow.build_flow(self)
+    #     else:
+    #         raise TypeError("incorrect type flow builder")
 
-    def __init__(self, logger: Optional[Logger] = None):
+    def __init__(self, logger: Logger | None = None):
         """
         Init Flow
         :param logger: orchestrator logger
@@ -258,4 +257,4 @@ class Flow:
         Print steps flow
         :return:
         """
-        return self.flow_chain.get_list_flow()
+        return self.flow_chain.get_list_flow()  # type: ignore

@@ -1,12 +1,14 @@
 """
 Module with base block class for user async blocks
 """
+
 # pylint: disable=not-callable, inconsistent-mro
-import types
 from abc import ABC
+from collections.abc import Awaitable, Callable
 from copy import deepcopy
 from logging import Logger
-from typing import Awaitable, Callable, Optional, Type, Union
+import types
+from typing import Optional
 
 from orch_serv.exc import FlowException
 from orch_serv.msg import BaseOrchServMsg
@@ -30,13 +32,13 @@ class AsyncBlock(AsyncBaseBlock, ABC):
     ]
     """
 
-    _next_handler: AsyncBaseBlock = None
-    _pre_handler_function: Optional[
-        Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
-    ] = None
-    _post_handler_function: Optional[
-        Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
-    ] = None
+    _next_handler: AsyncBaseBlock = None  # type: ignore
+    _pre_handler_function: (
+        Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None
+    ) = None
+    _post_handler_function: (
+        Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None
+    ) = None
 
     @property
     def is_execute_after_nullable_process_msg(self) -> bool:
@@ -50,7 +52,7 @@ class AsyncBlock(AsyncBaseBlock, ABC):
     @property
     def pre_handler_function(
         self,
-    ) -> Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]:
+    ) -> Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None:
         """
         A class property that returns an asynchronous function that will be
          called before being sent to the main handler.
@@ -67,7 +69,7 @@ class AsyncBlock(AsyncBaseBlock, ABC):
     @property
     def post_handler_function(
         self,
-    ) -> Optional[Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]]:
+    ) -> Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None:
         """
         A class property that returns an asynchronous function that will be
          called after this block`s handler.
@@ -85,10 +87,10 @@ class AsyncBlock(AsyncBaseBlock, ABC):
     @pre_handler_function.setter  # type:ignore
     def pre_handler_function(
         self,
-        func: Optional[
-            Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
-        ] = None,
-    ):
+        func: (
+            Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None
+        ) = None,
+    ) -> None:
         """
         Method check pre_handler_function is func
         :param func: object to check
@@ -111,10 +113,10 @@ class AsyncBlock(AsyncBaseBlock, ABC):
     @post_handler_function.setter  # type:ignore
     def post_handler_function(
         self,
-        func: Optional[
-            Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
-        ] = None,
-    ):
+        func: (
+            Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None
+        ) = None,
+    ) -> None:
         """
         Method check post_handler_function is func
         :param func: object to check
@@ -136,13 +138,13 @@ class AsyncBlock(AsyncBaseBlock, ABC):
 
     def __init__(
         self,
-        pre_handler_function: Optional[
-            Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
-        ] = None,
-        post_handler_function: Optional[
-            Callable[[BaseOrchServMsg], Awaitable[Optional[BaseOrchServMsg]]]
-        ] = None,
-        logger: Optional[Logger] = None,
+        pre_handler_function: (
+            Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None
+        ) = None,
+        post_handler_function: (
+            Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None
+        ) = None,
+        logger: Logger | None = None,
     ):
         """
         Init Block
@@ -159,7 +161,7 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         self.post_handler_function = post_handler_function  # type: ignore # noqa
 
     def set_next(
-        self, handler: Union[AsyncBaseBlock, Type[AsyncBaseBlock]]
+        self, handler: AsyncBaseBlock | type[AsyncBaseBlock]
     ) -> AsyncBaseBlock:
         """
         Save next handler after this handler in flow
@@ -180,7 +182,7 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         self._next_handler = handler
         return handler
 
-    def get_next(self) -> Optional[AsyncBaseBlock]:
+    def get_next(self) -> AsyncBaseBlock | None:
         """
         the method returns the next block
         :return: next block if exist
@@ -201,7 +203,7 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         :return: nothing
         """
         if block.pre_handler_function:
-            message = await block.pre_handler_function(message)
+            message = await block.pre_handler_function(message)  # type: ignore
         if not message:
             return
         message.set_source(block.name_block)

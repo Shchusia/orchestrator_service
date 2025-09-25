@@ -1,18 +1,20 @@
 """Module with base msg for processing"""
+
 # pylint: disable=too-few-public-methods,no-name-in-module
 
 from typing import Generic, Optional, TypeVar
 
 from pydantic import BaseModel, Field
-from pydantic.generics import GenericModel
+
+# from pydantic.generics import GenericModel
 
 SubPydanticBodyModel = TypeVar("SubPydanticBodyModel", bound=BaseModel)
 SubPydanticHeaderModel = TypeVar("SubPydanticHeaderModel", bound=BaseModel)
 
 
 class BaseOrchServMsg(
-    GenericModel, Generic[SubPydanticBodyModel, SubPydanticHeaderModel]
-):
+    BaseModel, Generic[SubPydanticBodyModel, SubPydanticHeaderModel]
+):  # noqa: UP046
     """
     Base message class for processing and to use the library
     :attr body: message body to be processed with basic information
@@ -49,11 +51,11 @@ class BaseOrchServMsg(
     body: SubPydanticBodyModel = Field(
         ..., description="The body of the message with the " "structure you need"
     )
-    header: Optional[SubPydanticHeaderModel] = Field(
-        description="Optional message header " "with the structure you need"
+    header: SubPydanticHeaderModel | None = Field(
+        None, description="Optional message header " "with the structure you need"
     )
 
-    def get_source(self) -> Optional[str]:
+    def get_source(self) -> str | None:
         """
         ### For orchestrator ###
         Adding the source to the message where
@@ -88,7 +90,7 @@ class BaseOrchServMsg(
         """
         raise NotImplementedError
 
-    def get_flow(self) -> Optional[str]:
+    def get_flow(self) -> str | None:
         """
         ### For orchestrator ###
         Method returns the name of the flow to which the given message belongs
@@ -99,7 +101,7 @@ class BaseOrchServMsg(
         """
         raise NotImplementedError
 
-    def get_target(self) -> Optional[str]:
+    def get_target(self) -> str | None:
         """
         ### For orchestrator ###
         Method returns the name of the command that should execute the given message
@@ -110,7 +112,7 @@ class BaseOrchServMsg(
         """
         raise NotImplementedError
 
-    def get_command(self) -> Optional[str]:
+    def get_command(self) -> str | None:
         """
         ### For service ###
         Method returns the name of the processor

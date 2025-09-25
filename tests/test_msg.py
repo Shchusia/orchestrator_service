@@ -15,7 +15,7 @@ class BodyModel(BaseModel):
     Body model for test
     """
 
-    body_option: str
+    body_option: Optional[str] = None
 
 
 class HeaderModel(BaseModel):
@@ -23,7 +23,7 @@ class HeaderModel(BaseModel):
     Header model for test
     """
 
-    header_option: str
+    header_option: Optional[str] = None
 
 
 def body_data(is_raw: bool = True) -> Union[Dict[str, str], BodyModel]:
@@ -36,7 +36,7 @@ def body_data(is_raw: bool = True) -> Union[Dict[str, str], BodyModel]:
     """
     body = BodyModel(body_option="test_body")
     if is_raw:
-        return body.dict()
+        return body.model_dump()
     return body
 
 
@@ -50,7 +50,7 @@ def header_data(is_raw: bool = True) -> Union[Dict[str, str], HeaderModel]:
     """
     header = HeaderModel(header_option="test_header")
     if is_raw:
-        return header.dict()
+        return header.model_dump()
     return header
 
 
@@ -81,11 +81,11 @@ def tst_full(obj_type: Type[BaseOrchServMsg], is_optional_header: bool = False) 
     assert isinstance(val2, BaseOrchServMsg)
     assert isinstance(val3, BaseOrchServMsg)
     assert isinstance(val4, BaseOrchServMsg)
-    assert data_to_compare == val1.dict()
-    assert data_to_compare == val2.dict()
-    assert data_to_compare == val3.dict()
-    assert data_to_compare == val4.dict()
-    assert data_to_compare == val5.dict()
+    assert data_to_compare == val1.model_dump()
+    assert data_to_compare == val2.model_dump()
+    assert data_to_compare == val3.model_dump()
+    assert data_to_compare == val4.model_dump()
+    assert data_to_compare == val5.model_dump()
     assert isinstance(val1.body, BodyModel)
     assert isinstance(val1.header, HeaderModel)
 
@@ -107,9 +107,9 @@ def tst_body(obj_type: Type[BaseOrchServMsg]) -> None:
     assert isinstance(val1, BaseOrchServMsg)
     assert isinstance(val2, BaseOrchServMsg)
     assert isinstance(val3, BaseOrchServMsg)
-    assert data_to_compare == val1.dict()
-    assert data_to_compare == val2.dict()
-    assert data_to_compare == val3.dict()
+    assert data_to_compare == val1.model_dump()
+    assert data_to_compare == val2.model_dump()
+    assert data_to_compare == val3.model_dump()
     assert isinstance(val1.body, BodyModel)
     assert not isinstance(val1.header, HeaderModel)
 
@@ -180,7 +180,7 @@ def test_msg_source():
         test class
         """
 
-        source: Optional[str]
+        source: Optional[str] = None
 
     class CorrectMsg(BaseOrchServMsg):
         """
@@ -219,8 +219,8 @@ def test_get_flow() -> None:
         test class
         """
 
-        source: Optional[str]
-        flow: Optional[str]
+        source: Optional[str] = None
+        flow: Optional[str] = None
 
     class CorrectMsg(BaseOrchServMsg):
         """

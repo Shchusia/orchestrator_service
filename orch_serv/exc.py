@@ -3,7 +3,7 @@ Module consolidating all exceptions lib
 """
 
 # pylint: disable=non-parent-init-called, super-init-not-called
-from typing import Any, List, Optional
+from typing import Any
 
 
 class OrchServError(Exception):
@@ -81,7 +81,7 @@ class NoDateException(OrchestratorException):
     Exception if dict flow is empty
     """
 
-    def __init__(self, _type, msg: Optional[str] = None):
+    def __init__(self, _type: str, msg: str | None = None) -> None:
         if msg:
             self.message = msg
         else:
@@ -124,7 +124,7 @@ class NotFoundDefaultError(OrchestratorException):
     """
 
     def __init__(
-        self, default_value: str, allowed_values: List[str], is_target: bool = False
+        self, default_value: str, allowed_values: list[str], is_target: bool = False
     ):
         self.message = (
             f"Not exist default value {default_value}"
@@ -166,7 +166,7 @@ class DoublePostProcessFunctionDeclaredError(ServiceException):
     Exception if many default postprocess handlers
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.message = "Several postprocessors specified"
         Exception.__init__(self, self.message)
 
@@ -178,7 +178,7 @@ class EmptyCommandsException(ServiceException):
 
     def __init__(
         self,
-    ):
+    ) -> None:
         self.message = "Empty list of commands for service operation"
         Exception.__init__(self, self.message)
 
@@ -204,7 +204,7 @@ class IncorrectDefaultCommand(ServiceException):
     Among the available commands, there is no default command
     """
 
-    def __init__(self, command: str, list_command: List[str]):
+    def __init__(self, command: str, list_command: list[str]):
         self.message = (
             f"The `{command}` command which is the default "
             f"command is not among the valid commands : {str(list_command)}"
@@ -272,7 +272,7 @@ class DataConsistencyError(StepperException):
     Error when expected and passed data do not match
     """
 
-    def __init__(self, obj: str, errors: List[str]):
+    def __init__(self, obj: str, errors: list[str]):
         self.message = f"Error during check object{obj}. Error(s):\n {','.join(errors)}"
         Exception.__init__(self, self.message)
 
@@ -282,10 +282,22 @@ class ExtraAttributeError(StepperException):
     If in kwargs for function provided extra attributes
     """
 
-    def __init__(self, obj: str, extra_attributes: List[str], obj_attributes: str):
+    def __init__(self, obj: str, extra_attributes: list[str], obj_attributes: str):
         self.message = (
             f"When declaring a step for an object `{obj}`"
             f" extra attribute(s) were passed `{','.join(extra_attributes)}`."
             f" Allowed attribute(s): {obj_attributes}"
         )
+        Exception.__init__(self, self.message)
+
+
+class EmptyStepper(StepperException):
+    """
+    Stepper without steps
+    """
+
+    def __init__(
+        self,
+    ) -> None:
+        self.message = "Empty stepper"
         Exception.__init__(self, self.message)

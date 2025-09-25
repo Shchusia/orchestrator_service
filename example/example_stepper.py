@@ -8,19 +8,19 @@ from orch_serv import Step, Stepper, StepsBuilder
 print("Example use 1")
 
 
-def function_get_data() -> List[int]:
+def function_get_data() -> list[int]:
     """synthetic example"""
     # do something logic
     return [1, 2, 3]
 
 
-def split_into_head_and_tail(data: List[int]) -> Tuple[int, List[int]]:
+def split_into_head_and_tail(data: list[int]) -> tuple[int, list[int]]:
     """synthetic example"""
     # do something logic
     return data[0], data[1:]
 
 
-def print_data(head: int, tail: List[int], additional_arg: int = 1) -> List[int]:
+def print_data(head: int, tail: list[int], additional_arg: int = 1) -> list[int]:
     """synthetic example"""
     print("Head: ", head, "Tail: ", tail, "Additional arguments: ", additional_arg)
     return tail

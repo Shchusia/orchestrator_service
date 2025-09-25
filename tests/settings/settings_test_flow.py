@@ -20,6 +20,7 @@ from .settings_test_block import (
 
 
 class TestFlow(SyncFlow):
+    __test__ = False
     name_flow = "test_flow"
 
     steps_flow = FlowBuilder(
@@ -86,6 +87,7 @@ class SecondTestFlowWithSameFlowName(SyncFlow):
 
 
 class TestAsyncFlow(AsyncFlow):
+    __test__ = False
     name_flow = "test_async_flow"
 
     steps_flow = FlowBuilder(

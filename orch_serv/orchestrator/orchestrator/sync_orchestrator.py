@@ -1,10 +1,11 @@
 """
 Module with sync orchestrator
 """
+
 import inspect
 from logging import Logger
 from types import ModuleType
-from typing import Any, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Optional, Union
 
 from orch_serv.exc import (
     NoDateException,
@@ -24,55 +25,55 @@ class SyncOrchestrator:
     Orchestrator class for build service
     """
 
-    _base_class_for_flow: Type[Union[SyncFlow, AsyncFlow]] = SyncFlow
-    _base_class_for_target: Type[Union[SyncBlock, AsyncBlock]] = SyncBlock
-    _default_flow: str = None
-    _default_block: str = None
+    _base_class_for_flow: type[SyncFlow | AsyncFlow] = SyncFlow
+    _base_class_for_target: type[SyncBlock | AsyncBlock] = SyncBlock
+    _default_flow: str = None  # type: ignore
+    _default_block: str = None  # type: ignore
 
-    _flows: Dict[
-        str, Union[Type[Union[SyncFlow, AsyncFlow]], Union[SyncFlow, AsyncFlow]]
-    ] = dict()
-    _targets: Dict[
-        str, Union[Type[Union[SyncBlock, AsyncBlock]], Union[SyncBlock, AsyncBlock]]
-    ] = dict()
+    _flows: dict[str, type[SyncFlow | AsyncFlow] | SyncFlow | AsyncFlow] = dict()
+    _targets: dict[str, type[SyncBlock | AsyncBlock] | SyncBlock | AsyncBlock] = dict()
 
     @property
-    def flows(self) -> Optional[Union[ModuleType, List]]:
+    def flows(self) -> ModuleType | list | None:
         return None
 
     @property
-    def blocks(self) -> Optional[Union[ModuleType, List]]:
+    def blocks(self) -> ModuleType | list | None:
         return None
 
-    def __init__(
+    def __init__(  # noqa: C901
         self,
-        flows: Optional[Union[ModuleType, List]] = None,
-        blocks: Optional[Union[ModuleType, List]] = None,
-        logger: Optional[Logger] = None,
-        flows_to_ignore: List[str] = list(),
-        blocks_to_ignore: List[str] = list(),
-        default_flow: Optional[str] = None,
-        default_block: Optional[str] = None,
+        flows: ModuleType | list | None = None,
+        blocks: ModuleType | list | None = None,
+        logger: Logger | None = None,
+        flows_to_ignore: list[str] | None = None,
+        blocks_to_ignore: list[str] | None = None,
+        default_flow: str | None = None,
+        default_block: str | None = None,
     ):
         """
         init Orchestrator
         :param flows: data flows to init for current orchestrator
-        :type flows: Optional[Union[ModuleType, List]]
+        :type flows: Optional[Union[ModuleType, list]]
         :param blocks: data blocks to init for current orchestrator
-        :type blocks: Optional[Union[ModuleType, List]]
+        :type blocks: Optional[Union[ModuleType, list]]
         :param logger: logger orchestrator
         :param flows_to_ignore: name of the flows to
          ignore which will not be initialized
-        :type flows_to_ignore: List[str]
+        :type flows_to_ignore: list[str]
         :param blocks_to_ignore: name of the blocks to
          ignore which will not be initialized
-        :type blocks_to_ignore: List[str]
+        :type blocks_to_ignore: list[str]
         :param str default_flow: name of the flow that will be called
          if a non-existing flow is specified
         :param str default_block: name of the block that will be called
          if a non-existing block is specified
         """
         self.logger = logger or DEFAULT_LOGGER
+        if flows_to_ignore is None:
+            flows_to_ignore = list()
+        if blocks_to_ignore is None:
+            blocks_to_ignore = list()
 
         if flows:
             self._flows = self._generate_data(  # type: ignore
@@ -132,13 +133,13 @@ class SyncOrchestrator:
             self.get_list_blocks(),
         )
 
-    def get_list_flows(self) -> List[str]:
+    def get_list_flows(self) -> list[str]:
         """
         :return: list allowed flows
         """
         return list(self._flows.keys())
 
-    def get_list_blocks(self) -> List[str]:
+    def get_list_blocks(self) -> list[str]:
         """
         :return:  list allowed blocks
         """
@@ -152,14 +153,14 @@ class SyncOrchestrator:
         :raise WorkTypeMismatchException: if incorrect type
         """
 
-        def get_name(obj) -> str:
+        def get_name(obj: Any) -> str:
             if isinstance(obj, type):
                 return obj.__name__
-            return obj.__class__.__name__
+            return obj.__class__.__name__  # pragma: no cover
 
         def check_type_dict_obj(
-            dict_objects: Dict[str, Any], type_to_check: Type, is_target: bool
-        ):
+            dict_objects: dict[str, Any], type_to_check: type, is_target: bool
+        ) -> None:
             for obj in dict_objects.values():
                 if isinstance(obj, type):
                     if not issubclass(obj, type_to_check):
@@ -168,28 +169,26 @@ class SyncOrchestrator:
                             obj_class=get_name(obj),
                             is_target=is_target,
                         )
-                elif not isinstance(obj, type_to_check):
+                elif not isinstance(obj, type_to_check):  # pragma: no cover
                     raise WorkTypeMismatchException(
                         base_class=self.__class__.__name__,
                         obj_class=get_name(obj),
                         is_target=is_target,
                     )
                 else:
-                    continue
+                    continue  # pragma: no cover
 
         check_type_dict_obj(self._targets, self._base_class_for_target, is_target=True)
         check_type_dict_obj(self._flows, self._base_class_for_flow, is_target=False)
 
     @staticmethod
-    def _generate_data(
-        data_to_process: Union[ModuleType, List],
-        type_to_compare: Union[Type, Tuple[Type, ...]],
+    def _generate_data(  # noqa: C901
+        data_to_process: ModuleType | list,
+        type_to_compare: type | tuple[type, ...],
         attribute_to_get: str,
-        names_to_ignore: Optional[List[str]] = list(),
+        names_to_ignore: list[str] | None = None,
         type_data: str = "block",
-    ) -> Dict[
-        str, Type[Union[SyncFlow, AsyncFlow, SyncBlock, AsyncBlock]]
-    ]:  # pragma: no cover
+    ) -> dict[str, type[SyncFlow | AsyncFlow | SyncBlock | AsyncBlock]]:
         """
         The method prepares the data for the orchestrator to work
         Converts data from a list or retrieves from a module
@@ -197,7 +196,7 @@ class SyncOrchestrator:
         :param type_to_compare:
         :param attribute_to_get: name in object
         :param names_to_ignore: class names to ignore when processing
-        :type names_to_ignore: List[str]
+        :type names_to_ignore: list[str]
         :param type_data: name for information exception if will be raised
         :type type_data: str
         :raise TypeError: if the data to be processed contains
@@ -208,18 +207,20 @@ class SyncOrchestrator:
          not a list for generating data
         :raise NoDateException: if there is no data after processing
         :return: converted data to dictionary format to work with
-        :rtype: Dict[str, Type[Union[Flow, SyncBlock, AsyncBlock]]]
+        :rtype: dict[str, type[Union[Flow, SyncBlock, AsyncBlock]]]
         """
+        if names_to_ignore is None:
+            names_to_ignore = list()
         _data = (
             dict()
-        )  # type: Dict[str, Type[Union[SyncFlow, AsyncFlow, SyncBlock, AsyncBlock]]]
+        )  # type: dict[str, type[Union[SyncFlow, AsyncFlow, SyncBlock, AsyncBlock]]]
         if inspect.ismodule(data_to_process):
             for class_name, clazz in inspect.getmembers(
                 data_to_process, inspect.isclass
             ):
                 if class_name in names_to_ignore:
-                    continue
-                if not issubclass(clazz.__base__, type_to_compare):
+                    continue  # pragma: no cover
+                if not issubclass(clazz.__base__, type_to_compare):  # type: ignore
                     raise TypeError(f"{type_data} is not inheritor {type_to_compare}")
                 unique_identifier = getattr(clazz, attribute_to_get)
                 if unique_identifier in names_to_ignore:
@@ -231,11 +232,11 @@ class SyncOrchestrator:
             for obj in data_to_process:
                 if isinstance(obj, type):
                     if obj.__name__ in names_to_ignore:
-                        continue
-                    if issubclass(obj.__base__, type_to_compare):
+                        continue  # pragma: no cover
+                    if issubclass(obj.__base__, type_to_compare):  # type: ignore
                         unique_identifier = getattr(obj, attribute_to_get)
                         if unique_identifier in names_to_ignore:
-                            continue
+                            continue  # pragma: no cover
                         if _data.get(unique_identifier):
                             raise UniqueNameException(unique_identifier, type_data)
                         _data[unique_identifier] = obj
@@ -245,15 +246,15 @@ class SyncOrchestrator:
                         )
                 elif isinstance(obj, type_to_compare):
                     if obj.__class__.__name__ in names_to_ignore:
-                        continue
+                        continue  # pragma: no cover
                     unique_identifier = getattr(obj, attribute_to_get)
                     if unique_identifier in names_to_ignore:
-                        continue
+                        continue  # pragma: no cover
                     if _data.get(unique_identifier):
                         raise UniqueNameException(unique_identifier, type_data)
                     _data[unique_identifier] = obj
                 else:
-                    raise TypeError(
+                    raise TypeError(  # pragma: no cover
                         f"{type_data}: `{obj}` is not inheritor {type_to_compare} "
                     )
 
@@ -263,9 +264,9 @@ class SyncOrchestrator:
             raise NoDateException(type_data)
         return _data
 
-    def handle(
+    def handle(  # noqa: C901
         self, message: BaseOrchServMsg, is_force_return: bool = False
-    ) -> Optional[BaseOrchServMsg]:
+    ) -> BaseOrchServMsg | None:
         """
         Message processing method
 
@@ -292,7 +293,7 @@ class SyncOrchestrator:
         if message.get_flow() or message.get_target():
             if message.get_target():
                 name_target = message.get_target()
-                target = self._targets.get(name_target)
+                target = self._targets.get(name_target)  # type: ignore
                 if not target and not self._default_block:
                     is_return_message = True
                     self.logger.warning(
@@ -309,7 +310,8 @@ class SyncOrchestrator:
                         target = target(logger=self.logger)
                         self._targets[target.name_block] = target
                     try:
-                        target.process(message)
+                        if target:
+                            target.process(message)
                     except Exception as exc:
                         is_return_message = True
                         self.logger.warning(
@@ -322,7 +324,7 @@ class SyncOrchestrator:
                         )
             else:
                 name_flow = message.get_flow()
-                flow = self._flows.get(name_flow)
+                flow = self._flows.get(name_flow)  # type: ignore
                 if not flow and not self._default_flow:
                     is_return_message = True
                     self.logger.warning(
@@ -339,7 +341,8 @@ class SyncOrchestrator:
                         flow = flow(logger=self.logger)
                         self._flows[flow.name_flow] = flow
                     try:
-                        flow.to_go_with_the_flow(message)
+                        if flow:
+                            flow.to_go_with_the_flow(message)  # type: ignore
                     except Exception as exc:
                         is_return_message = True
                         self.logger.warning(

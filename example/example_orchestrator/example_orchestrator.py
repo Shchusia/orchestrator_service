@@ -26,13 +26,13 @@ from orch_serv import AsyncOrchestrator, BaseOrchServMsg, SyncOrchestrator
 
 
 class BodyModel(BaseModel):
-    body_option: Optional[str]
+    body_option: str | None = None
 
 
 class HeaderModel(BaseModel):
-    source: Optional[str]
-    flow: Optional[str]
-    target: Optional[str]
+    source: str | None = None
+    flow: str | None= None
+    target: str | None= None
 
 
 class ExampleMessageModel(BaseOrchServMsg):
