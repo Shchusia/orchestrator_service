@@ -461,6 +461,7 @@ tests = [
 requires-dist = [{ name = "pydantic", specifier = ">=2.10.6" }]
 
 [package.metadata.requires-dev]
+docs = []
 lint = [
     { name = "black", specifier = ">=24.8.0" },
     { name = "mypy", specifier = ">=1.14.1" },

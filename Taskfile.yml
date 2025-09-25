@@ -2,6 +2,8 @@
 
 version: '3'
 
+dotenv: ['.env']
+
 tasks:
   default:
     cmds:
@@ -21,6 +23,14 @@ tasks:
     cmds:
       - coverage run -m pytest tests -s --cov=orch_serv --cov-report=term-missing -o log_cli=true
     silent: true
+
+  publishtest:
+    desc: Run tests and publish results to https://coveralls.io/
+    cmds:
+      - pytest tests -s --cov=orch_serv --cov-report=term-missing
+      - coverage xml
+      - coveralls
+
 
   lint:
     desc: Check code by linters
@@ -42,4 +52,4 @@ tasks:
   publish:
     desc: Publish the compiled library
     cmds:
-      - uv
+      - uv publish
