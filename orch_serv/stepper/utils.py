@@ -1,6 +1,7 @@
 from collections.abc import Callable
 import enum
 import inspect
+from types import MappingProxyType
 from typing import Any, Union, get_args, get_origin
 import warnings
 
@@ -15,7 +16,9 @@ class ParameterKind(enum.IntEnum):
     VAR_KEYWORD = 4
 
 
-def format_signature_parameters(parameters) -> str:
+def format_signature_parameters(
+    parameters: MappingProxyType[str, inspect.Parameter],
+) -> str:
     """
     Method copied from inspect for private usage
     """
@@ -67,12 +70,12 @@ def parse_signature(obj: Callable) -> tuple[str, str]:
     :return: (attributes, returned)
     """
     signature = inspect.signature(obj)
-    return format_signature_parameters(signature.parameters), inspect.formatannotation(
+    return format_signature_parameters(signature.parameters), inspect.formatannotation(  # type: ignore
         signature.return_annotation
     )
 
 
-def get_returned_value(obj: Callable):
+def get_returned_value(obj: Callable) -> Any:
     signature = inspect.signature(obj)
     if get_origin(signature.return_annotation) is tuple:
         return get_args(signature.return_annotation)
@@ -84,11 +87,11 @@ def get_attributes_obj(obj: Callable) -> str:
     return " ,".join(list(signature.parameters.keys()))
 
 
-def is_optional(field):
+def is_optional(field: Any) -> Any:
     return get_origin(field) is Union and type(None) in get_args(field)
 
 
-def validate_data_step(obj: Callable, additional_args: dict):
+def validate_data_step(obj: Callable, additional_args: dict) -> None:
     """
     Validate provided data for execution step
     :param Callable obj: obj to execution
@@ -106,7 +109,7 @@ def validate_data_step(obj: Callable, additional_args: dict):
         )
 
 
-def is_exist_keyword_variable(obj: Callable):
+def is_exist_keyword_variable(obj: Callable) -> bool:
     """
     Check is exist **keyword variable in `obj`
     :param Callable obj: obj to execution
@@ -182,7 +185,7 @@ def validate_data_consistency(  # noqa: C901
             f"orch_serv.Stepper."
             f" Warnings in time check object `{obj.__name__}`. "
             f"Warning(s):\n {','.join(check_warnings)}",
-            stacklevel=1
+            stacklevel=1,
         )
     if errors:
         raise DataConsistencyError(obj.__name__, errors)

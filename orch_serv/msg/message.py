@@ -12,7 +12,9 @@ SubPydanticBodyModel = TypeVar("SubPydanticBodyModel", bound=BaseModel)
 SubPydanticHeaderModel = TypeVar("SubPydanticHeaderModel", bound=BaseModel)
 
 
-class BaseOrchServMsg(BaseModel, Generic[SubPydanticBodyModel, SubPydanticHeaderModel]):  # noqa: UP046
+class BaseOrchServMsg(
+    BaseModel, Generic[SubPydanticBodyModel, SubPydanticHeaderModel]
+):  # noqa: UP046
     """
     Base message class for processing and to use the library
     :attr body: message body to be processed with basic information

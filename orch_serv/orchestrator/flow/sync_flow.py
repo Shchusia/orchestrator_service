@@ -7,6 +7,7 @@ from abc import ABC
 from orch_serv.msg import BaseOrchServMsg
 
 from .. import SyncBlock
+from ..block.base_block import SyncBaseBlock
 from .base_flow import Flow
 
 
@@ -15,8 +16,8 @@ class SyncFlow(Flow, ABC):
     SyncFlow for execution SyncBlock
     """
 
-    _base_class_for_blocks = SyncBlock
-    flow_chain: SyncBlock = None
+    _base_class_for_blocks: type = SyncBlock
+    flow_chain: SyncBlock
 
     def to_go_with_the_flow(self, message: BaseOrchServMsg) -> None:
         """

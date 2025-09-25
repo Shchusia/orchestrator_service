@@ -27,15 +27,11 @@ class SyncOrchestrator:
 
     _base_class_for_flow: type[SyncFlow | AsyncFlow] = SyncFlow
     _base_class_for_target: type[SyncBlock | AsyncBlock] = SyncBlock
-    _default_flow: str = None
-    _default_block: str = None
+    _default_flow: str = None  # type: ignore
+    _default_block: str = None  # type: ignore
 
-    _flows: dict[
-        str, type[SyncFlow | AsyncFlow] | SyncFlow | AsyncFlow
-    ] = dict()
-    _targets: dict[
-        str, type[SyncBlock | AsyncBlock] | SyncBlock | AsyncBlock
-    ] = dict()
+    _flows: dict[str, type[SyncFlow | AsyncFlow] | SyncFlow | AsyncFlow] = dict()
+    _targets: dict[str, type[SyncBlock | AsyncBlock] | SyncBlock | AsyncBlock] = dict()
 
     @property
     def flows(self) -> ModuleType | list | None:
@@ -75,9 +71,9 @@ class SyncOrchestrator:
         """
         self.logger = logger or DEFAULT_LOGGER
         if flows_to_ignore is None:
-            flows_to_ignore=list()
+            flows_to_ignore = list()
         if blocks_to_ignore is None:
-            blocks_to_ignore=list()
+            blocks_to_ignore = list()
 
         if flows:
             self._flows = self._generate_data(  # type: ignore
@@ -157,14 +153,14 @@ class SyncOrchestrator:
         :raise WorkTypeMismatchException: if incorrect type
         """
 
-        def get_name(obj) -> str:
+        def get_name(obj: Any) -> str:
             if isinstance(obj, type):
                 return obj.__name__
             return obj.__class__.__name__  # pragma: no cover
 
         def check_type_dict_obj(
             dict_objects: dict[str, Any], type_to_check: type, is_target: bool
-        ):
+        ) -> None:
             for obj in dict_objects.values():
                 if isinstance(obj, type):
                     if not issubclass(obj, type_to_check):
@@ -224,7 +220,7 @@ class SyncOrchestrator:
             ):
                 if class_name in names_to_ignore:
                     continue  # pragma: no cover
-                if not issubclass(clazz.__base__, type_to_compare):
+                if not issubclass(clazz.__base__, type_to_compare):  # type: ignore
                     raise TypeError(f"{type_data} is not inheritor {type_to_compare}")
                 unique_identifier = getattr(clazz, attribute_to_get)
                 if unique_identifier in names_to_ignore:
@@ -237,7 +233,7 @@ class SyncOrchestrator:
                 if isinstance(obj, type):
                     if obj.__name__ in names_to_ignore:
                         continue  # pragma: no cover
-                    if issubclass(obj.__base__, type_to_compare):
+                    if issubclass(obj.__base__, type_to_compare):  # type: ignore
                         unique_identifier = getattr(obj, attribute_to_get)
                         if unique_identifier in names_to_ignore:
                             continue  # pragma: no cover
@@ -297,7 +293,7 @@ class SyncOrchestrator:
         if message.get_flow() or message.get_target():
             if message.get_target():
                 name_target = message.get_target()
-                target = self._targets.get(name_target)
+                target = self._targets.get(name_target)  # type: ignore
                 if not target and not self._default_block:
                     is_return_message = True
                     self.logger.warning(
@@ -314,7 +310,8 @@ class SyncOrchestrator:
                         target = target(logger=self.logger)
                         self._targets[target.name_block] = target
                     try:
-                        target.process(message)
+                        if target:
+                            target.process(message)
                     except Exception as exc:
                         is_return_message = True
                         self.logger.warning(
@@ -327,7 +324,7 @@ class SyncOrchestrator:
                         )
             else:
                 name_flow = message.get_flow()
-                flow = self._flows.get(name_flow)
+                flow = self._flows.get(name_flow)  # type: ignore
                 if not flow and not self._default_flow:
                     is_return_message = True
                     self.logger.warning(
@@ -344,7 +341,8 @@ class SyncOrchestrator:
                         flow = flow(logger=self.logger)
                         self._flows[flow.name_flow] = flow
                     try:
-                        flow.to_go_with_the_flow(message)
+                        if flow:
+                            flow.to_go_with_the_flow(message)  # type: ignore
                     except Exception as exc:
                         is_return_message = True
                         self.logger.warning(

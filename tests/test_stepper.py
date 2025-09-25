@@ -9,6 +9,7 @@ from orch_serv.exc import (
     DataConsistencyError,
     ExtraAttributeError,
     NoDataForExecutionStepException,
+    EmptyStepper,
 )
 from orch_serv.stepper.stepper import Step, Stepper, StepsBuilder
 from tests.settings.settings_test_stepper import (
@@ -28,18 +29,18 @@ from tests.settings.settings_test_stepper import (
 )
 
 
-def test_stepper():
+def test_stepper() -> None:
     """
     tests for stepper
         :return:
     """
     with pytest.raises(TypeError):
-        Step(42)
+        Step(42)  # type: ignore
     with pytest.raises(TypeError):
-        Step(42, val1=1, val2=2)
+        Step(42, val1=1, val2=2)  # type: ignore
 
     with pytest.raises(TypeError):
-        StepsBuilder(Step(tst_function), TestClass())
+        StepsBuilder(Step(tst_function), TestClass())  # type: ignore
     with pytest.raises(DataConsistencyError):
         StepsBuilder(Step(tst_function), Step(tst_function_2))
     with pytest.raises(DataConsistencyError):
@@ -77,9 +78,12 @@ def test_stepper():
     with pytest.raises(NoDataForExecutionStepException):
         MyFirstFlow().step_by_step()
     with pytest.raises(TypeError):
-        Stepper(steps=s1)
+        Stepper(steps=s1)  # type: ignore
     with pytest.raises(NotImplementedError):
         Stepper()
+
+    with pytest.raises(EmptyStepper):
+        StepsBuilder()
     assert Stepper.is_execute_if_empty != Stepper(steps=sb1, is_execute_if_empty=True)
 
     assert LIST_ARGS == DATA_AFTER_FIRST_FLOW

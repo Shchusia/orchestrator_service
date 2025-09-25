@@ -81,7 +81,7 @@ class NoDateException(OrchestratorException):
     Exception if dict flow is empty
     """
 
-    def __init__(self, _type, msg: str | None = None):
+    def __init__(self, _type: str, msg: str | None = None) -> None:
         if msg:
             self.message = msg
         else:
@@ -166,7 +166,7 @@ class DoublePostProcessFunctionDeclaredError(ServiceException):
     Exception if many default postprocess handlers
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.message = "Several postprocessors specified"
         Exception.__init__(self, self.message)
 
@@ -178,7 +178,7 @@ class EmptyCommandsException(ServiceException):
 
     def __init__(
         self,
-    ):
+    ) -> None:
         self.message = "Empty list of commands for service operation"
         Exception.__init__(self, self.message)
 
@@ -288,4 +288,16 @@ class ExtraAttributeError(StepperException):
             f" extra attribute(s) were passed `{','.join(extra_attributes)}`."
             f" Allowed attribute(s): {obj_attributes}"
         )
+        Exception.__init__(self, self.message)
+
+
+class EmptyStepper(StepperException):
+    """
+    Stepper without steps
+    """
+
+    def __init__(
+        self,
+    ) -> None:
+        self.message = "Empty stepper"
         Exception.__init__(self, self.message)

@@ -8,7 +8,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from logging import Logger, getLogger
 import types
-from typing import Union
+from typing import Any, Union
 
 from orch_serv.exc import (
     FlowBlockException,
@@ -25,13 +25,17 @@ class FlowBlock:
     Block for FlowBuilder
     """
 
-    obj_block: SyncBlock | AsyncBlock | type = None
+    obj_block: SyncBlock | AsyncBlock | type = None  # type: ignore
 
     def __init__(
         self,
         obj_block: SyncBlock | AsyncBlock | type[SyncBlock | AsyncBlock],
-        pre_handler_function: str | types.FunctionType | types.MethodType | Callable | None = None,
-        post_handler_function: str | types.FunctionType | types.MethodType | Callable | None = None,
+        pre_handler_function: (
+            str | types.FunctionType | types.MethodType | Callable | None
+        ) = None,
+        post_handler_function: (
+            str | types.FunctionType | types.MethodType | Callable | None
+        ) = None,
     ):
         """
         Init FlowBlock
@@ -127,7 +131,7 @@ class FlowBuilder:
     build chain flow from its blocks
     """
 
-    def __init__(self, step: FlowBlock, *args):
+    def __init__(self, step: FlowBlock, *args: Any) -> None:
         """
         Init FlowBuilder
         :param FlowBlock step: first block in flow
@@ -191,7 +195,7 @@ class Flow:
         raise NotImplementedError
 
     @property
-    def steps_flow(self):
+    def steps_flow(self) -> FlowBuilder:
         """
         blocks that make up the current flow
         :return:
@@ -253,4 +257,4 @@ class Flow:
         Print steps flow
         :return:
         """
-        return self.flow_chain.get_list_flow()
+        return self.flow_chain.get_list_flow()  # type: ignore

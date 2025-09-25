@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 from orch_serv import Step, Stepper, StepsBuilder
 
@@ -7,15 +7,17 @@ def tst_function() -> Tuple[int, int]:
     pass
 
 
-def tst_function_2(val1: str, val2: int, arg1: int, arg2: int):
+def tst_function_2(val1: str, val2: int, arg1: int, arg2: int) -> None:
     pass
 
 
-def tst_function_3(val1: int, val2: int, arg1: int = 1, arg2: int = 2):
+def tst_function_3(val1: int, val2: int, arg1: int = 1, arg2: int = 2) -> None:
     pass
 
 
-def tst_function_4(val1: int, val2: int, arg1: int = 1, arg2: int = 2, **kwargs):
+def tst_function_4(
+    val1: int, val2: int, arg1: int = 1, arg2: int = 2, **kwargs: Any
+) -> None:
     pass
 
 

@@ -28,7 +28,7 @@ class CommandHandler:
     """
 
     _logger: Logger = DEFAULT_LOGGER  # for one global handler
-    _service_instance: Service = None  # single scope for service_commands
+    _service_instance: Service = None  # type: ignore # single scope for service_commands
     _is_logged = False
 
     @property
@@ -137,7 +137,7 @@ class CommandHandlerProcessStrategy(CommandHandler, ABC):
     """
 
     @property
-    def target_command(self):
+    def target_command(self) -> str:
         """
         this command will determine that the message should be processed
         by this particular service
@@ -184,7 +184,7 @@ class AsyncCommandHandlerProcessStrategy(CommandHandler, ABC):
     """
 
     @property
-    def target_command(self):
+    def target_command(self) -> str:
         """
         this command will determine that the message
         should be processed by this particular service
@@ -226,7 +226,7 @@ class AsyncCommandHandlerPostProcessStrategy(CommandHandler, ABC):
 
 
 class DefaultPostProcessStrategy(CommandHandlerPostProcessStrategy):
-    def post_process(self, msg: BaseOrchServMsg, additional_data: Any | None = None):
+    def post_process(self, msg: BaseOrchServMsg, additional_data: Any | None = None):  # type: ignore
         """
         default post process function for sync service
         :param BaseOrchServMsg msg: msg received after processing
@@ -255,7 +255,9 @@ class ServiceCommand(BaseModel):
     """
 
     processor: CommandHandlerProcessStrategy | AsyncCommandHandlerProcessStrategy
-    post_processor: CommandHandlerPostProcessStrategy | AsyncCommandHandlerPostProcessStrategy
+    post_processor: (
+        CommandHandlerPostProcessStrategy | AsyncCommandHandlerPostProcessStrategy
+    )
 
     # class Config:
     #     arbitrary_types_allowed = True
@@ -268,8 +270,12 @@ class ServiceBlock:
      and post process handlers
     """
 
-    _processor: CommandHandlerProcessStrategy | AsyncCommandHandlerProcessStrategy = None
-    _post_processor: CommandHandlerPostProcessStrategy | AsyncCommandHandlerPostProcessStrategy | None = None
+    _processor: CommandHandlerProcessStrategy | AsyncCommandHandlerProcessStrategy
+    _post_processor: (
+        CommandHandlerPostProcessStrategy
+        | AsyncCommandHandlerPostProcessStrategy
+        | None
+    ) = None
 
     @property
     def processor(
@@ -280,12 +286,16 @@ class ServiceBlock:
         :return: process command instance
         :rtype: Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy]
         """
-        return self._processor
+        return self._processor  #
 
     @property
     def post_processor(
         self,
-    ) -> CommandHandlerPostProcessStrategy | AsyncCommandHandlerPostProcessStrategy:
+    ) -> (
+        CommandHandlerPostProcessStrategy
+        | AsyncCommandHandlerPostProcessStrategy
+        | None
+    ):
         """
         Property contains post_process handler
         :return: post_processor instance
@@ -297,7 +307,12 @@ class ServiceBlock:
     @processor.setter  # type: ignore # noqa
     def processor(  # noqa
         self,
-        processor: CommandHandlerProcessStrategy | AsyncCommandHandlerProcessStrategy | type[CommandHandlerProcessStrategy] | type[AsyncCommandHandlerProcessStrategy],
+        processor: (
+            CommandHandlerProcessStrategy
+            | AsyncCommandHandlerProcessStrategy
+            | type[CommandHandlerProcessStrategy]
+            | type[AsyncCommandHandlerProcessStrategy]
+        ),
     ) -> None:
         """
         Setups service processor and checks type
@@ -329,7 +344,13 @@ class ServiceBlock:
     @post_processor.setter  # type: ignore # noqa
     def post_processor(  # noqa
         self,
-        post_processor: CommandHandlerPostProcessStrategy | AsyncCommandHandlerPostProcessStrategy | type[CommandHandlerPostProcessStrategy] | type[AsyncCommandHandlerPostProcessStrategy] | None,
+        post_processor: (
+            CommandHandlerPostProcessStrategy
+            | AsyncCommandHandlerPostProcessStrategy
+            | type[CommandHandlerPostProcessStrategy]
+            | type[AsyncCommandHandlerPostProcessStrategy]
+            | None
+        ),
     ) -> None:
         """
         Setups service processor and checks type
@@ -366,8 +387,13 @@ class ServiceBlock:
 
     def __init__(
         self,
-        processor: type[CommandHandlerProcessStrategy] | CommandHandlerProcessStrategy | type[AsyncCommandHandlerProcessStrategy] | AsyncCommandHandlerProcessStrategy,
-        post_processor: type[CommandHandlerPostProcessStrategy] | CommandHandlerPostProcessStrategy | type[AsyncCommandHandlerPostProcessStrategy] | AsyncCommandHandlerPostProcessStrategy = None,
+        processor: (
+            type[CommandHandlerProcessStrategy]
+            | CommandHandlerProcessStrategy
+            | type[AsyncCommandHandlerProcessStrategy]
+            | AsyncCommandHandlerProcessStrategy
+        ),
+        post_processor: type[CommandHandlerPostProcessStrategy] | CommandHandlerPostProcessStrategy | type[AsyncCommandHandlerPostProcessStrategy] | AsyncCommandHandlerPostProcessStrategy = None,  # type: ignore
     ):
         """
         Init ServiceBlock
@@ -383,7 +409,7 @@ class ServiceBuilder:
     Class for aggregating service commands
     """
 
-    _default_post_processor: CommandHandlerPostProcessStrategy | AsyncCommandHandlerPostProcessStrategy = None
+    _default_post_processor: CommandHandlerPostProcessStrategy | AsyncCommandHandlerPostProcessStrategy = None  # type: ignore
 
     @property
     def default_post_processor(
@@ -394,7 +420,12 @@ class ServiceBuilder:
     @default_post_processor.setter
     def default_post_processor(
         self,
-        default_post_processor: CommandHandlerPostProcessStrategy | type[CommandHandlerPostProcessStrategy] | AsyncCommandHandlerPostProcessStrategy | type[AsyncCommandHandlerPostProcessStrategy],
+        default_post_processor: (
+            CommandHandlerPostProcessStrategy
+            | type[CommandHandlerPostProcessStrategy]
+            | AsyncCommandHandlerPostProcessStrategy
+            | type[AsyncCommandHandlerPostProcessStrategy]
+        ),
     ) -> None:
         """
         Setups service processor and checks correct type
@@ -413,7 +444,7 @@ class ServiceBuilder:
             )
 
     @staticmethod
-    def check_is_post_processor(obj: Any, message_error: str):
+    def check_is_post_processor(obj: Any, message_error: str) -> Any:
         """
         Method checks if obj is post_processor
         :param obj:
@@ -445,7 +476,13 @@ class ServiceBuilder:
     def __init__(
         self,
         *args: ServiceBlock,
-        default_post_process: type[CommandHandlerPostProcessStrategy] | CommandHandlerPostProcessStrategy | type[AsyncCommandHandlerPostProcessStrategy] | AsyncCommandHandlerPostProcessStrategy | None = None,
+        default_post_process: (
+            type[CommandHandlerPostProcessStrategy]
+            | CommandHandlerPostProcessStrategy
+            | type[AsyncCommandHandlerPostProcessStrategy]
+            | AsyncCommandHandlerPostProcessStrategy
+            | None
+        ) = None,
     ):
         self.default_post_processor = default_post_process  # type: ignore # noqa
         list_blocks = list()  # type: list[ServiceBlock]
@@ -520,9 +557,9 @@ class Service:
     Class Service for handle msg-s
     """
 
-    _service_commands: ServiceBuilder = None
+    _service_commands: ServiceBuilder = None  # type: ignore
     _dict_handlers: dict[str, ServiceCommand] = dict()
-    _default_command: str = None
+    _default_command: str = None  # type: ignore
     _base_process_class = CommandHandlerProcessStrategy
     _base_post_process_class = CommandHandlerPostProcessStrategy
 
@@ -552,7 +589,7 @@ class Service:
                 self._default_command = default_command
         self._validate_data()
 
-    def __validate_service_builder(self, service_builder: ServiceBuilder):
+    def __validate_service_builder(self, service_builder: ServiceBuilder) -> None:
         """
         Help function for service_builder object validation
         :param service_builder:
@@ -575,7 +612,7 @@ class Service:
     def service_commands(self, service_builder: ServiceBuilder) -> None:
         self.__validate_service_builder(service_builder)
 
-    def _validate_data(self):
+    def _validate_data(self) -> None:
         """
         Help function to validate data service
         """
@@ -597,26 +634,24 @@ class Service:
         for command_name, command in self._dict_handlers.items():
             if not isinstance(command.processor, self._base_process_class):
                 raise TypeError(
-                    f"Incorrect type `processor` of command `{command_name}`."
+                    f"Incorrect type `processor` of command `{command_name}`."  # type: ignore
                     f" Must be a `{self._base_process_class.__name__}` "
                     f"and not `{command.processor.__class__.__base__.__name__}`"
                 )
             if not isinstance(command.post_processor, self._base_post_process_class):
                 raise TypeError(
-                    f"Incorrect type `post_processor` of command `{command_name}`. "
+                    f"Incorrect type `post_processor` of command `{command_name}`. "  # type: ignore
                     f"Must be a `{self._base_post_process_class.__name__}` "
                     f"and not `{command.post_processor.__class__.__base__.__name__}`"
                 )
 
-    def _get_service_command(
-        self, message: BaseOrchServMsg
-    ) -> ServiceCommand | None:
+    def _get_service_command(self, message: BaseOrchServMsg) -> ServiceCommand | None:
         """
         Function for get command to handle received message
         :param BaseOrchServMsg message: received message
         :return: handler if exist
         """
-        command = self._dict_handlers.get(message.get_command())
+        command = self._dict_handlers.get(message.get_command())  # type: ignore
         if command:
             return command
         elif self._default_command:
@@ -648,7 +683,7 @@ class Service:
                     except TypeError:
                         resp_msg, additional_data = resp_process, None
                     if command.post_processor and resp_msg:
-                        command.post_processor.post_process(resp_msg, additional_data)
+                        command.post_processor.post_process(resp_msg, additional_data)  # type: ignore
                 else:
                     self.logger.debug(
                         "Don't send to post-processing because"
@@ -710,7 +745,7 @@ class AsyncService(Service, ABC):
                     except TypeError:
                         resp_msg, additional_data = resp_process, None
                     if command.post_processor and resp_msg:
-                        await command.post_processor.post_process(
+                        await command.post_processor.post_process(  # type: ignore
                             resp_msg, additional_data
                         )
                 else:

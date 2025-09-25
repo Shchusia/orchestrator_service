@@ -7,6 +7,7 @@ from abc import ABC
 from orch_serv.msg import BaseOrchServMsg
 
 from .. import AsyncBlock
+from ..block.base_block import AsyncBaseBlock
 from .base_flow import Flow
 
 
@@ -15,8 +16,8 @@ class AsyncFlow(Flow, ABC):
     AsyncFlow for execution async blocks
     """
 
-    _base_class_for_blocks = AsyncBlock
-    flow_chain: AsyncBlock = None
+    _base_class_for_blocks: type = AsyncBlock
+    flow_chain: AsyncBlock
 
     async def to_go_with_the_flow(self, message: BaseOrchServMsg) -> None:
         """

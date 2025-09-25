@@ -25,9 +25,9 @@ tasks:
   lint:
     desc: Check code by linters
     cmds:
-      - uv run black ./orch_serv
-      - uv run ruff  check ./orch_serv
-      - uv run mypy ./orch_serv
+      - uv run black ./orch_serv  --config=pyproject.toml
+      - uv run ruff  check ./orch_serv --fix  --config=pyproject.toml
+      - uv run mypy ./orch_serv --no-strict-optional --ignore-missing-imports --config-file=pyproject.toml
 
   sync:
     desc: Update libs

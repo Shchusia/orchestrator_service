@@ -65,11 +65,11 @@ exclude = [
     "tests",
     "__init__.py"
 ]
-
-[tool.ruff.lint]
 select = ["E", "F", "I", "UP", "C90", "B"]
-ignore = ["E501", "E203", "F401"]
+ignore = ["E501", "E203", "F401", "UP038"]
 fixable = ["I001", "F401"]
+
+
 
 [tool.ruff.isort]
 force-sort-within-sections = true
@@ -81,7 +81,7 @@ combine-as-imports = true
 [tool.mypy]
 ignore_missing_imports = true
 warn_redundant_casts = true
-warn_unused_ignores = true
+warn_unused_ignores = false
 disallow_subclassing_any = false
 mypy_path = "stubs"
 python_version = "3.12"

@@ -37,7 +37,7 @@ class SyncBaseBlock(ABC):
         raise NotImplementedError
 
     @property
-    def name_block(self):
+    def name_block(self) -> str:
         """
         Unique name to identify block
         for override in subclass   name_block
@@ -128,7 +128,7 @@ class AsyncBaseBlock(ABC):
         raise NotImplementedError
 
     @property
-    def name_block(self):
+    def name_block(self) -> str:
         """
         Unique name to identify block
         to override in subclass name_block

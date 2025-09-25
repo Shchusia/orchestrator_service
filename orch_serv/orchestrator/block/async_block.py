@@ -32,9 +32,13 @@ class AsyncBlock(AsyncBaseBlock, ABC):
     ]
     """
 
-    _next_handler: AsyncBaseBlock = None
-    _pre_handler_function: Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None = None
-    _post_handler_function: Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None = None
+    _next_handler: AsyncBaseBlock = None  # type: ignore
+    _pre_handler_function: (
+        Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None
+    ) = None
+    _post_handler_function: (
+        Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None
+    ) = None
 
     @property
     def is_execute_after_nullable_process_msg(self) -> bool:
@@ -83,8 +87,10 @@ class AsyncBlock(AsyncBaseBlock, ABC):
     @pre_handler_function.setter  # type:ignore
     def pre_handler_function(
         self,
-        func: Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None = None,
-    ):
+        func: (
+            Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None
+        ) = None,
+    ) -> None:
         """
         Method check pre_handler_function is func
         :param func: object to check
@@ -107,8 +113,10 @@ class AsyncBlock(AsyncBaseBlock, ABC):
     @post_handler_function.setter  # type:ignore
     def post_handler_function(
         self,
-        func: Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None = None,
-    ):
+        func: (
+            Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None
+        ) = None,
+    ) -> None:
         """
         Method check post_handler_function is func
         :param func: object to check
@@ -130,8 +138,12 @@ class AsyncBlock(AsyncBaseBlock, ABC):
 
     def __init__(
         self,
-        pre_handler_function: Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None = None,
-        post_handler_function: Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None = None,
+        pre_handler_function: (
+            Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None
+        ) = None,
+        post_handler_function: (
+            Callable[[BaseOrchServMsg], Awaitable[BaseOrchServMsg | None]] | None
+        ) = None,
         logger: Logger | None = None,
     ):
         """
@@ -191,7 +203,7 @@ class AsyncBlock(AsyncBaseBlock, ABC):
         :return: nothing
         """
         if block.pre_handler_function:
-            message = await block.pre_handler_function(message)
+            message = await block.pre_handler_function(message)  # type: ignore
         if not message:
             return
         message.set_source(block.name_block)

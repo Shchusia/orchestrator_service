@@ -5,7 +5,11 @@ from copy import deepcopy
 from logging import Logger
 from typing import Any
 
-from orch_serv.exc import ConsistencyStepsException, NoDataForExecutionStepException
+from orch_serv.exc import (
+    ConsistencyStepsException,
+    EmptyStepper,
+    NoDataForExecutionStepException,
+)
 from orch_serv.settings import DEFAULT_LOGGER
 from orch_serv.stepper.utils import (
     get_returned_value,
@@ -33,7 +37,7 @@ class Step:
 
     """
 
-    __obj: Callable = None
+    __obj: Callable
     __kwargs: dict[str, Any] = dict()
 
     @property
@@ -44,7 +48,7 @@ class Step:
     def kwargs(self) -> dict[str, Any]:
         return self.__kwargs
 
-    def __init__(self, obj: Callable, **kwargs):
+    def __init__(self, obj: Callable, **kwargs: Any) -> None:
         if not callable(obj):
             raise TypeError("Step `obj` must be a callable")
         self.__obj = obj  # type: ignore
@@ -52,7 +56,7 @@ class Step:
             self.__kwargs = kwargs
         validate_data_step(self.__obj, self.__kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"<Step: obj: {self.obj.__name__}; kwargs:{self.__kwargs}>"
 
     def execute(self, data_to_execute: Any) -> Any:
@@ -90,6 +94,8 @@ class StepsBuilder:
         :type is_validate_consistency_steps: bool default: True
         """
         self.__steps = list()
+        if len(steps) == 0:
+            raise EmptyStepper()
         if not isinstance(steps[0], Step):
             raise TypeError(
                 f"Step must be a Step and not {type(steps[0])}"
@@ -112,13 +118,13 @@ class StepsBuilder:
     def steps(self) -> list[Step]:
         return self.__steps
 
-    def __iter__(self):
+    def __iter__(self) -> StepsIterator:
         return StepsIterator(self)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.__steps)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> Step:
         return self.__steps[index]
 
 
@@ -144,7 +150,7 @@ class Stepper:
      of step n is the output of step n
     """
 
-    __steps: StepsBuilder = None
+    __steps: StepsBuilder
     __is_execute_if_empty: bool = False
 
     @property
@@ -175,6 +181,8 @@ class Stepper:
         self.logger = logger or DEFAULT_LOGGER
         if steps:
             self.__steps = steps
+        else:
+            self.__steps = None  # type: ignore
         if is_execute_if_empty is not None:
             self.__is_execute_if_empty = is_execute_if_empty
         if not isinstance(self.steps, StepsBuilder):
@@ -189,7 +197,7 @@ class Stepper:
         step_data = args
         previous_step = "start"
         result_data: Any = None
-        for i, step in enumerate(self.steps):
+        for i, step in enumerate(self.steps):  # type: ignore
             self.logger.info("Starting Step %s", step)
             try:
                 # if not isinstance(step_data, tuple):
