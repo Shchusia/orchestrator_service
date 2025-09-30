@@ -1,0 +1,1157 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.09.25 -->
+        <title>orch_serv.service.service - orch_serv 0.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=580074bf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">orch_serv 0.2.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  <span class="sidebar-brand-text">orch_serv 0.2.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../modules/modules.html">Modules</a><input aria-label="Toggle navigation of Modules" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/orch_serv.msg.html">orch_serv.msg package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/orch_serv.orchestrator.block.html">orch_serv.orchestrator.block package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/orch_serv.orchestrator.flow.html">orch_serv.orchestrator.flow package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/orch_serv.orchestrator.orchestrator.html">orch_serv.orchestrator.orchestrator package</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../modules/orch_serv.orchestrator.html">orch_serv.orchestrator package</a><input aria-label="Toggle navigation of orch_serv.orchestrator package" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../modules/orch_serv.orchestrator.block.html">orch_serv.orchestrator.block package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../modules/orch_serv.orchestrator.flow.html">orch_serv.orchestrator.flow package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../modules/orch_serv.orchestrator.orchestrator.html">orch_serv.orchestrator.orchestrator package</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../modules/orch_serv.html">orch_serv package</a><input aria-label="Toggle navigation of orch_serv package" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../modules/orch_serv.msg.html">orch_serv.msg package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../modules/orch_serv.orchestrator.html">orch_serv.orchestrator package</a><input aria-label="Toggle navigation of orch_serv.orchestrator package" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/orch_serv.orchestrator.block.html">orch_serv.orchestrator.block package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/orch_serv.orchestrator.flow.html">orch_serv.orchestrator.flow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/orch_serv.orchestrator.orchestrator.html">orch_serv.orchestrator.orchestrator package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../modules/orch_serv.service.html">orch_serv.service package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../modules/orch_serv.stepper.html">orch_serv.stepper package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/orch_serv.service.html">orch_serv.service package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/orch_serv.stepper.html">orch_serv.stepper package</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for orch_serv.service.service</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module Service with help classes for build service</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">ConfigDict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">orch_serv.exc</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DoublePostProcessFunctionDeclaredError</span><span class="p">,</span>
+    <span class="n">EmptyCommandsException</span><span class="p">,</span>
+    <span class="n">IncorrectDefaultCommand</span><span class="p">,</span>
+    <span class="n">NotUniqueCommandError</span><span class="p">,</span>
+    <span class="n">ServiceBlockException</span><span class="p">,</span>
+    <span class="n">ServiceBuilderException</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">orch_serv.msg</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseOrchServMsg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">orch_serv.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_LOGGER</span>
+
+
+<div class="viewcode-block" id="CommandHandler">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.CommandHandler">[docs_old]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CommandHandler</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class with method for all handlers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">=</span> <span class="n">DEFAULT_LOGGER</span>  <span class="c1"># for one global handler</span>
+    <span class="n">_service_instance</span><span class="p">:</span> <span class="n">Service</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore # single scope for service_commands</span>
+    <span class="n">_is_logged</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logger</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Logger</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get logger</span>
+<span class="sd">        :return:  logger or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span>
+
+<div class="viewcode-block" id="CommandHandler.set_logger">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.CommandHandler.set_logger">[docs_old]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_logger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set logger to handler</span>
+<span class="sd">        :param Any val: logger</span>
+<span class="sd">        :return: nothing</span>
+<span class="sd">        :raise TypeError: if val is not a logger</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Logger</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type must be logger but not </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CommandHandler.set_service_instance">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.CommandHandler.set_service_instance">[docs_old]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_service_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">:</span> <span class="n">Service</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set to instance handler current service object for use swap</span>
+<span class="sd">        :param Service service:</span>
+<span class="sd">        :return: nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">Service</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_service_instance</span> <span class="o">=</span> <span class="n">service</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type must be Service but not </span><span class="si">{</span><span class="n">service</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CommandHandler.set_to_swap_scope">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.CommandHandler.set_to_swap_scope">[docs_old]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_to_swap_scope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method adds a value to the global scope for access from all services</span>
+<span class="sd">        :param str key: name key</span>
+<span class="sd">        :param Any data: data to add</span>
+<span class="sd">        :return: bool: is_added_value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">is_added</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_instance</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_service_instance</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+                <span class="n">is_added</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_logged</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s2">&quot;Key `</span><span class="si">%s</span><span class="s2">` not added. Error </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">),</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_logged</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;You can&#39;t use swap because it is not initialized &quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">is_added</span></div>
+
+
+<div class="viewcode-block" id="CommandHandler.get_from_swap_scope">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.CommandHandler.get_from_swap_scope">[docs_old]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_from_swap_scope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method gets a value available for all services from the global scope.</span>
+<span class="sd">        :param str key: name key to get value</span>
+<span class="sd">        :return: data if exist or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_instance</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_service_instance</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_logged</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+                        <span class="s2">&quot;Error while fetching data from swap by key </span><span class="si">%s</span><span class="s2">. Error </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">key</span><span class="p">,</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">),</span>
+                        <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_logged</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;You cann&#39;t use swap because it is not initialized &quot;</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="CommandHandler.del_from_swap_scope">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.CommandHandler.del_from_swap_scope">[docs_old]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">del_from_swap_scope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method removes attribute from swap_scope if any</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">is_dropped</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_instance</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_service_instance</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+                <span class="n">is_dropped</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_logged</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s2">&quot;Key `</span><span class="si">%s</span><span class="s2">` not deleted. Error </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">),</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_logged</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;You can&#39;t use swap because it is not initialized &quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">is_dropped</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CommandHandlerProcessStrategy">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.CommandHandlerProcessStrategy">[docs_old]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CommandHandlerProcessStrategy</span><span class="p">(</span><span class="n">CommandHandler</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Handler class for base processing message</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">target_command</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        this command will determine that the message should be processed</span>
+<span class="sd">        by this particular service</span>
+<span class="sd">        must be unique within the service</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="CommandHandlerProcessStrategy.process">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.CommandHandlerProcessStrategy.process">[docs_old]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">BaseOrchServMsg</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">BaseOrchServMsg</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">BaseOrchServMsg</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        the main method for executing the logic of this handler, must be overridden</span>
+<span class="sd">        in the inheritor</span>
+<span class="sd">        :param MessageQueue msg: msg from queue</span>
+<span class="sd">        :return: MessageQueue or None if return None post handler will not be called</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CommandHandlerPostProcessStrategy">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.CommandHandlerPostProcessStrategy">[docs_old]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CommandHandlerPostProcessStrategy</span><span class="p">(</span><span class="n">CommandHandler</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Post Process Handler</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CommandHandlerPostProcessStrategy.post_process">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.CommandHandlerPostProcessStrategy.post_process">[docs_old]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_process</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">BaseOrchServMsg</span><span class="p">,</span> <span class="n">additional_data</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        method for post-processing</span>
+<span class="sd">        e.g. sending to another queue</span>
+<span class="sd">        , must be overridden in the inheritor</span>
+<span class="sd">        :param MessageQueue msg:</span>
+<span class="sd">        :param additional_data: optional data got from processing block</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AsyncCommandHandlerProcessStrategy">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.AsyncCommandHandlerProcessStrategy">[docs_old]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AsyncCommandHandlerProcessStrategy</span><span class="p">(</span><span class="n">CommandHandler</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Handler class for base processing message</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">target_command</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        this command will determine that the message</span>
+<span class="sd">        should be processed by this particular service</span>
+<span class="sd">        must be unique within the service</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="AsyncCommandHandlerProcessStrategy.process">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.AsyncCommandHandlerProcessStrategy.process">[docs_old]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">BaseOrchServMsg</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">BaseOrchServMsg</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">BaseOrchServMsg</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        the main method for this handler execution logic, must be overridden</span>
+<span class="sd">        in the inheritor</span>
+<span class="sd">        :param MessageQueue msg: msg from queue</span>
+<span class="sd">        :return: MessageQueue or None if return None post handler will not be called</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AsyncCommandHandlerPostProcessStrategy">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.AsyncCommandHandlerPostProcessStrategy">[docs_old]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AsyncCommandHandlerPostProcessStrategy</span><span class="p">(</span><span class="n">CommandHandler</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Post Process Handler</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AsyncCommandHandlerPostProcessStrategy.post_process">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.AsyncCommandHandlerPostProcessStrategy.post_process">[docs_old]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">post_process</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">BaseOrchServMsg</span><span class="p">,</span> <span class="n">additional_data</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        method does post-processing</span>
+<span class="sd">        e.g. sending to another queue</span>
+<span class="sd">        , must be overridden in the inheritor</span>
+<span class="sd">        :param MessageQueue msg:</span>
+<span class="sd">        :param additional_data: optional data got from processing block</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DefaultPostProcessStrategy">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.DefaultPostProcessStrategy">[docs_old]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DefaultPostProcessStrategy</span><span class="p">(</span><span class="n">CommandHandlerPostProcessStrategy</span><span class="p">):</span>
+<div class="viewcode-block" id="DefaultPostProcessStrategy.post_process">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.DefaultPostProcessStrategy.post_process">[docs_old]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">BaseOrchServMsg</span><span class="p">,</span> <span class="n">additional_data</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        default post process function for sync service</span>
+<span class="sd">        :param BaseOrchServMsg msg: msg received after processing</span>
+<span class="sd">        :param Optional[Any] additional_data:</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AsyncDefaultPostProcessStrategy">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.AsyncDefaultPostProcessStrategy">[docs_old]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AsyncDefaultPostProcessStrategy</span><span class="p">(</span><span class="n">AsyncCommandHandlerPostProcessStrategy</span><span class="p">):</span>
+<div class="viewcode-block" id="AsyncDefaultPostProcessStrategy.post_process">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.AsyncDefaultPostProcessStrategy.post_process">[docs_old]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">post_process</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">BaseOrchServMsg</span><span class="p">,</span> <span class="n">additional_data</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        default post process function for async service</span>
+<span class="sd">        :param BaseOrchServMsg msg: msg received after processing</span>
+<span class="sd">        :param Optional[Any] additional_data:</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ServiceCommand">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.ServiceCommand">[docs_old]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ServiceCommand</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Structure class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">processor</span><span class="p">:</span> <span class="n">CommandHandlerProcessStrategy</span> <span class="o">|</span> <span class="n">AsyncCommandHandlerProcessStrategy</span>
+    <span class="n">post_processor</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">CommandHandlerPostProcessStrategy</span> <span class="o">|</span> <span class="n">AsyncCommandHandlerPostProcessStrategy</span>
+    <span class="p">)</span>
+
+    <span class="c1"># class Config:</span>
+    <span class="c1">#     arbitrary_types_allowed = True</span>
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">arbitrary_types_allowed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ServiceBlock">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.ServiceBlock">[docs_old]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ServiceBlock</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for build service - one Block with process</span>
+<span class="sd">     and post process handlers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_processor</span><span class="p">:</span> <span class="n">CommandHandlerProcessStrategy</span> <span class="o">|</span> <span class="n">AsyncCommandHandlerProcessStrategy</span>
+    <span class="n">_post_processor</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">CommandHandlerPostProcessStrategy</span>
+        <span class="o">|</span> <span class="n">AsyncCommandHandlerPostProcessStrategy</span>
+        <span class="o">|</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">processor</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CommandHandlerProcessStrategy</span> <span class="o">|</span> <span class="n">AsyncCommandHandlerProcessStrategy</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property contains process handler</span>
+<span class="sd">        :return: process command instance</span>
+<span class="sd">        :rtype: Union[CommandHandlerProcessStrategy, AsyncCommandHandlerProcessStrategy]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processor</span>  <span class="c1">#</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_processor</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span>
+        <span class="n">CommandHandlerPostProcessStrategy</span>
+        <span class="o">|</span> <span class="n">AsyncCommandHandlerPostProcessStrategy</span>
+        <span class="o">|</span> <span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property contains post_process handler</span>
+<span class="sd">        :return: post_processor instance</span>
+<span class="sd">        :rtype:Union[CommandHandlerPostProcessStrategy,</span>
+<span class="sd">         AsyncCommandHandlerPostProcessStrategy]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_processor</span>
+
+    <span class="nd">@processor</span><span class="o">.</span><span class="n">setter</span>  <span class="c1"># type: ignore # noqa</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">processor</span><span class="p">(</span>  <span class="c1"># noqa</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">processor</span><span class="p">:</span> <span class="p">(</span>
+            <span class="n">CommandHandlerProcessStrategy</span>
+            <span class="o">|</span> <span class="n">AsyncCommandHandlerProcessStrategy</span>
+            <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">CommandHandlerProcessStrategy</span><span class="p">]</span>
+            <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">AsyncCommandHandlerProcessStrategy</span><span class="p">]</span>
+        <span class="p">),</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setups service processor and checks type</span>
+<span class="sd">        :param processor:</span>
+<span class="sd">        :raise ServiceBlockException:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exc</span> <span class="o">=</span> <span class="n">ServiceBlockException</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;`process` object must be of type &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;`CommandHandlerProcessStrategy` or `AsyncCommandHandlerProcessStrategy` &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;and not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">processor</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">processor</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span>
+                <span class="n">processor</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">CommandHandlerProcessStrategy</span><span class="p">,</span> <span class="n">AsyncCommandHandlerProcessStrategy</span><span class="p">),</span>
+            <span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_processor</span> <span class="o">=</span> <span class="n">processor</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">exc</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">processor</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">CommandHandlerProcessStrategy</span><span class="p">,</span> <span class="n">AsyncCommandHandlerProcessStrategy</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_processor</span> <span class="o">=</span> <span class="n">processor</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span>  <span class="c1"># pragma: no cover</span>
+
+    <span class="nd">@post_processor</span><span class="o">.</span><span class="n">setter</span>  <span class="c1"># type: ignore # noqa</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_processor</span><span class="p">(</span>  <span class="c1"># noqa</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">post_processor</span><span class="p">:</span> <span class="p">(</span>
+            <span class="n">CommandHandlerPostProcessStrategy</span>
+            <span class="o">|</span> <span class="n">AsyncCommandHandlerPostProcessStrategy</span>
+            <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">CommandHandlerPostProcessStrategy</span><span class="p">]</span>
+            <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">AsyncCommandHandlerPostProcessStrategy</span><span class="p">]</span>
+            <span class="o">|</span> <span class="kc">None</span>
+        <span class="p">),</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setups service processor and checks type</span>
+<span class="sd">        :param post_processor:</span>
+<span class="sd">        :raise ServiceBlockException:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">post_processor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">exc</span> <span class="o">=</span> <span class="n">ServiceBlockException</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;`post_processor` object must be of type &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;`CommandHandlerPostProcessStrategy` &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;or `AsyncCommandHandlerPostProcessStrategy`&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; and not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">post_processor</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">post_processor</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span>
+                <span class="n">post_processor</span><span class="p">,</span>
+                <span class="p">(</span>
+                    <span class="n">CommandHandlerPostProcessStrategy</span><span class="p">,</span>
+                    <span class="n">AsyncCommandHandlerPostProcessStrategy</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_post_processor</span> <span class="o">=</span> <span class="n">post_processor</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">exc</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">post_processor</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">CommandHandlerPostProcessStrategy</span><span class="p">,</span> <span class="n">AsyncCommandHandlerPostProcessStrategy</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_post_processor</span> <span class="o">=</span> <span class="n">post_processor</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span>  <span class="c1"># pragma: no cover</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">processor</span><span class="p">:</span> <span class="p">(</span>
+            <span class="nb">type</span><span class="p">[</span><span class="n">CommandHandlerProcessStrategy</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">CommandHandlerProcessStrategy</span>
+            <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">AsyncCommandHandlerProcessStrategy</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">AsyncCommandHandlerProcessStrategy</span>
+        <span class="p">),</span>
+        <span class="n">post_processor</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">CommandHandlerPostProcessStrategy</span><span class="p">]</span> <span class="o">|</span> <span class="n">CommandHandlerPostProcessStrategy</span> <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">AsyncCommandHandlerPostProcessStrategy</span><span class="p">]</span> <span class="o">|</span> <span class="n">AsyncCommandHandlerPostProcessStrategy</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Init ServiceBlock</span>
+<span class="sd">        :param CommandHandlerProcessStrategy process:</span>
+<span class="sd">        :param CommandHandlerPostProcessStrategy post_process:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processor</span> <span class="o">=</span> <span class="n">processor</span>  <span class="c1"># type: ignore # noqa</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_processor</span> <span class="o">=</span> <span class="n">post_processor</span>  <span class="c1"># type: ignore # noqa</span></div>
+
+
+
+<div class="viewcode-block" id="ServiceBuilder">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.ServiceBuilder">[docs_old]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ServiceBuilder</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for aggregating service commands</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_default_post_processor</span><span class="p">:</span> <span class="n">CommandHandlerPostProcessStrategy</span> <span class="o">|</span> <span class="n">AsyncCommandHandlerPostProcessStrategy</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">default_post_processor</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CommandHandlerPostProcessStrategy</span> <span class="o">|</span> <span class="n">AsyncCommandHandlerPostProcessStrategy</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_post_processor</span>
+
+    <span class="nd">@default_post_processor</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">default_post_processor</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">default_post_processor</span><span class="p">:</span> <span class="p">(</span>
+            <span class="n">CommandHandlerPostProcessStrategy</span>
+            <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">CommandHandlerPostProcessStrategy</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">AsyncCommandHandlerPostProcessStrategy</span>
+            <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">AsyncCommandHandlerPostProcessStrategy</span><span class="p">]</span>
+        <span class="p">),</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setups service processor and checks correct type</span>
+<span class="sd">        :param post_processor:</span>
+<span class="sd">        :raise ServiceBlockException: if incorrect type</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">default_post_processor</span><span class="p">:</span>
+            <span class="n">message_error</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;`default_post_processor` object must be of type &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;`CommandHandlerPostProcessStrategy` &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;and not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">default_post_processor</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default_post_processor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_is_post_processor</span><span class="p">(</span>
+                <span class="n">default_post_processor</span><span class="p">,</span> <span class="n">message_error</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="ServiceBuilder.check_is_post_processor">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.ServiceBuilder.check_is_post_processor">[docs_old]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_is_post_processor</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">message_error</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method checks if obj is post_processor</span>
+<span class="sd">        :param obj:</span>
+<span class="sd">        :param message_error:</span>
+<span class="sd">        :raise ServiceBlockException: if incorrect type</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exc</span> <span class="o">=</span> <span class="n">ServiceBlockException</span><span class="p">(</span><span class="n">message_error</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span>
+                <span class="n">obj</span><span class="p">,</span>
+                <span class="p">(</span>
+                    <span class="n">CommandHandlerPostProcessStrategy</span><span class="p">,</span>
+                    <span class="n">AsyncCommandHandlerPostProcessStrategy</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="n">obj</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">exc</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">obj</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">CommandHandlerPostProcessStrategy</span><span class="p">,</span> <span class="n">AsyncCommandHandlerPostProcessStrategy</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="n">obj</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span>  <span class="c1"># pragma: no cover</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">ServiceBlock</span><span class="p">,</span>
+        <span class="n">default_post_process</span><span class="p">:</span> <span class="p">(</span>
+            <span class="nb">type</span><span class="p">[</span><span class="n">CommandHandlerPostProcessStrategy</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">CommandHandlerPostProcessStrategy</span>
+            <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">AsyncCommandHandlerPostProcessStrategy</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">AsyncCommandHandlerPostProcessStrategy</span>
+            <span class="o">|</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_post_processor</span> <span class="o">=</span> <span class="n">default_post_process</span>  <span class="c1"># type: ignore # noqa</span>
+        <span class="n">list_blocks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>  <span class="c1"># type: list[ServiceBlock]</span>
+        <span class="k">for</span> <span class="n">service_block</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">service_block</span><span class="p">,</span> <span class="n">ServiceBlock</span><span class="p">):</span>
+                <span class="n">list_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">service_block</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">post_processor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_is_post_processor</span><span class="p">(</span><span class="n">service_block</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_post_processor</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">DoublePostProcessFunctionDeclaredError</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">default_post_processor</span> <span class="o">=</span> <span class="n">post_processor</span>
+                <span class="k">except</span> <span class="n">ServiceBlockException</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;block must be instance class `ServiceBlock`.&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; Not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">service_block</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">list_blocks</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EmptyCommandsException</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_list_blocks</span> <span class="o">=</span> <span class="n">list_blocks</span>
+
+<div class="viewcode-block" id="ServiceBuilder.build">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.ServiceBuilder.build">[docs_old]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">service_instance</span><span class="p">:</span> <span class="n">Service</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ServiceCommand</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method builds all commands&#39; current service.</span>
+<span class="sd">        :param service_instance: current service</span>
+<span class="sd">        :param Optional[Logger] logger: logger</span>
+<span class="sd">        :return: {command_name: ServiceCommand} dict commands and proccess classes</span>
+<span class="sd">        :rtype: dict[str, ServiceCommand]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span> <span class="ow">or</span> <span class="n">DEFAULT_LOGGER</span>
+        <span class="n">dict_commands</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># type: dict[str, ServiceCommand]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_post_processor</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">service_instance</span><span class="o">.</span><span class="n">_base_process_class</span> <span class="o">==</span> <span class="n">CommandHandlerProcessStrategy</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">default_post_processor</span> <span class="o">=</span> <span class="n">DefaultPostProcessStrategy</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">default_post_processor</span> <span class="o">=</span> <span class="n">AsyncDefaultPostProcessStrategy</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_post_processor</span><span class="o">.</span><span class="n">set_logger</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_post_processor</span><span class="o">.</span><span class="n">set_service_instance</span><span class="p">(</span><span class="n">service_instance</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list_blocks</span><span class="p">:</span>
+            <span class="n">processor</span> <span class="o">=</span> <span class="n">block</span><span class="o">.</span><span class="n">processor</span>
+            <span class="n">post_processor</span> <span class="o">=</span> <span class="n">block</span><span class="o">.</span><span class="n">post_processor</span>
+            <span class="n">processor</span><span class="o">.</span><span class="n">set_logger</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>  <span class="c1"># noqa</span>
+            <span class="n">processor</span><span class="o">.</span><span class="n">set_service_instance</span><span class="p">(</span><span class="n">service_instance</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">post_processor</span><span class="p">:</span>
+                <span class="n">post_processor</span><span class="o">.</span><span class="n">set_logger</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>  <span class="c1"># noqa</span>
+                <span class="n">post_processor</span><span class="o">.</span><span class="n">set_service_instance</span><span class="p">(</span><span class="n">service_instance</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">post_processor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_post_processor</span>
+
+            <span class="k">if</span> <span class="n">dict_commands</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">processor</span><span class="o">.</span><span class="n">target_command</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">NotUniqueCommandError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Command `</span><span class="si">{</span><span class="n">processor</span><span class="o">.</span><span class="n">target_command</span><span class="si">}</span><span class="s2">`&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; is not unique for current service&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="n">dict_commands</span><span class="p">[</span><span class="n">processor</span><span class="o">.</span><span class="n">target_command</span><span class="p">]</span> <span class="o">=</span> <span class="n">ServiceCommand</span><span class="p">(</span>
+                    <span class="n">processor</span><span class="o">=</span><span class="n">processor</span><span class="p">,</span> <span class="n">post_processor</span><span class="o">=</span><span class="n">post_processor</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">dict_commands</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Service">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.Service">[docs_old]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Service</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class Service for handle msg-s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_service_commands</span><span class="p">:</span> <span class="n">ServiceBuilder</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+    <span class="n">_dict_handlers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ServiceCommand</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">_default_command</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+    <span class="n">_base_process_class</span> <span class="o">=</span> <span class="n">CommandHandlerProcessStrategy</span>
+    <span class="n">_base_post_process_class</span> <span class="o">=</span> <span class="n">CommandHandlerPostProcessStrategy</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">service_commands</span><span class="p">:</span> <span class="n">ServiceBuilder</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">default_command</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">is_catch_exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_catch_exceptions</span> <span class="o">=</span> <span class="n">is_catch_exceptions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span> <span class="ow">or</span> <span class="n">DEFAULT_LOGGER</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">service_commands</span><span class="p">:</span>
+            <span class="c1"># for validate if use property setup</span>
+            <span class="n">service_commands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_commands</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__validate_service_builder</span><span class="p">(</span><span class="n">service_commands</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dict_handlers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_commands</span><span class="o">.</span><span class="n">build</span><span class="p">(</span>
+            <span class="n">service_instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">default_command</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict_handlers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">default_command</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">IncorrectDefaultCommand</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_default_command</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dict_handlers</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_default_command</span> <span class="o">=</span> <span class="n">default_command</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__validate_service_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service_builder</span><span class="p">:</span> <span class="n">ServiceBuilder</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Help function for service_builder object validation</span>
+<span class="sd">        :param service_builder:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">service_builder</span><span class="p">,</span> <span class="n">ServiceBuilder</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ServiceBuilderException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Variable `service_builder` must be a&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; ServiceBuilder and not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">service_builder</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_service_commands</span> <span class="o">=</span> <span class="n">service_builder</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">service_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ServiceBuilder</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_commands</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_commands</span>
+
+    <span class="nd">@service_commands</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">service_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service_builder</span><span class="p">:</span> <span class="n">ServiceBuilder</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__validate_service_builder</span><span class="p">(</span><span class="n">service_builder</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Service._validate_data">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.Service._validate_data">[docs_old]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Help function to validate data service</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_process_class</span><span class="p">,</span> <span class="n">CommandHandler</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Incorrect type `_base_processor_class`. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Parent of variable `_base_processor_class` must be `CommandHandler`&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; and not </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_process_class</span><span class="o">.</span><span class="n">__base__</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Please don`t override protected variable.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_post_process_class</span><span class="p">,</span> <span class="n">CommandHandler</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Incorrect type `_base_post_processor_class`.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; Parent of variable `_base_post_processor_class` &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;must be `CommandHandler`&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; and not </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_post_process_class</span><span class="o">.</span><span class="n">__base__</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Please don`t override protected variable.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">command_name</span><span class="p">,</span> <span class="n">command</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict_handlers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">processor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base_process_class</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Incorrect type `processor` of command `</span><span class="si">{</span><span class="n">command_name</span><span class="si">}</span><span class="s2">`.&quot;</span>  <span class="c1"># type: ignore</span>
+                    <span class="sa">f</span><span class="s2">&quot; Must be a `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_process_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">` &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;and not `</span><span class="si">{</span><span class="n">command</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">__base__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">`&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">post_processor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base_post_process_class</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Incorrect type `post_processor` of command `</span><span class="si">{</span><span class="n">command_name</span><span class="si">}</span><span class="s2">`. &quot;</span>  <span class="c1"># type: ignore</span>
+                    <span class="sa">f</span><span class="s2">&quot;Must be a `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_post_process_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">` &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;and not `</span><span class="si">{</span><span class="n">command</span><span class="o">.</span><span class="n">post_processor</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">__base__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">`&quot;</span>
+                <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Service._get_service_command">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.Service._get_service_command">[docs_old]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_service_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">BaseOrchServMsg</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ServiceCommand</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function for get command to handle received message</span>
+<span class="sd">        :param BaseOrchServMsg message: received message</span>
+<span class="sd">        :return: handler if exist</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict_handlers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">get_command</span><span class="p">())</span>  <span class="c1"># type: ignore</span>
+        <span class="k">if</span> <span class="n">command</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">command</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_command</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict_handlers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_command</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Service.handle">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.Service.handle">[docs_old]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">BaseOrchServMsg</span><span class="p">,</span> <span class="n">is_force_return</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseOrchServMsg</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        the main function to process received messages</span>
+<span class="sd">        :param BaseOrchServMsg message: message to process</span>
+<span class="sd">        :param bool is_force_return: return msgs all time after execution</span>
+<span class="sd">        :return: not processed msgs or received msgs if is_force_return==True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">is_return_message</span> <span class="o">=</span> <span class="n">is_force_return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Service. Started processing message </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_service_command</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">command</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">resp_process</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">resp_process</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">resp_msg</span><span class="p">,</span> <span class="n">additional_data</span> <span class="o">=</span> <span class="n">resp_process</span>  <span class="c1"># type: ignore # noqa</span>
+                    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                        <span class="n">resp_msg</span><span class="p">,</span> <span class="n">additional_data</span> <span class="o">=</span> <span class="n">resp_process</span><span class="p">,</span> <span class="kc">None</span>
+                    <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">post_processor</span> <span class="ow">and</span> <span class="n">resp_msg</span><span class="p">:</span>
+                        <span class="n">command</span><span class="o">.</span><span class="n">post_processor</span><span class="o">.</span><span class="n">post_process</span><span class="p">(</span><span class="n">resp_msg</span><span class="p">,</span> <span class="n">additional_data</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s2">&quot;Don&#39;t send to post-processing because&quot;</span>
+                        <span class="s2">&quot; processor doesn&#39;t return data.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">is_return_message</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Error in time processing msg </span><span class="si">%s</span><span class="s2">. Error </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">),</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">),</span>
+                    <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_catch_exceptions</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">exc</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">is_return_message</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Not found command to process message </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Service. Finished processing message </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_return_message</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">message</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AsyncService">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.AsyncService">[docs_old]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AsyncService</span><span class="p">(</span><span class="n">Service</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+
+    <span class="n">_base_process_class</span> <span class="o">=</span> <span class="n">AsyncCommandHandlerProcessStrategy</span>  <span class="c1"># type: ignore # noqa</span>
+    <span class="n">_base_post_process_class</span> <span class="o">=</span> <span class="n">AsyncCommandHandlerPostProcessStrategy</span>  <span class="c1"># type: ignore # noqa</span>
+
+<div class="viewcode-block" id="AsyncService.handle">
+<a class="viewcode-back" href="../../../modules/orch_serv.service.html#orch_serv.AsyncService.handle">[docs_old]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span>  <span class="c1"># type: ignore # noqa</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">BaseOrchServMsg</span><span class="p">,</span> <span class="n">is_force_return</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseOrchServMsg</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param message:</span>
+<span class="sd">        :param is_force_return:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">is_return_message</span> <span class="o">=</span> <span class="n">is_force_return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Service. Started processing message </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_service_command</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">command</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">resp_process</span> <span class="o">=</span> <span class="k">await</span> <span class="n">command</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>  <span class="c1"># type: ignore # noqa</span>
+                <span class="k">if</span> <span class="n">resp_process</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">resp_msg</span><span class="p">,</span> <span class="n">additional_data</span> <span class="o">=</span> <span class="n">resp_process</span>
+                    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                        <span class="n">resp_msg</span><span class="p">,</span> <span class="n">additional_data</span> <span class="o">=</span> <span class="n">resp_process</span><span class="p">,</span> <span class="kc">None</span>
+                    <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">post_processor</span> <span class="ow">and</span> <span class="n">resp_msg</span><span class="p">:</span>
+                        <span class="k">await</span> <span class="n">command</span><span class="o">.</span><span class="n">post_processor</span><span class="o">.</span><span class="n">post_process</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+                            <span class="n">resp_msg</span><span class="p">,</span> <span class="n">additional_data</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s2">&quot;Don&#39;t send to post-processing because &quot;</span>
+                        <span class="s2">&quot;processor don&#39;t return data.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">is_return_message</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Error in time processing msg </span><span class="si">%s</span><span class="s2">. Error </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">),</span>
+                    <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_catch_exceptions</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">exc</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">is_return_message</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Not found command to process message </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Service. Finished processing message </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_return_message</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">message</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, Denis Shchutskyi
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>
