@@ -42,7 +42,7 @@ tasks:
   sync:
     desc: Update libs
     cmds:
-      - uv sync -U --group lint --group tests
+      - uv sync -U --group lint --group tests --group docs_old
 
   build:
     desc: Build library
@@ -53,3 +53,10 @@ tasks:
     desc: Publish the compiled library
     cmds:
       - uv publish
+
+  docs:
+    desc: Generate documentation
+    dir: ./docs
+    cmds:
+      - uv run sphinx-apidoc -o . ../orch_serv
+      - uv run make html
