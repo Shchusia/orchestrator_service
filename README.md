@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/Shchusia/orchestrator_service/badge.svg?branch=master)](https://coveralls.io/github/Shchusia/orchestrator_service?branch=master)
 
 [![Coverage Status](https://img.shields.io/badge/Version-0.2.0-informational)](https://pypi.org/project/orch-serv/)
-[![Coverage Status](https://img.shields.io/badge/Docs-passed-green)](https://github.com/Shchusia/orchestrator_service/tree/master/docs)
+[![Coverage Status](https://img.shields.io/badge/Docs-passed-green)](https://shchusia.github.io/orchestrator_service/index.html)
 > A library for microservice architecture, for interconnected services with different execution sequences, for orchestration services designed for such kind of services relationships.
 
 
